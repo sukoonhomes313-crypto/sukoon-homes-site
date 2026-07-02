@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Redirecting...</title>
+<script>
+(function(){
+  const path = window.location.pathname;
+  const parts = path.split('/').filter(Boolean);
+  // /rooms/slug → room.html?slug=slug
+  if(parts[0]==='rooms' && parts[1]){
+    window.location.replace('/room.html?slug='+encodeURIComponent(parts[1]));
+  } else {
+    window.location.replace('/');
+  }
+})();
+</script>
+</head>
+<body></body>
+</html>
