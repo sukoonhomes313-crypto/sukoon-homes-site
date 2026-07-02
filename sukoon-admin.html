@@ -1,0 +1,2484 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sukoon Homes Admin Panel</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --green:#0d4a2f;--green-mid:#1a7a4a;--green-soft:#2eaa6a;--green-pale:#e6f5ee;--green-light:#c2e8d4;
+  --gold:#c9963a;--gold-pale:#fdf3e3;--red:#c0392b;--red-pale:#fdecea;--blue:#2980b9;--blue-pale:#ebf5fb;
+  --bg:#f0f4f1;--sidebar:#0d2e1c;--card:#fff;--border:#d4e8dc;--text:#0d2e1c;--muted:#7a9e88;--mid:#3a5a46;
+  --shadow:0 2px 12px rgba(13,74,47,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+
+/* LOGIN */
+.login-wrap{position:fixed;inset:0;background:var(--green);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-box{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:360px;}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+.login-logo-name{font-family:'Playfair Display',serif;font-size:18px;color:var(--green);}
+.login-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:18px;}
+.login-input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none;margin-bottom:10px;}
+.login-input:focus{border-color:var(--green-soft);}
+.login-btn{width:100%;padding:12px;background:var(--green-mid);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;}
+.login-err{color:var(--red);font-size:12px;margin-top:8px;display:none;}
+
+/* LAYOUT */
+.admin-wrap{display:none;height:100vh;overflow:hidden;}
+.admin-wrap.show{display:flex;}
+.sidebar{width:220px;background:var(--sidebar);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.sidebar-logo{display:flex;align-items:center;gap:9px;padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sidebar-logo-name{font-family:'Playfair Display',serif;font-size:14px;color:#fff;}
+.sidebar-logo-tag{font-size:10px;color:rgba(255,255,255,.3);display:block;}
+.sidebar-nav{padding:10px 0;flex:1;}
+.nav-section{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.25);padding:12px 16px 4px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 16px;font-size:12px;font-weight:500;color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;border-left:2px solid transparent;}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.06);}
+.nav-item.active{color:#fff;background:rgba(46,170,106,.15);border-left-color:var(--green-soft);}
+.nav-item svg{width:14px;height:14px;flex-shrink:0;}
+.sidebar-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);}
+.logout-btn{width:100%;padding:8px;background:rgba(192,57,43,.15);color:#e87c6e;border:1px solid rgba(192,57,43,.2);border-radius:7px;font-size:11px;cursor:pointer;font-family:inherit;}
+
+/* MAIN */
+.main-area{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.topbar-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--green);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.topbar-badge{font-size:11px;background:var(--green-pale);color:var(--green);padding:3px 10px;border-radius:100px;font-weight:500;}
+.content-area{padding:22px 24px;flex:1;}
+
+/* TABS */
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:22px;}
+.stat-card{background:#fff;border-radius:13px;padding:18px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.stat-icon{font-size:24px;margin-bottom:8px;}
+.stat-val{font-family:'Playfair Display',serif;font-size:26px;color:var(--green);font-weight:700;}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px;}
+.stat-card.gold{border-left:3px solid var(--gold);}
+.stat-card.red{border-left:3px solid var(--red);}
+.stat-card.blue{border-left:3px solid var(--blue);}
+
+/* TABLE */
+.table-card{background:#fff;border-radius:13px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);margin-bottom:18px;}
+.table-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);}
+.table-head-title{font-size:13px;font-weight:600;color:var(--text);}
+.table-search{padding:6px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit;outline:none;width:180px;}
+.table-search:focus{border-color:var(--green-soft);}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--bg);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);}
+td{padding:10px 14px;font-size:12px;color:var(--text);border-bottom:1px solid rgba(212,232,220,.5);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--green-pale);}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:600;}
+.badge-green{background:var(--green-pale);color:var(--green);}
+.badge-gold{background:var(--gold-pale);color:var(--gold);}
+.badge-red{background:var(--red-pale);color:var(--red);}
+.badge-blue{background:var(--blue-pale);color:var(--blue);}
+.badge-gray{background:#f0f0f0;color:#666;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all .15s;}
+.btn-green{background:var(--green-mid);color:#fff;}
+.btn-green:hover{background:var(--green);}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--mid);}
+.btn-ghost:hover{background:var(--bg);}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-sm{padding:4px 9px;font-size:10px;}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:11px;font-weight:600;color:var(--mid);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;}
+.form-control{width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;outline:none;color:var(--text);}
+.form-control:focus{border-color:var(--green-soft);}
+textarea.form-control{resize:vertical;min-height:70px;}
+.form-card{background:#fff;border-radius:13px;border:1px solid var(--border);padding:20px;margin-bottom:18px;box-shadow:var(--shadow);}
+.form-card h3{font-family:'Playfair Display',serif;font-size:15px;color:var(--green);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+
+/* TOGGLE */
+.toggle{position:relative;display:inline-block;width:36px;height:20px;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:100px;transition:.2s;}
+.toggle-slider:before{content:'';position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;}
+.toggle input:checked+.toggle-slider{background:var(--green-mid);}
+.toggle input:checked+.toggle-slider:before{transform:translateX(16px);}
+
+/* TABS inside panel */
+.inner-tabs{display:flex;gap:4px;margin-bottom:18px;background:var(--bg);padding:4px;border-radius:10px;width:fit-content;}
+.inner-tab{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:var(--muted);border:none;background:transparent;font-family:inherit;}
+.inner-tab.active{background:#fff;color:var(--green);font-weight:600;box-shadow:0 1px 6px rgba(13,74,47,.08);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:16px;width:100%;max-width:580px;max-height:85vh;overflow-y:auto;padding:24px;margin:16px;}
+.modal-title{font-family:'Playfair Display',serif;font-size:17px;color:var(--green);margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.modal-close-btn{float:right;background:none;border:1px solid var(--border);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:14px;color:var(--mid);}
+
+/* ROOM CARD ADMIN */
+.room-row-img{width:44px;height:36px;border-radius:6px;object-fit:cover;background:var(--green-pale);}
+.sku-code{font-family:monospace;font-size:10px;background:var(--bg);padding:2px 6px;border-radius:4px;color:var(--mid);}
+
+/* SKU SEARCH */
+.sku-search-wrap{display:flex;gap:8px;margin-bottom:18px;}
+.sku-input{flex:1;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;outline:none;}
+.sku-input:focus{border-color:var(--green-soft);}
+.sku-result{background:#fff;border:1px solid var(--border);border-radius:13px;padding:20px;display:none;}
+
+/* ENQUIRY TABS */
+.enq-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.enq-tab{padding:6px 14px;border-radius:7px;border:1px solid var(--border);font-size:11px;font-weight:500;cursor:pointer;background:#fff;color:var(--mid);}
+.enq-tab.active{background:var(--green);color:#fff;border-color:var(--green);}
+.enq-count{display:inline-block;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:100px;margin-left:4px;}
+
+/* ANALYTICS */
+.analytics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:20px;}
+.analytics-card{background:#fff;border-radius:13px;padding:18px;border:1px solid var(--border);}
+.analytics-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.analytics-val{font-family:'Playfair Display',serif;font-size:28px;color:var(--green);}
+.analytics-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+.bar-chart{margin-top:14px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.bar-label{font-size:11px;color:var(--mid);width:80px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;height:8px;background:var(--bg);border-radius:100px;overflow:hidden;}
+.bar-fill{height:100%;background:var(--green-mid);border-radius:100px;transition:width .5s;}
+.bar-count{font-size:10px;color:var(--muted);width:30px;text-align:right;}
+
+/* SITE EDITOR */
+.editor-section{margin-bottom:20px;}
+.editor-label{font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.editor-history{background:var(--bg);border-radius:10px;padding:12px;margin-top:10px;}
+.history-item{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--mid);}
+.history-item:last-child{border-bottom:none;}
+
+/* PAYMENT */
+.gateway-card{background:#fff;border:1px solid var(--border);border-radius:13px;padding:18px;margin-bottom:14px;}
+.gateway-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.gateway-name{font-size:14px;font-weight:600;color:var(--text);}
+.gateway-logo{font-size:20px;}
+
+/* SNIPPETS */
+.snippet-row{display:flex;align-items:flex-start;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);}
+.snippet-row:last-child{border-bottom:none;}
+.snippet-code-preview{font-family:monospace;font-size:10px;color:var(--muted);background:var(--bg);padding:4px 8px;border-radius:4px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--green);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;display:none;box-shadow:0 4px 18px rgba(13,74,47,.3);}
+.toast.show{display:block;}
+.toast.error{background:var(--red);}
+
+/* PREVIEW BANNER */
+.preview-banner{background:var(--gold);color:#fff;padding:8px 16px;font-size:12px;font-weight:500;display:none;align-items:center;justify-content:space-between;}
+.preview-banner.show{display:flex;}
+
+/* COLOR SWATCH */
+.color-swatch{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);cursor:pointer;display:inline-block;}
+
+/* MOBILE DRAWER */
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;}
+.mob-overlay.open{display:block;}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;color:var(--text);}
+.hamburger svg{width:22px;height:22px;}
+
+/* MAGIC LINK LOGIN STATES */
+.login-step{display:none;}.login-step.active{display:block;}
+.login-sent-icon{font-size:48px;margin-bottom:12px;text-align:center;}
+.login-email-display{font-weight:600;color:var(--green);word-break:break-all;}
+.login-back{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:0;margin-top:12px;text-decoration:underline;}
+.login-divider{display:flex;align-items:center;gap:8px;margin:14px 0;color:var(--muted);font-size:11px;}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ROLE BADGE */
+.role-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;text-transform:uppercase;}
+.role-badge.superadmin{background:var(--gold-pale);color:var(--gold);}
+.role-badge.staff{background:var(--green-pale);color:var(--green-mid);}
+
+/* USER CARDS */
+.user-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:10px;}
+.user-avatar{width:40px;height:40px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;flex-shrink:0;}
+.user-info{flex:1;min-width:0;}
+.user-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-email{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-actions{display:flex;gap:6px;flex-shrink:0;}
+
+/* STAFF LOCK OVERLAY */
+.staff-locked{position:relative;}
+.staff-locked::after{content:'🔒 Staff access only — contact superadmin';position:absolute;inset:0;background:rgba(240,244,241,.92);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);border-radius:12px;pointer-events:none;}
+
+@media(max-width:768px){
+  .sidebar{position:fixed;left:-240px;top:0;bottom:0;z-index:201;transition:left .25s ease;width:220px!important;}
+  .sidebar.open{left:0;}
+  .hamburger{display:flex;}
+  .form-grid{grid-template-columns:1fr;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .topbar{padding:0 12px;}
+  .content-area{padding:14px 12px;}
+  .table-card{overflow-x:auto;}
+  .user-actions{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg viewBox="0 0 36 36" fill="none" width="36" height="36"><rect width="36" height="36" rx="8" fill="#0d4a2f"/><path d="M18 6L6 16H9V30H16V23H20V30H27V16H30L18 6Z" fill="#fff" opacity=".95"/><circle cx="18" cy="19" r="3" fill="#2eaa6a"/></svg>
+      <div><div class="login-logo-name">Sukoon Homes</div><span style="font-size:10px;color:var(--muted)">Admin Panel</span></div>
+    </div>
+
+    <!-- STEP 1: Email input -->
+    <div class="login-step active" id="step-email">
+      <div class="login-title">Sign in with Magic Link</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Enter your admin email — a login link will be sent</p>
+      <input class="login-input" id="login-email" type="email" placeholder="admin@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')sendMagicLink()"/>
+      <button type="button" class="login-btn" onclick="sendMagicLink()" id="magic-btn">Send Magic Link →</button>
+      <div class="login-err" id="login-err"></div>
+    </div>
+
+    <!-- STEP 2: Email sent -->
+    <div class="login-step" id="step-sent">
+      <div class="login-sent-icon">📬</div>
+      <div class="login-title" style="text-align:center">Check your email!</div>
+      <p style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:8px">Magic link sent to:</p>
+      <p style="text-align:center" class="login-email-display" id="sent-email-display"></p>
+      <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:12px">Click the link in your email to login automatically.<br/>Don't close this tab!</p>
+      <button type="button" class="login-btn" style="margin-top:16px;background:var(--green-pale);color:var(--green-mid)" onclick="resendMagicLink()">Resend Link</button>
+      <div style="text-align:center"><button class="login-back" onclick="backToEmail()">← Use a different email</button></div>
+    </div>
+
+    <!-- STEP 3: Verifying (auto, shown briefly) -->
+    <div class="login-step" id="step-verify">
+      <div class="login-sent-icon">🔐</div>
+      <div class="login-title" style="text-align:center">Verifying...</div>
+      <p style="font-size:12px;color:var(--muted);text-align:center">Verifying your login, please wait...</p>
+    </div>
+
+    <div class="login-err" id="login-err-global" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<!-- MOBILE SIDEBAR OVERLAY -->
+<div class="mob-overlay" id="mob-overlay" onclick="closeSidebar()"></div>
+
+<!-- ADMIN WRAP -->
+<div class="admin-wrap" id="admin-wrap">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 36 36" fill="none" width="28" height="28"><rect width="36" height="36" rx="8" fill="#fff" opacity=".1"/><path d="M18 6L6 16H9V30H16V23H20V30H27V16H30L18 6Z" fill="#fff" opacity=".9"/><circle cx="18" cy="19" r="3" fill="#2eaa6a"/></svg>
+      <div><div class="sidebar-logo-name">Sukoon Admin</div><span class="sidebar-logo-tag">سكون هومز</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">Dashboard</div>
+      <div class="nav-item active" onclick="showTab('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="showTab('analytics')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Analytics
+      </div>
+
+      <div class="nav-section">Rooms</div>
+      <div class="nav-item" onclick="showTab('submissions')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Submissions
+        <span class="enq-count" id="sub-badge" style="display:none">0</span>
+      </div>
+      <div class="nav-item" onclick="showTab('daily-rooms')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Daily Rooms
+      </div>
+      <div class="nav-item" onclick="showTab('long-rooms')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Long Stay Rooms
+      </div>
+      <div class="nav-item" onclick="showTab('sku-search')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        SKU Search
+      </div>
+
+      <div class="nav-section">Content</div>
+      <div class="nav-item" onclick="showTab('feedback-admin')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Reviews
+        <span class="enq-count" id="rev-badge" style="display:none">0</span>
+      </div>
+      <div class="nav-item" onclick="showTab('enquiries')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Enquiries
+        <span class="enq-count" id="enq-badge" style="display:none">0</span>
+      </div>
+      <div class="nav-item" onclick="showTab('blog-admin')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Blog Posts
+      </div>
+
+      <div class="nav-section">Settings</div>
+      <div class="nav-item" onclick="showTab('site-editor')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M16.95 16.95l1.41 1.41M4.93 19.07l1.41-1.41M7.05 7.05L5.64 5.64M21 12h-2M5 12H3M12 21v-2M12 5V3"/></svg>
+        Site Editor
+      </div>
+      <div class="nav-item" onclick="showTab('snippets')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Code Snippets
+      </div>
+      <div class="nav-item" onclick="showTab('payments')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Payment Gateways
+      </div>
+      <div class="nav-section">Team</div>
+      <div class="nav-item" id="nav-users" onclick="showTab('users')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Team Users
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <button type="button" class="logout-btn" onclick="doLogout()">← Logout</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-area">
+    <!-- PREVIEW BANNER -->
+    <div class="preview-banner" id="preview-banner">
+      <span>⚠️ Preview Mode — Changes not saved yet</span>
+      <div style="display:flex;gap:8px">
+        <button type="button" class="btn btn-ghost btn-sm" onclick="cancelPreview()">Cancel</button>
+        <button type="button" class="btn btn-gold btn-sm" onclick="publishChanges()">Publish Now →</button>
+      </div>
+    </div>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-badge" id="topbar-time"></span>
+        <span id="topbar-user" style="font-size:11px;color:var(--muted);display:none"></span>
+        <a href="index.html" target="_blank" class="btn btn-ghost btn-sm">🌐 View Site</a>
+      </div>
+    </div>
+
+    <div class="content-area" id="content-area">
+
+      <!-- ======== DASHBOARD ======== -->
+      <div class="tab-panel active" id="tab-dashboard">
+        <div class="stat-grid" id="dash-stats">
+          <div class="stat-card"><div class="stat-icon">🏠</div><div class="stat-val" id="d-total-rooms">—</div><div class="stat-lbl">Total Rooms</div></div>
+          <div class="stat-card gold"><div class="stat-icon">📋</div><div class="stat-val" id="d-pending-subs">—</div><div class="stat-lbl">Pending Submissions</div></div>
+          <div class="stat-card red"><div class="stat-icon">💬</div><div class="stat-val" id="d-unread-enq">—</div><div class="stat-lbl">Unread Enquiries</div></div>
+          <div class="stat-card blue"><div class="stat-icon">⭐</div><div class="stat-val" id="d-pending-rev">—</div><div class="stat-lbl">Pending Reviews</div></div>
+          <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-val" id="d-total-clicks">—</div><div class="stat-lbl">Total Clicks</div></div>
+          <div class="stat-card gold"><div class="stat-icon">📝</div><div class="stat-val" id="d-blog-posts">—</div><div class="stat-lbl">Blog Posts</div></div>
+        </div>
+        <div class="form-card" style="margin-bottom:18px">
+          <h3>⚠️ Firebase Rules Expiry</h3>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <div style="background:var(--red-pale);border:1px solid var(--red);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--red)">
+              <strong>Rules expire: June 19, 2026</strong> — Update immediately!
+            </div>
+            <a href="https://console.firebase.google.com/project/sukoon-homes/firestore/rules" target="_blank" class="btn btn-red btn-sm">Update Firebase Rules →</a>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-head"><div class="table-head-title">Recent Submissions</div><button type="button" class="btn btn-ghost btn-sm" onclick="showTab('submissions')">View All →</button></div>
+          <table><thead><tr><th>Room Name</th><th>City</th><th>SKU</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody id="dash-recent-subs"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px">Loading...</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <!-- ======== ANALYTICS ======== -->
+      <div class="tab-panel" id="tab-analytics">
+        <div class="analytics-grid">
+          <div class="analytics-card"><div class="analytics-title">Total Rooms</div><div class="analytics-val" id="an-rooms">—</div><div class="analytics-sub">Daily + Long Stay</div></div>
+          <div class="analytics-card"><div class="analytics-title">Total Clicks</div><div class="analytics-val" id="an-clicks">—</div><div class="analytics-sub">All-time WhatsApp clicks</div></div>
+          <div class="analytics-card"><div class="analytics-title">Total Enquiries</div><div class="analytics-val" id="an-enqs">—</div><div class="analytics-sub">Contact form submissions</div></div>
+          <div class="analytics-card"><div class="analytics-title">Reviews</div><div class="analytics-val" id="an-revs">—</div><div class="analytics-sub">Approved reviews</div></div>
+          <div class="analytics-card"><div class="analytics-title">Avg Rating</div><div class="analytics-val" id="an-avg">—</div><div class="analytics-sub">⭐ out of 5</div></div>
+          <div class="analytics-card"><div class="analytics-title">Blog Posts</div><div class="analytics-val" id="an-blogs">—</div><div class="analytics-sub">Published posts</div></div>
+        </div>
+        <div class="form-card">
+          <h3>🏆 Top Rooms by Clicks</h3>
+          <div class="bar-chart" id="top-rooms-chart"><div style="color:var(--muted);font-size:12px">Loading...</div></div>
+        </div>
+        <div class="form-card">
+          <h3>🏙️ Rooms by City</h3>
+          <div class="bar-chart" id="city-chart"><div style="color:var(--muted);font-size:12px">Loading...</div></div>
+        </div>
+        <div class="form-card">
+          <h3>📊 Microsoft Clarity</h3>
+          <div id="clarity-embed" style="font-size:12px;color:var(--muted)">Clarity ID not set. Add it in Site Editor → Integrations.</div>
+          <a id="clarity-link" href="https://clarity.microsoft.com" target="_blank" class="btn btn-blue btn-sm" style="margin-top:10px">Open Clarity Dashboard →</a>
+        </div>
+      </div>
+
+      <!-- ======== SUBMISSIONS ======== -->
+      <div class="tab-panel" id="tab-submissions">
+        <div class="table-card">
+          <div class="table-head">
+            <div class="table-head-title">Room Submissions</div>
+            <input type="text" class="table-search" placeholder="Search submissions..." oninput="filterTable('subs-tbody',this.value)"/>
+          </div>
+          <table><thead><tr><th>Photo</th><th>Name</th><th>SKU</th><th>City</th><th>Price</th><th>Type</th><th>Phone</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="subs-tbody"><tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">Loading...</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <!-- ======== DAILY ROOMS ======== -->
+      <div class="tab-panel" id="tab-daily-rooms">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+          <button type="button" class="btn btn-green" onclick="openAddRoomModal('daily')">➕ Add Room</button>
+          <button type="button" class="btn" style="background:#c9963a;color:#fff;" onclick="bulkAddDemo()">🚀 Add 24 Demo Rooms</button>
+        </div>
+        <div class="table-card">
+          <div class="table-head">
+            <div class="table-head-title">Daily Rooms</div>
+            <input type="text" class="table-search" placeholder="Search by name, SKU, city..." oninput="filterTable('daily-tbody',this.value)"/>
+          </div>
+          <table><thead><tr><th>Photo</th><th>Name</th><th>SKU</th><th>City</th><th>Price/Night</th><th>Status</th><th>Clicks</th><th>Featured</th><th>Actions</th></tr></thead>
+          <tbody id="daily-tbody"><tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">Loading...</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <!-- ======== LONG ROOMS ======== -->
+      <div class="tab-panel" id="tab-long-rooms">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+          <button type="button" class="btn btn-green" onclick="openAddRoomModal('long')">➕ Add Room</button>
+        </div>
+        <div class="table-card">
+          <div class="table-head">
+            <div class="table-head-title">Long Stay Rooms</div>
+            <input type="text" class="table-search" placeholder="Search by name, SKU, city..." oninput="filterTable('long-tbody',this.value)"/>
+          </div>
+          <table><thead><tr><th>Photo</th><th>Name</th><th>SKU</th><th>City</th><th>Price/Month</th><th>Status</th><th>Clicks</th><th>Featured</th><th>Actions</th></tr></thead>
+          <tbody id="long-tbody"><tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">Loading...</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <!-- ======== SKU SEARCH ======== -->
+      <div class="tab-panel" id="tab-sku-search">
+        <div class="form-card">
+          <h3>🔗 Generate URL Slugs</h3>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Generate clean URL slugs for all existing rooms. Only needs to be done once.</p>
+          <button type="button" class="btn btn-green" onclick="generateAllSlugs()">⚡ Generate Slugs for All Rooms</button>
+          <div id="slug-result" style="margin-top:12px;font-size:13px"></div>
+        </div>
+        <div class="form-card">
+          <h3>🔍 SKU Search</h3>
+          <div class="sku-search-wrap">
+            <input class="sku-input" id="sku-q" type="text" placeholder="Enter SKU code (e.g. SKU-001)..." onkeydown="if(event.key==='Enter')doSKUSearch()"/>
+            <button type="button" class="btn btn-green" onclick="doSKUSearch()">Search →</button>
+          </div>
+          <div class="sku-result" id="sku-result"></div>
+        </div>
+        <div class="form-card">
+          <h3>📊 Top Rooms by SKU Clicks</h3>
+          <div id="sku-clicks-list"><div style="color:var(--muted);font-size:12px">Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ======== FEEDBACK / REVIEWS ======== -->
+      <div class="tab-panel" id="tab-feedback-admin">
+        <div class="table-card">
+          <div class="table-head">
+            <div class="table-head-title">Reviews</div>
+            <div style="display:flex;gap:8px">
+              <select class="table-search" style="width:120px" onchange="filterReviews(this.value)">
+                <option value="">All</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+              </select>
+            </div>
+          </div>
+          <table><thead><tr><th>Name</th><th>Stars</th><th>Review</th><th>City</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="reviews-tbody"><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">Loading...</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <!-- ======== ENQUIRIES ======== -->
+      <div class="tab-panel" id="tab-enquiries">
+        <div class="enq-tabs">
+          <button type="button" class="enq-tab active" onclick="filterEnquiries('unread',this)">Unread <span class="enq-count" id="unread-count">0</span></button>
+          <button type="button" class="enq-tab" onclick="filterEnquiries('read',this)">Read</button>
+          <button type="button" class="enq-tab" onclick="filterEnquiries('solved',this)">Solved</button>
+          <button type="button" class="enq-tab" onclick="filterEnquiries('all',this)">All</button>
+        </div>
+        <div class="table-card">
+          <div class="table-head">
+            <div class="table-head-title">Enquiries</div>
+            <input type="text" class="table-search" placeholder="Search..." oninput="filterTable('enq-tbody',this.value)"/>
+          </div>
+          <table><thead><tr><th>Name</th><th>Phone</th><th>City</th><th>Type</th><th>Budget</th><th>Message</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="enq-tbody"><tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">Loading...</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <!-- ======== BLOG ADMIN ======== -->
+      <div class="tab-panel" id="tab-blog-admin">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+          <button type="button" class="btn btn-green" onclick="openBlogModal()">➕ New Post</button>
+        </div>
+        <div class="table-card">
+          <div class="table-head"><div class="table-head-title">Blog Posts</div></div>
+          <table><thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Published</th><th>Rating</th><th>Actions</th></tr></thead>
+          <tbody id="blog-tbody"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">Loading...</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <!-- ======== SITE EDITOR ======== -->
+      <div class="tab-panel" id="tab-site-editor">
+        <div class="inner-tabs">
+          <button type="button" class="inner-tab active" onclick="showEditorTab('general',this)">General</button>
+          <button type="button" class="inner-tab" onclick="showEditorTab('hero',this)">Hero</button>
+          <button type="button" class="inner-tab" onclick="showEditorTab('pages',this)">Pages</button>
+          <button type="button" class="inner-tab" onclick="showEditorTab('integrations',this)">Integrations</button>
+          <button type="button" class="inner-tab" onclick="showEditorTab('history',this)">History</button>
+        </div>
+
+        <!-- GENERAL -->
+        <div id="editor-general">
+          <div class="form-card">
+            <h3>🏠 Site Settings</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Site Name</label><input class="form-control" id="set-siteName" type="text" placeholder="Sukoon Homes"/></div>
+              <div class="form-group"><label>WhatsApp Number</label><input class="form-control" id="set-phone" type="text" placeholder="966541873266"/></div>
+              <div class="form-group"><label>Primary Green Color</label><input class="form-control" id="set-colorGreen" type="color" value="#0d4a2f"/></div>
+              <div class="form-group"><label>Gold Accent Color</label><input class="form-control" id="set-colorGold" type="color" value="#c9963a"/></div>
+              <div class="form-group"><label>Working Days 1</label><input class="form-control" id="set-workingDays1" type="text" placeholder="Sat — Thu"/></div>
+              <div class="form-group"><label>Working Hours 1</label><input class="form-control" id="set-workingHours1" type="text" placeholder="8:00 AM — 10:00 PM"/></div>
+              <div class="form-group"><label>Working Days 2</label><input class="form-control" id="set-workingDays2" type="text" placeholder="Friday"/></div>
+              <div class="form-group"><label>Working Hours 2</label><input class="form-control" id="set-workingHours2" type="text" placeholder="2:00 PM — 10:00 PM"/></div>
+              <div class="form-group"><label>Founded Year</label><input class="form-control" id="set-foundedYear" type="text" placeholder="2025"/></div>
+              <div class="form-group"><label>Total Cities</label><input class="form-control" id="set-totalCities" type="text" placeholder="18+"/></div>
+            </div>
+            <button type="button" class="btn btn-green" onclick="saveSettings()">💾 Save Settings</button>
+          </div>
+        </div>
+
+        <!-- HERO -->
+        <div id="editor-hero" style="display:none">
+          <div class="form-card">
+            <h3>🖼️ Hero Section</h3>
+            <div class="form-group"><label>Hero Background Image URL</label><input class="form-control" id="set-heroImage" type="text" placeholder="https://..."/></div>
+            <div class="form-grid">
+              <div class="form-group"><label>Hero Title (EN)</label><input class="form-control" id="set-heroTitle" type="text" placeholder="Find Your Space, Sleep in Peace"/></div>
+              <div class="form-group"><label>Hero Title (AR)</label><input class="form-control" id="set-heroTitleAr" type="text" placeholder="اعثر على مكانك، نَم بسلام"/></div>
+              <div class="form-group"><label>Hero Description (EN)</label><textarea class="form-control" id="set-heroDesc" placeholder="Verified rooms across Saudi Arabia..."></textarea></div>
+              <div class="form-group"><label>Hero Description (AR)</label><textarea class="form-control" id="set-heroDescAr" placeholder="غرف موثقة في جميع أنحاء المملكة..."></textarea></div>
+              <div class="form-group"><label>Reviews Section Heading</label><input class="form-control" id="set-reviewsHeading" type="text" placeholder="Real Reviews"/></div>
+            </div>
+            <button type="button" class="btn btn-green" onclick="saveSettings()">💾 Save Hero</button>
+          </div>
+        </div>
+
+        <!-- PAGES CONTENT -->
+        <div id="editor-pages" style="display:none">
+          <div class="form-card">
+            <h3>📄 Pages Content</h3>
+            <div class="form-group"><label>About Us Content (EN)</label><textarea class="form-control" id="set-aboutContent" rows="4" placeholder="About Sukoon Homes..."></textarea></div>
+            <div class="form-group"><label>About Us Content (AR)</label><textarea class="form-control" id="set-aboutContentAr" rows="4" placeholder="عن سكون هومز..."></textarea></div>
+            <div class="form-group"><label>Mission Statement (EN)</label><textarea class="form-control" id="set-missionContent" rows="3" placeholder="Our mission..."></textarea></div>
+            <div class="form-group"><label>Terms & Conditions Content</label><textarea class="form-control" id="set-termsContent" rows="5" placeholder="Terms content..."></textarea></div>
+            <div class="form-group"><label>Privacy Policy Content</label><textarea class="form-control" id="set-privacyContent" rows="5" placeholder="Privacy content..."></textarea></div>
+            <button type="button" class="btn btn-gold" onclick="previewChanges()">👁️ Preview First</button>
+            <button type="button" class="btn btn-green" style="margin-left:8px" onclick="saveSettings()">💾 Save & Publish</button>
+          </div>
+        </div>
+
+        <!-- INTEGRATIONS -->
+        <div id="editor-integrations" style="display:none">
+          <div class="form-card">
+            <h3>🔗 Integrations</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Microsoft Clarity ID</label><input class="form-control" id="set-clarityId" type="text" placeholder="xxxxxxxxxx"/></div>
+              <div class="form-group"><label>Google Analytics ID</label><input class="form-control" id="set-gaId" type="text" placeholder="G-XXXXXXXXXX"/></div>
+            </div>
+            <button type="button" class="btn btn-green" onclick="saveSettings()">💾 Save Integrations</button>
+          </div>
+        </div>
+
+        <!-- HISTORY / BACKUP -->
+        <div id="editor-history" style="display:none">
+          <div class="form-card">
+            <h3>🕐 Settings History & Backup</h3>
+            <div style="display:flex;gap:8px;margin-bottom:14px">
+              <button type="button" class="btn btn-blue" onclick="exportSettings()">📥 Export Backup (JSON)</button>
+              <button type="button" class="btn btn-ghost" onclick="document.getElementById('import-backup').click()">📤 Import Backup</button>
+              <input type="file" id="import-backup" accept=".json" style="display:none" onchange="importSettings(event)"/>
+            </div>
+            <div class="editor-history" id="settings-history">
+              <div style="font-size:12px;color:var(--muted)">Loading history...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======== CODE SNIPPETS ======== -->
+      <div class="tab-panel" id="tab-snippets">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+          <button type="button" class="btn btn-green" onclick="openSnippetModal()">➕ Add Snippet</button>
+        </div>
+        <div class="form-card">
+          <h3>{'</>'} Code Snippets</h3>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Inject HTML/CSS/JS into head or body of any page. Useful for tracking, chat widgets, etc.</p>
+          <div id="snippets-list"><div style="color:var(--muted);font-size:12px">Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ======== PAYMENT GATEWAYS ======== -->
+      <div class="tab-panel" id="tab-payments">
+        <div class="form-card">
+          <h3>💳 Payment Gateway Settings</h3>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:18px">Configure payment gateways for future booking integration.</p>
+
+          <!-- MOYASAR -->
+          <div class="gateway-card">
+            <div class="gateway-header">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="gateway-logo">💳</div>
+                <div><div class="gateway-name">Moyasar</div><div style="font-size:11px;color:var(--muted)">Saudi Arabia's leading payment gateway</div></div>
+              </div>
+              <label class="toggle"><input type="checkbox" id="gw-moyasar-active"/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="form-grid">
+              <div class="form-group"><label>Publishable Key</label><input class="form-control" id="gw-moyasar-pub" type="text" placeholder="pk_live_..."/></div>
+              <div class="form-group"><label>Secret Key</label><input class="form-control" id="gw-moyasar-sec" type="password" placeholder="sk_live_..."/></div>
+            </div>
+          </div>
+
+          <!-- TABBY -->
+          <div class="gateway-card">
+            <div class="gateway-header">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="gateway-logo">🛍️</div>
+                <div><div class="gateway-name">Tabby</div><div style="font-size:11px;color:var(--muted)">Buy now, pay later — 4 installments</div></div>
+              </div>
+              <label class="toggle"><input type="checkbox" id="gw-tabby-active"/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="form-grid">
+              <div class="form-group"><label>Public Key</label><input class="form-control" id="gw-tabby-pub" type="text" placeholder="pk_..."/></div>
+              <div class="form-group"><label>Merchant Code</label><input class="form-control" id="gw-tabby-merchant" type="text" placeholder="sukoon_homes"/></div>
+            </div>
+          </div>
+
+          <!-- TAMARA -->
+          <div class="gateway-card">
+            <div class="gateway-header">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="gateway-logo">💰</div>
+                <div><div class="gateway-name">Tamara</div><div style="font-size:11px;color:var(--muted)">Split payments — 3 or 6 months</div></div>
+              </div>
+              <label class="toggle"><input type="checkbox" id="gw-tamara-active"/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="form-grid">
+              <div class="form-group"><label>API Token</label><input class="form-control" id="gw-tamara-token" type="password" placeholder="Token..."/></div>
+              <div class="form-group"><label>Notification Key</label><input class="form-control" id="gw-tamara-notif" type="text" placeholder="..."/></div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-green" onclick="savePaymentSettings()">💾 Save Payment Settings</button>
+        </div>
+      </div>
+
+      <!-- ======== USERS / TEAM ======== -->
+      <div class="tab-panel" id="tab-users">
+        <div class="form-card" id="users-superadmin-only" style="display:none">
+          <h3>👑 Add Team Member</h3>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Enter their email — a Magic Link will be sent for them to login.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+            <div class="form-group" style="flex:1;min-width:200px;margin-bottom:0">
+              <label>Email Address</label>
+              <input class="form-control" id="new-user-email" type="email" placeholder="staff@example.com"/>
+            </div>
+            <div class="form-group" style="min-width:130px;margin-bottom:0">
+              <label>Role</label>
+              <select class="form-control" id="new-user-role">
+                <option value="staff">Staff</option>
+                <option value="superadmin">Super Admin</option>
+              </select>
+            </div>
+            <button type="button" class="btn btn-green" onclick="addTeamUser()" style="height:38px">➕ Add &amp; Send Link</button>
+          </div>
+          <div id="add-user-msg" style="margin-top:10px;font-size:12px"></div>
+        </div>
+
+        <div class="form-card">
+          <h3>👥 Team Members</h3>
+          <div id="users-list"><div style="color:var(--muted);font-size:12px">Loading...</div></div>
+        </div>
+
+        <div class="form-card" style="background:var(--gold-pale);border-color:var(--gold)">
+          <h3 style="color:var(--gold)">🔐 Role Permissions</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px">
+            <div>
+              <div style="font-size:12px;font-weight:600;margin-bottom:8px">👑 Super Admin</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.8">
+                ✅ Dashboard &amp; Analytics<br>
+                ✅ All Rooms (edit/delete)<br>
+                ✅ Submissions (approve)<br>
+                ✅ Reviews &amp; Enquiries<br>
+                ✅ Blog Posts<br>
+                ✅ Site Editor<br>
+                ✅ Team Users Management<br>
+                ✅ Payment Settings
+              </div>
+            </div>
+            <div>
+              <div style="font-size:12px;font-weight:600;margin-bottom:8px">🟢 Staff</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.8">
+                ✅ Dashboard (view only)<br>
+                ✅ Submissions (approve/reject)<br>
+                ✅ Reviews (approve/delete)<br>
+                ✅ Enquiries (view/update)<br>
+                ❌ Rooms edit/delete<br>
+                ❌ Blog Posts<br>
+                ❌ Site Editor<br>
+                ❌ Team Users<br>
+                ❌ Payment Settings
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content-area -->
+  </div><!-- /main-area -->
+</div><!-- /admin-wrap -->
+
+<!-- MODALS -->
+<!-- ROOM EDIT MODAL -->
+<div class="modal-overlay" id="room-modal">
+  <div class="modal-box">
+    <button type="button" class="modal-close-btn" onclick="closeModal('room-modal')">✕</button>
+    <div class="modal-title" id="room-modal-title">Edit Room</div>
+    <input type="hidden" id="rm-id"/><input type="hidden" id="rm-collection"/>
+    <div class="form-grid">
+      <div class="form-group"><label>Name (EN) *</label><input class="form-control" id="rm-name" type="text"/></div>
+      <div class="form-group"><label>Name (AR)</label><input class="form-control" id="rm-name-ar" type="text" style="direction:rtl"/></div>
+      <div class="form-group"><label>SKU *</label><input class="form-control" id="rm-sku" type="text" placeholder="SKU-001"/></div>
+      <div class="form-group"><label>Type</label>
+        <select class="form-control" id="rm-type">
+          <option>Single Room</option><option>Sharing Room</option><option>Bed Space</option><option>Studio</option><option>Family Apartment</option><option>Full Flat</option>
+        </select>
+      </div>
+      <div class="form-group"><label>City *</label>
+        <select class="form-control" id="rm-city">
+          <option>Riyadh</option><option>Jeddah</option><option>Dammam</option><option>Makkah</option><option>Madinah</option><option>Khobar</option><option>Tabuk</option><option>Abha</option><option>Buraydah</option><option>Hail</option><option>Taif</option><option>Najran</option><option>Jizan</option><option>Al Ahsa</option><option>Yanbu</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group"><label>District</label><input class="form-control" id="rm-district" type="text"/></div>
+      <div class="form-group"><label>Price (SAR) *</label><input class="form-control" id="rm-price" type="number"/></div>
+      <div class="form-group"><label>Phone</label><input class="form-control" id="rm-phone" type="text"/></div>
+      <div class="form-group"><label>Status</label>
+        <select class="form-control" id="rm-status"><option>Available</option><option>Booked</option></select>
+      </div>
+      <div class="form-group"><label>Rating (1-5)</label><input class="form-control" id="rm-rating" type="number" min="1" max="5"/></div>
+    </div>
+    <div class="form-group"><label>Image URL</label><input class="form-control" id="rm-img" type="text" placeholder="https://..."/></div>
+    <div class="form-group"><label>Description (EN)</label><textarea class="form-control" id="rm-desc"></textarea></div>
+    <div class="form-group"><label>Description (AR)</label><textarea class="form-control" id="rm-desc-ar" style="direction:rtl"></textarea></div>
+    <div class="form-group"><label>Amenities (comma-separated)</label><input class="form-control" id="rm-amenities" type="text" placeholder="WiFi, AC, Parking"/></div>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px">
+      <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;cursor:pointer">
+        <label class="toggle"><input type="checkbox" id="rm-published"/><span class="toggle-slider"></span></label>
+        Published
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;cursor:pointer">
+        <label class="toggle"><input type="checkbox" id="rm-verified"/><span class="toggle-slider"></span></label>
+        Verified ✅
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;cursor:pointer">
+        <label class="toggle"><input type="checkbox" id="rm-featured"/><span class="toggle-slider"></span></label>
+        Featured ⭐ (Sponsored)
+      </label>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button type="button" class="btn btn-green" onclick="saveRoom()">💾 Save Room</button>
+      <button type="button" class="btn btn-ghost" onclick="closeModal('room-modal')">Cancel</button>
+      <button type="button" class="btn btn-red" id="rm-delete-btn" onclick="deleteRoom()" style="margin-left:auto">🗑️ Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- SNIPPET MODAL -->
+<div class="modal-overlay" id="snippet-modal">
+  <div class="modal-box">
+    <button type="button" class="modal-close-btn" onclick="closeModal('snippet-modal')">✕</button>
+    <div class="modal-title">Code Snippet</div>
+    <input type="hidden" id="sn-id"/>
+    <div class="form-group"><label>Name / Label</label><input class="form-control" id="sn-name" type="text" placeholder="e.g. Google Analytics"/></div>
+    <div class="form-group"><label>Inject Position</label>
+      <select class="form-control" id="sn-position">
+        <option value="head">Head (&lt;head&gt;)</option>
+        <option value="body">Body (before &lt;/body&gt;)</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Pages (comma-separated or "all")</label>
+      <input class="form-control" id="sn-pages" type="text" placeholder="all — or — index.html, rooms-daily.html"/>
+    </div>
+    <div class="form-group"><label>Status</label>
+      <select class="form-control" id="sn-status">
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Code (HTML/JS/CSS)</label><textarea class="form-control" id="sn-code" rows="6" placeholder="&lt;script&gt;...&lt;/script&gt;" style="font-family:monospace;font-size:12px"></textarea></div>
+    <div style="display:flex;gap:8px">
+      <button type="button" class="btn btn-green" onclick="saveSnippet()">💾 Save Snippet</button>
+      <button type="button" class="btn btn-ghost" onclick="closeModal('snippet-modal')">Cancel</button>
+      <button type="button" class="btn btn-red" id="sn-delete-btn" onclick="deleteSnippet()" style="display:none;margin-left:auto">🗑️ Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- BLOG MODAL -->
+<div class="modal-overlay" id="blog-modal">
+  <div class="modal-box">
+    <button type="button" class="modal-close-btn" onclick="closeModal('blog-modal')">✕</button>
+    <div class="modal-title">Blog Post</div>
+    <input type="hidden" id="bl-id"/>
+    <div class="form-grid">
+      <div class="form-group"><label>Title (EN) *</label><input class="form-control" id="bl-title" type="text"/></div>
+      <div class="form-group"><label>Title (AR)</label><input class="form-control" id="bl-title-ar" type="text" style="direction:rtl"/></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>Excerpt (EN)</label><textarea class="form-control" id="bl-excerpt" rows="2"></textarea></div>
+      <div class="form-group"><label>Excerpt (AR)</label><textarea class="form-control" id="bl-excerpt-ar" rows="2" style="direction:rtl"></textarea></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>Content (EN)</label><textarea class="form-control" id="bl-content" rows="5"></textarea></div>
+      <div class="form-group"><label>Content (AR)</label><textarea class="form-control" id="bl-content-ar" rows="5" style="direction:rtl"></textarea></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>Category</label><input class="form-control" id="bl-cat" type="text" placeholder="Tips, Guide, News..."/></div>
+      <div class="form-group"><label>Image URL</label><input class="form-control" id="bl-img" type="text"/></div>
+    </div>
+    <div class="form-group"><label>Date</label><input class="form-control" id="bl-date" type="date"/></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+      <label class="toggle"><input type="checkbox" id="bl-published"/><span class="toggle-slider"></span></label>
+      <span style="font-size:12px;font-weight:500">Published</span>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button type="button" class="btn btn-green" onclick="saveBlogPost()">💾 Save Post</button>
+      <button type="button" class="btn btn-ghost" onclick="closeModal('blog-modal')">Cancel</button>
+      <button type="button" class="btn btn-red" id="bl-delete-btn" onclick="deleteBlogPost()" style="display:none;margin-left:auto">🗑️ Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUKOON AI SIDEKICK -->
+<style>
+/* AI SIDEKICK */
+.ai-fab{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#0d4a2f,#1a7a4a);border:none;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:1000;box-shadow:0 4px 20px rgba(13,74,47,.4);transition:transform .2s;}
+.ai-fab.visible{display:flex;}
+.ai-fab:hover{transform:scale(1.08);}
+.ai-fab svg{width:26px;height:26px;color:#fff;}
+.ai-fab .ai-pulse{position:absolute;top:0;right:0;width:12px;height:12px;background:#2eaa6a;border-radius:50%;border:2px solid #fff;}
+
+.ai-panel{position:fixed;bottom:88px;right:24px;width:380px;max-width:calc(100vw - 32px);height:560px;max-height:calc(100vh - 110px);background:#fff;border-radius:20px;box-shadow:0 8px 40px rgba(13,74,47,.18);border:1px solid var(--border);display:none;flex-direction:column;z-index:999;overflow:hidden;}
+.ai-panel.open{display:flex;}
+
+.ai-header{background:linear-gradient(135deg,#0d4a2f,#1a7a4a);padding:16px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ai-avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ai-avatar svg{width:20px;height:20px;color:#fff;}
+.ai-header-info{flex:1;}
+.ai-header-name{font-size:14px;font-weight:600;color:#fff;}
+.ai-header-status{font-size:11px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:4px;}
+.ai-status-dot{width:6px;height:6px;border-radius:50%;background:#2eaa6a;display:inline-block;}
+.ai-close{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.7);padding:4px;}
+.ai-close svg{width:18px;height:18px;}
+
+.ai-quick-btns{padding:12px 14px;display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--border);flex-shrink:0;background:#f9fdfb;}
+.ai-quick-btn{background:#fff;border:1px solid var(--border);border-radius:20px;padding:5px 10px;font-size:11px;cursor:pointer;color:var(--text);white-space:nowrap;transition:all .15s;font-family:inherit;}
+.ai-quick-btn:hover{background:var(--green-pale);border-color:var(--green-soft);color:var(--green);}
+
+.ai-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.ai-msg{max-width:88%;line-height:1.5;}
+.ai-msg.bot{align-self:flex-start;}
+.ai-msg.user{align-self:flex-end;}
+.ai-msg-bubble{padding:10px 13px;border-radius:14px;font-size:13px;}
+.ai-msg.bot .ai-msg-bubble{background:var(--green-pale);color:var(--text);border-bottom-left-radius:4px;}
+.ai-msg.user .ai-msg-bubble{background:var(--green-mid);color:#fff;border-bottom-right-radius:4px;}
+.ai-msg-time{font-size:10px;color:var(--muted);margin-top:3px;padding:0 4px;}
+.ai-msg.user .ai-msg-time{text-align:right;}
+
+.ai-typing{align-self:flex-start;padding:10px 13px;background:var(--green-pale);border-radius:14px;border-bottom-left-radius:4px;display:none;}
+.ai-typing span{display:inline-block;width:6px;height:6px;background:var(--green-mid);border-radius:50%;animation:typing .8s infinite;margin:0 2px;}
+.ai-typing span:nth-child(2){animation-delay:.15s;}
+.ai-typing span:nth-child(3){animation-delay:.3s;}
+@keyframes typing{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+.ai-input-area{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;background:#fff;}
+.ai-input{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:13px;outline:none;font-family:inherit;resize:none;max-height:80px;}
+.ai-input:focus{border-color:var(--green-soft);}
+.ai-send{width:36px;height:36px;border-radius:50%;background:var(--green-mid);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;}
+.ai-send:hover{background:var(--green);}
+.ai-send svg{width:16px;height:16px;color:#fff;}
+
+.ai-alert{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:8px 10px;font-size:11px;color:#856404;margin-bottom:4px;}
+.ai-alert.danger{background:#fdecea;border-color:var(--red);color:var(--red);}
+.ai-alert.success{background:var(--green-pale);border-color:var(--green-soft);color:var(--green);}
+
+@media(max-width:768px){
+  .ai-panel{width:calc(100vw - 24px);right:12px;bottom:80px;}
+  .ai-fab{bottom:16px;right:16px;}
+}
+</style>
+
+<!-- AI FAB BUTTON -->
+<button class="ai-fab" id="ai-fab" onclick="toggleAI()" title="Sukoon AI">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/><circle cx="9" cy="14" r="1" fill="currentColor"/><circle cx="15" cy="14" r="1" fill="currentColor"/></svg>
+  <div class="ai-pulse"></div>
+</button>
+
+<!-- AI PANEL -->
+<div class="ai-panel" id="ai-panel">
+  <div class="ai-header">
+    <div class="ai-avatar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/><circle cx="9" cy="14" r="1" fill="currentColor"/><circle cx="15" cy="14" r="1" fill="currentColor"/></svg>
+    </div>
+    <div class="ai-header-info">
+      <div class="ai-header-name">Sukoon AI</div>
+      <div class="ai-header-status"><span class="ai-status-dot"></span> Online — Site data loaded</div>
+    </div>
+    <button class="ai-close" onclick="toggleAI()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="ai-quick-btns" id="ai-quick-btns">
+    <button class="ai-quick-btn" onclick="aiQuick('audit')">🔍 Full Audit</button>
+    <button class="ai-quick-btn" onclick="aiQuick('complaints')">⚠️ Complaints</button>
+    <button class="ai-quick-btn" onclick="aiQuick('security')">🔒 Security Check</button>
+    <button class="ai-quick-btn" onclick="aiQuick('stats')">📊 Stats</button>
+    <button class="ai-quick-btn" onclick="aiQuick('lowrating')">⭐ Low Ratings</button>
+    <button class="ai-quick-btn" onclick="aiQuick('pending')">📋 Pending</button>
+  </div>
+
+  <div class="ai-messages" id="ai-messages">
+    <div class="ai-msg bot">
+      <div class="ai-msg-bubble">👋 Hi! I'm <strong>Sukoon AI</strong> — your site assistant.<br><br>I can analyze your rooms, reviews, enquiries, detect complaints and security issues.<br><br>Ask me anything about your site! 🏠</div>
+      <div class="ai-msg-time">Just now</div>
+    </div>
+    <div class="ai-typing" id="ai-typing"><span></span><span></span><span></span></div>
+  </div>
+
+  <div class="ai-input-area">
+    <textarea class="ai-input" id="ai-input" placeholder="Ask anything... (English / മലയാളം)" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend()}" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+    <button class="ai-send" onclick="aiSend()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, collection, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const FC={apiKey:"AIzaSyDAOPIT2TtKtxyHCi3Sg2WapIDhvfk1jlo",authDomain:"sukoon-homes.firebaseapp.com",projectId:"sukoon-homes",storageBucket:"sukoon-homes.firebasestorage.app",messagingSenderId:"351838802115",appId:"1:351838802115:web:207c60810ebe0930c65276"};
+const app=initializeApp(FC);const db=getFirestore(app);const auth=getAuth(app);
+
+// ============ CURRENT USER STATE ============
+let currentUser=null;
+let currentRole=''; // 'superadmin' or 'staff'
+
+// ============ MOBILE SIDEBAR ============
+window.openSidebar=function(){
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('mob-overlay').classList.add('open');
+};
+window.closeSidebar=function(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('mob-overlay').classList.remove('open');
+};
+
+// ============ MAGIC LINK SEND ============
+const ACTION_CODE_SETTINGS={
+  url: 'https://www.sukoonhomesksa.com/sukoon-admin.html',
+  handleCodeInApp: true
+};
+
+window.sendMagicLink=async function(){
+  const email=document.getElementById('login-email').value.trim();
+  const err=document.getElementById('login-err');
+  const btn=document.getElementById('magic-btn');
+  if(!email||!email.includes('@')){err.style.display='block';err.textContent='❌ Please enter a valid email';return;}
+  err.style.display='none';
+
+  // Check if email is allowed
+  try{
+    const snap=await getDocs(query(collection(db,'adminUsers'),where('email','==',email)));
+    if(snap.empty){
+      err.style.display='block';
+      err.textContent='❌ This email does not have admin access';
+      return;
+    }
+  }catch(e){console.error(e);}
+
+  btn.disabled=true;btn.textContent='Sending...';
+  try{
+    await sendSignInLinkToEmail(auth,email,ACTION_CODE_SETTINGS);
+    localStorage.setItem('sh_magic_email',email);
+    document.getElementById('step-email').classList.remove('active');
+    document.getElementById('step-sent').classList.add('active');
+    document.getElementById('sent-email-display').textContent=email;
+  }catch(e){
+    err.style.display='block';
+    err.textContent='❌ Error: '+e.message;
+    btn.disabled=false;btn.textContent='Send Magic Link →';
+  }
+};
+
+window.resendMagicLink=async function(){
+  const email=localStorage.getItem('sh_magic_email');
+  if(!email)return;
+  try{await sendSignInLinkToEmail(auth,email,ACTION_CODE_SETTINGS);toast('✅ Link resent!');}
+  catch(e){toast('❌ Error sending link','error');}
+};
+
+window.backToEmail=function(){
+  document.getElementById('step-sent').classList.remove('active');
+  document.getElementById('step-email').classList.add('active');
+};
+
+// ============ MAGIC LINK VERIFY (on page load) ============
+if(isSignInWithEmailLink(auth,window.location.href)){
+  document.getElementById('login-wrap').style.display='flex';
+  document.getElementById('step-email').classList.remove('active');
+  document.getElementById('step-verify').classList.add('active');
+
+  let email=localStorage.getItem('sh_magic_email');
+  if(!email){email=window.prompt('Confirm your email:');}
+  if(email){
+    signInWithEmailLink(auth,email,window.location.href)
+      .then(()=>{
+        localStorage.removeItem('sh_magic_email');
+        // Clean URL
+        window.history.replaceState({},'',window.location.pathname);
+      })
+      .catch(e=>{
+        const err=document.getElementById('login-err-global');
+        err.style.display='block';
+        err.textContent='❌ Link invalid or expired. Try again.';
+        document.getElementById('step-verify').classList.remove('active');
+        document.getElementById('step-email').classList.add('active');
+      });
+  }
+}
+
+// ============ AUTH STATE LISTENER ============
+onAuthStateChanged(auth,async(user)=>{
+  if(user){
+    // Check user in adminUsers collection
+    try{
+      const snap=await getDocs(query(collection(db,'adminUsers'),where('email','==',user.email)));
+      if(snap.empty){
+        // Not authorized
+        await signOut(auth);
+        showErr('❌ Access denied. Contact superadmin.');
+        return;
+      }
+      const userData=snap.docs[0].data();
+      currentUser=user;
+      currentRole=userData.role||'staff';
+
+      // Show admin panel
+      document.getElementById('login-wrap').style.display='none';
+      document.getElementById('admin-wrap').classList.add('show');
+
+      // Topbar user info
+      const tu=document.getElementById('topbar-user');
+      if(tu){tu.style.display='inline';tu.textContent=user.email.split('@')[0]+' ('+currentRole+')';}
+
+      // Apply role restrictions
+      applyRoleRestrictions();
+      initAdmin();
+    }catch(e){
+      showErr('❌ Error: '+e.message);
+    }
+  } else {
+    // Not logged in — show login
+    if(!isSignInWithEmailLink(auth,window.location.href)){
+      document.getElementById('login-wrap').style.display='flex';
+      document.getElementById('admin-wrap').classList.remove('show');
+    }
+  }
+});
+
+function showErr(msg){
+  const e=document.getElementById('login-err-global');
+  if(e){e.style.display='block';e.textContent=msg;}
+}
+
+// ============ ROLE RESTRICTIONS ============
+function applyRoleRestrictions(){
+  if(currentRole==='staff'){
+    // Hide superadmin-only nav items
+    const staffHideTabs=['site-editor','snippets','payments','blog-admin','daily-rooms','long-rooms','sku-search','analytics'];
+    document.querySelectorAll('.nav-item').forEach(item=>{
+      const onclick=item.getAttribute('onclick')||'';
+      staffHideTabs.forEach(t=>{
+        if(onclick.includes("'"+t+"'")){item.style.display='none';}
+      });
+    });
+    // Hide nav sections if all items hidden
+    document.querySelectorAll('.nav-section').forEach(sec=>{
+      let next=sec.nextElementSibling;
+      let allHidden=true;
+      while(next&&!next.classList.contains('nav-section')){
+        if(next.style.display!=='none')allHidden=false;
+        next=next.nextElementSibling;
+      }
+      if(allHidden)sec.style.display='none';
+    });
+    // Hide users management add form (staff can't add users)
+    const usersOnlyAdmin=document.getElementById('nav-users');
+    // Staff can see team tab but read-only
+  }
+  if(currentRole==='superadmin'){
+    document.getElementById('users-superadmin-only').style.display='block';
+  }
+}
+
+// ============ LOGOUT ============
+window.doLogout=async function(){
+  await signOut(auth);
+  currentUser=null;currentRole='';
+  location.reload();
+};
+
+// ============ SHOW TAB (with role check) ============
+window.showTab=function(tab){
+  // Staff restricted tabs
+  const staffBlocked=['site-editor','snippets','payments','blog-admin','daily-rooms','long-rooms','sku-search'];
+  if(currentRole==='staff'&&staffBlocked.includes(tab)){
+    toast('🔒 Access restricted. Superadmin only.','error');return;
+  }
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const panel=document.getElementById('tab-'+tab);
+  if(panel)panel.classList.add('active');
+  const navItem=document.querySelector(`.nav-item[onclick="showTab('${tab}')"]`);
+  if(navItem)navItem.classList.add('active');
+  const titles={dashboard:'Dashboard',analytics:'Analytics',submissions:'Room Submissions','daily-rooms':'Daily Rooms','long-rooms':'Long Stay Rooms','sku-search':'SKU Search','feedback-admin':'Reviews','enquiries':'Enquiries','blog-admin':'Blog Posts','site-editor':'Site Editor',snippets:'Code Snippets',payments:'Payment Gateways',users:'Team Users'};
+  document.getElementById('topbar-title').textContent=titles[tab]||tab;
+  if(tab==='submissions')loadSubmissions();
+  if(tab==='daily-rooms')loadRooms('dailyRooms','daily-tbody');
+  if(tab==='long-rooms')loadRooms('longRooms','long-tbody');
+  if(tab==='feedback-admin')loadReviews();
+  if(tab==='enquiries')loadEnquiries('unread');
+  if(tab==='blog-admin')loadBlogPosts();
+  if(tab==='site-editor')loadSettings();
+  if(tab==='snippets')loadSnippets();
+  if(tab==='analytics')loadAnalytics();
+  if(tab==='sku-search')loadSKUClicks();
+  if(tab==='users')loadTeamUsers();
+  // Close mobile sidebar on tab change
+  closeSidebar();
+};
+
+window.showEditorTab=function(tab,btn){
+  ['general','hero','pages','integrations','history'].forEach(t=>{
+    const el=document.getElementById('editor-'+t);if(el)el.style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('.inner-tab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(tab==='history')loadSettingsHistory();
+};
+
+// Clock
+setInterval(()=>{
+  const el=document.getElementById('topbar-time');
+  if(el)el.textContent=new Date().toLocaleTimeString('en-SA',{hour:'2-digit',minute:'2-digit'});
+},1000);
+
+// ============ TOAST ============
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show'+(type?' '+type:'');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+window.toast=toast;
+
+// ============ MODAL ============
+window.closeModal=function(id){document.getElementById(id).classList.remove('open');};
+
+// ============ TABLE FILTER ============
+window.filterTable=function(tbodyId,q){
+  const rows=document.getElementById(tbodyId)?.querySelectorAll('tr');
+  if(!rows)return;
+  const sq=q.toLowerCase();
+  rows.forEach(row=>{row.style.display=!sq||row.textContent.toLowerCase().includes(sq)?'':'none';});
+};
+
+// ============ INIT ============
+async function initAdmin(){
+  await loadDashboard();
+  updateTopbar();
+  initAI();
+}
+
+// ============ DASHBOARD ============
+async function loadDashboard(){
+  try{
+    const [dSnap,lSnap,subSnap,enqSnap,revSnap,blogSnap]=await Promise.all([
+      getDocs(collection(db,'dailyRooms')),
+      getDocs(collection(db,'longRooms')),
+      getDocs(collection(db,'submissions')),
+      getDocs(collection(db,'enquiries')),
+      getDocs(collection(db,'feedback')),
+      getDocs(collection(db,'blog'))
+    ]);
+    const totalRooms=dSnap.size+lSnap.size;
+    const pendingSubs=subSnap.docs.filter(d=>!d.data().published).length;
+    const unreadEnq=enqSnap.docs.filter(d=>d.data().status==='unread').length;
+    const pendingRevs=revSnap.docs.filter(d=>d.data().status==='pending').length;
+    const totalClicks=[...dSnap.docs,...lSnap.docs].reduce((s,d)=>s+(d.data().clicks||0),0);
+
+    document.getElementById('d-total-rooms').textContent=totalRooms;
+    document.getElementById('d-pending-subs').textContent=pendingSubs;
+    document.getElementById('d-unread-enq').textContent=unreadEnq;
+    document.getElementById('d-pending-rev').textContent=pendingRevs;
+    document.getElementById('d-total-clicks').textContent=totalClicks;
+    document.getElementById('d-blog-posts').textContent=blogSnap.size;
+
+    // Badges
+    if(pendingSubs>0){const b=document.getElementById('sub-badge');b.textContent=pendingSubs;b.style.display='inline';}
+    if(unreadEnq>0){const b=document.getElementById('enq-badge');b.textContent=unreadEnq;b.style.display='inline';document.getElementById('unread-count').textContent=unreadEnq;}
+    if(pendingRevs>0){const b=document.getElementById('rev-badge');b.textContent=pendingRevs;b.style.display='inline';}
+
+    // Recent submissions
+    const recentSubs=subSnap.docs.slice(-5).reverse();
+    const tbody=document.getElementById('dash-recent-subs');
+    if(!recentSubs.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:16px">No submissions yet</td></tr>';return;}
+    tbody.innerHTML=recentSubs.map(d=>{const r=d.data();return `<tr>
+      <td>${r.name||'—'}</td><td>${r.city||'—'}</td>
+      <td><span class="sku-code">${r.sku||'No SKU'}</span></td>
+      <td>${r.submittedAt?new Date(r.submittedAt).toLocaleDateString():'—'}</td>
+      <td><button class="btn btn-green btn-sm" onclick="approveSubmission('${d.id}')">✅ Approve</button></td>
+    </tr>`;}).join('');
+  }catch(e){console.error(e);}
+}
+
+// ============ SUBMISSIONS ============
+async function loadSubmissions(){
+  const tbody=document.getElementById('subs-tbody');
+  try{
+    const snap=await getDocs(collection(db,'submissions'));
+    if(!snap.size){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">No submissions</td></tr>';return;}
+    const docs=snap.docs.sort((a,b)=>(b.data().submittedAt||'').localeCompare(a.data().submittedAt||''));
+    tbody.innerHTML=docs.map(d=>{
+      const r=d.data();
+      return `<tr>
+        <td>${r.img?`<img src="${r.img}" class="room-row-img" alt=""/>`:'<div style="width:44px;height:36px;background:var(--green-pale);border-radius:6px;display:flex;align-items:center;justify-content:center">🏠</div>'}</td>
+        <td style="font-weight:500">${r.name||'—'}</td>
+        <td><span class="sku-code">${r.sku||'—'}</span></td>
+        <td>${r.city||'—'}</td>
+        <td>SAR ${r.price||0}</td>
+        <td>${r.listingType||'—'}</td>
+        <td><a href="https://wa.me/${(r.phone||'').replace(/\D/g,'')}" target="_blank" style="color:var(--green-mid)">${r.phone||'—'}</a></td>
+        <td>${r.submittedAt?new Date(r.submittedAt).toLocaleDateString():'—'}</td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-green btn-sm" onclick="approveSubmission('${d.id}')">✅ Approve</button>
+          <button class="btn btn-red btn-sm" style="margin-left:4px" onclick="rejectSubmission('${d.id}')">❌ Reject</button>
+        </td>
+      </tr>`;
+    }).join('');
+  }catch(e){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--red)">Error loading</td></tr>';}
+}
+
+window.approveSubmission=async function(id){
+  try{
+    const snap=await getDoc(doc(db,'submissions',id));
+    if(!snap.exists())return;
+    const data=snap.data();
+    const col=data.listingType==='long'?'longRooms':'dailyRooms';
+    const sku=data.sku||'SKU-'+Date.now().toString(36).toUpperCase();
+    await addDoc(collection(db,col),{...data,sku,published:true,status:'Available',verified:false,featured:false,createdAt:new Date().toISOString()});
+    await deleteDoc(doc(db,'submissions',id));
+    toast('✅ Room approved and published!');
+    loadSubmissions();loadDashboard();
+  }catch(e){toast('Error approving: '+e.message,'error');}
+};
+window.rejectSubmission=async function(id){
+  if(!confirm('Reject and delete this submission?'))return;
+  try{await deleteDoc(doc(db,'submissions',id));toast('❌ Submission rejected');loadSubmissions();}
+  catch(e){toast('Error: '+e.message,'error');}
+};
+
+// ============ ROOMS ============
+async function loadRooms(col,tbodyId){
+  const tbody=document.getElementById(tbodyId);
+  try{
+    const snap=await getDocs(collection(db,col));
+    if(!snap.size){tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">No rooms yet</td></tr>`;return;}
+    const docs=snap.docs.sort((a,b)=>(b.data().featured?1:0)-(a.data().featured?1:0));
+    tbody.innerHTML=docs.map(d=>{
+      const r=d.data();
+      const priceUnit=col==='dailyRooms'?'/night':'/mo';
+      return `<tr>
+        <td>${r.img?`<img src="${r.img}" class="room-row-img" alt=""/>`:'<div style="width:44px;height:36px;background:var(--green-pale);border-radius:6px;display:flex;align-items:center;justify-content:center">🏠</div>'}</td>
+        <td style="font-weight:500;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name||'—'}</td>
+        <td><span class="sku-code">${r.sku||'—'}</span></td>
+        <td>${r.city||'—'}</td>
+        <td>SAR ${r.price||0}${priceUnit}</td>
+        <td><span class="badge ${r.status==='Available'?'badge-green':'badge-gray'}">${r.status||'—'}</span></td>
+        <td>${r.clicks||0}</td>
+        <td>
+          <label class="toggle" title="Featured/Sponsored">
+            <input type="checkbox" ${r.featured?'checked':''} onchange="toggleFeatured('${d.id}','${col}',this.checked)"/>
+            <span class="toggle-slider"></span>
+          </label>
+        </td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-ghost btn-sm" onclick="openEditRoom('${d.id}','${col}')">✏️ Edit</button>
+          <span class="badge ${r.published?'badge-green':'badge-red'}" style="cursor:pointer;margin-left:4px" onclick="togglePublish('${d.id}','${col}',${r.published})">${r.published?'Live':'Draft'}</span>
+        </td>
+      </tr>`;
+    }).join('');
+  }catch(e){tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:var(--red)">Error loading</td></tr>`;}
+}
+
+window.toggleFeatured=async function(id,col,val){
+  try{await updateDoc(doc(db,col,id),{featured:val});toast(val?'⭐ Room featured (Sponsored)':'Feature removed');}
+  catch(e){toast('Error: '+e.message,'error');}
+};
+window.togglePublish=async function(id,col,cur){
+  try{await updateDoc(doc(db,col,id),{published:!cur});toast(!cur?'✅ Room published!':'Room unpublished');loadRooms(col,col==='dailyRooms'?'daily-tbody':'long-tbody');}
+  catch(e){toast('Error: '+e.message,'error');}
+};
+
+// EDIT ROOM
+window.openEditRoom=async function(id,col){
+  try{
+    const snap=await getDoc(doc(db,col,id));
+    if(!snap.exists())return;
+    const r=snap.data();
+    document.getElementById('rm-id').value=id;
+    document.getElementById('rm-collection').value=col;
+    document.getElementById('room-modal-title').textContent=`Edit: ${r.name||'Room'}`;
+    document.getElementById('rm-name').value=r.name||'';
+    document.getElementById('rm-name-ar').value=r.nameAr||'';
+    document.getElementById('rm-sku').value=r.sku||'';
+    document.getElementById('rm-type').value=r.type||'Single Room';
+    document.getElementById('rm-city').value=r.city||'Riyadh';
+    document.getElementById('rm-district').value=r.district||'';
+    document.getElementById('rm-price').value=r.price||'';
+    document.getElementById('rm-phone').value=r.phone||'';
+    document.getElementById('rm-status').value=r.status||'Available';
+    document.getElementById('rm-rating').value=r.rating||'';
+    document.getElementById('rm-img').value=r.img||'';
+    document.getElementById('rm-desc').value=r.desc||'';
+    document.getElementById('rm-desc-ar').value=r.descAr||'';
+    document.getElementById('rm-amenities').value=(r.amenities||[]).join(', ');
+    document.getElementById('rm-published').checked=!!r.published;
+    document.getElementById('rm-verified').checked=!!r.verified;
+    document.getElementById('rm-featured').checked=!!r.featured;
+    document.getElementById('rm-delete-btn').style.display='inline-flex';
+    document.getElementById('room-modal').classList.add('open');
+  }catch(e){toast('Error: '+e.message,'error');}
+};
+window.openAddRoomModal=function(type){
+  ['rm-id','rm-name','rm-name-ar','rm-sku','rm-district','rm-price','rm-phone','rm-img','rm-desc','rm-desc-ar','rm-amenities'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('rm-collection').value=type==='daily'?'dailyRooms':'longRooms';
+  document.getElementById('rm-status').value='Available';
+  document.getElementById('rm-published').checked=true;
+  document.getElementById('rm-verified').checked=false;
+  document.getElementById('rm-featured').checked=false;
+  document.getElementById('rm-delete-btn').style.display='none';
+  document.getElementById('room-modal-title').textContent='Add New Room';
+  document.getElementById('room-modal').classList.add('open');
+};
+function generateSlug(name,sku){
+  const base=name.toLowerCase()
+    .replace(/[^a-z0-9\s-]/g,'')
+    .trim()
+    .replace(/\s+/g,'-')
+    .replace(/-+/g,'-')
+    .substring(0,60);
+  return base+'-'+sku.toLowerCase();
+}
+window.saveRoom=async function(){
+  const id=document.getElementById('rm-id').value;
+  const col=document.getElementById('rm-collection').value;
+  const sku=document.getElementById('rm-sku').value.trim();
+  const name=document.getElementById('rm-name').value.trim();
+  if(!name||!sku){toast('Name and SKU are required','error');return;}
+  const slug=generateSlug(name,sku);
+  const data={
+    name,nameAr:document.getElementById('rm-name-ar').value.trim(),
+    sku,type:document.getElementById('rm-type').value,
+    city:document.getElementById('rm-city').value,
+    district:document.getElementById('rm-district').value.trim(),
+    price:parseFloat(document.getElementById('rm-price').value)||0,
+    phone:document.getElementById('rm-phone').value.trim(),
+    status:document.getElementById('rm-status').value,
+    rating:parseInt(document.getElementById('rm-rating').value)||0,
+    img:document.getElementById('rm-img').value.trim(),
+    desc:document.getElementById('rm-desc').value.trim(),
+    descAr:document.getElementById('rm-desc-ar').value.trim(),
+    amenities:document.getElementById('rm-amenities').value.split(',').map(s=>s.trim()).filter(Boolean),
+    published:document.getElementById('rm-published').checked,
+    verified:document.getElementById('rm-verified').checked,
+    featured:document.getElementById('rm-featured').checked,
+    slug,
+    updatedAt:new Date().toISOString()
+  };
+  try{
+    if(id)await updateDoc(doc(db,col,id),{...data,slug});
+    else await addDoc(collection(db,col),{...data,createdAt:new Date().toISOString(),clicks:0});
+    toast('✅ Room saved!');
+    closeModal('room-modal');
+    loadRooms(col,col==='dailyRooms'?'daily-tbody':'long-tbody');
+    loadDashboard();
+  }catch(e){toast('Error: '+e.message,'error');}
+};
+window.deleteRoom=async function(){
+  const id=document.getElementById('rm-id').value;
+  const col=document.getElementById('rm-collection').value;
+  if(!id||!confirm('Delete this room permanently?'))return;
+  try{
+    await deleteDoc(doc(db,col,id));
+    toast('🗑️ Room deleted');closeModal('room-modal');
+    loadRooms(col,col==='dailyRooms'?'daily-tbody':'long-tbody');
+    loadDashboard();
+  }catch(e){toast('Error: '+e.message,'error');}
+};
+
+// ============ GENERATE SLUGS ============
+window.generateAllSlugs=async function(){
+  const result=document.getElementById('slug-result');
+  result.innerHTML='<span style="color:var(--muted)">Generating slugs...</span>';
+  let count=0;
+  try{
+    const [dSnap,lSnap]=await Promise.all([
+      getDocs(collection(db,'dailyRooms')),
+      getDocs(collection(db,'longRooms'))
+    ]);
+    const all=[
+      ...dSnap.docs.map(d=>({id:d.id,col:'dailyRooms',...d.data()})),
+      ...lSnap.docs.map(d=>({id:d.id,col:'longRooms',...d.data()}))
+    ];
+    for(const r of all){
+      if(!r.slug&&r.name&&r.sku){
+        const slug=generateSlug(r.name,r.sku);
+        await updateDoc(doc(db,r.col,r.id),{slug});
+        count++;
+      }
+    }
+    result.innerHTML=`<span style="color:var(--green)">✅ ${count} rooms updated with slugs!</span>`;
+  }catch(e){
+    result.innerHTML=`<span style="color:red">Error: ${e.message}</span>`;
+  }
+};
+
+// ============ SKU SEARCH ============
+window.doSKUSearch=async function(){
+  const q=document.getElementById('sku-q').value.trim().toUpperCase();
+  const result=document.getElementById('sku-result');
+  if(!q){result.style.display='none';return;}
+  result.style.display='block';
+  result.innerHTML='<div style="color:var(--muted);font-size:12px">Searching...</div>';
+  try{
+    const [dSnap,lSnap]=await Promise.all([getDocs(collection(db,'dailyRooms')),getDocs(collection(db,'longRooms'))]);
+    const all=[...dSnap.docs.map(d=>({id:d.id,...d.data(),rtype:'daily'})),...lSnap.docs.map(d=>({id:d.id,...d.data(),rtype:'long'}))];
+    const found=all.filter(r=>(r.sku||'').toUpperCase()===q||(r.sku||'').toUpperCase().includes(q));
+    if(!found.length){result.innerHTML='<div style="color:var(--muted);font-size:13px">No room found for SKU: '+q+'</div>';return;}
+    result.innerHTML=found.map(r=>`
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)">
+        ${r.img?`<img src="${r.img}" style="width:80px;height:64px;border-radius:8px;object-fit:cover;flex-shrink:0" alt=""/>`:'<div style="width:80px;height:64px;border-radius:8px;background:var(--green-pale);display:flex;align-items:center;justify-content:center;font-size:24px">🏠</div>'}
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">${r.name}</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:6px">📍 ${r.city||''}${r.district?' · '+r.district:''} · <span class="sku-code">${r.sku||''}</span> · ${r.rtype==='daily'?'Daily':'Long Stay'}</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <strong style="color:var(--green)">SAR ${r.price}</strong>
+            <span class="badge badge-blue">👁️ ${r.clicks||0} clicks</span>
+            <span class="badge ${r.published?'badge-green':'badge-red'}">${r.published?'Live':'Draft'}</span>
+            ${r.featured?'<span class="badge badge-gold">⭐ Sponsored</span>':''}
+            ${r.verified?'<span class="badge badge-green">✅ Verified</span>':''}
+            <button class="btn btn-ghost btn-sm" onclick="openEditRoom('${r.id}','${r.rtype==='daily'?'dailyRooms':'longRooms'}')">✏️ Edit</button>
+          </div>
+        </div>
+      </div>`).join('');
+  }catch(e){result.innerHTML='<div style="color:var(--red);font-size:12px">Error: '+e.message+'</div>';}
+};
+
+async function loadSKUClicks(){
+  const el=document.getElementById('sku-clicks-list');
+  try{
+    const [dSnap,lSnap]=await Promise.all([getDocs(collection(db,'dailyRooms')),getDocs(collection(db,'longRooms'))]);
+    const all=[...dSnap.docs.map(d=>({id:d.id,...d.data()})),...lSnap.docs.map(d=>({id:d.id,...d.data()}))];
+    const sorted=all.filter(r=>r.sku).sort((a,b)=>(b.clicks||0)-(a.clicks||0)).slice(0,15);
+    const max=sorted[0]?.clicks||1;
+    el.innerHTML=sorted.map(r=>`<div class="bar-row">
+      <div class="bar-label" title="${r.name||''}">${r.sku||'—'}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(((r.clicks||0)/max)*100)}%"></div></div>
+      <div class="bar-count">${r.clicks||0}</div>
+    </div>`).join('');
+  }catch(e){el.innerHTML='<div style="color:var(--muted);font-size:12px">Error loading</div>';}
+}
+
+// ============ REVIEWS ============
+async function loadReviews(statusFilter=''){
+  const tbody=document.getElementById('reviews-tbody');
+  try{
+    const snap=await getDocs(collection(db,'feedback'));
+    let docs=snap.docs.sort((a,b)=>(b.data().date||'').localeCompare(a.data().date||''));
+    if(statusFilter)docs=docs.filter(d=>d.data().status===statusFilter);
+    if(!docs.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No reviews</td></tr>';return;}
+    tbody.innerHTML=docs.map(d=>{
+      const r=d.data();
+      return `<tr>
+        <td style="font-weight:500">${r.name||'—'}</td>
+        <td>${'★'.repeat(r.stars||5)}</td>
+        <td style="max-width:180px;font-size:11px;color:var(--muted)">${(r.text||'').substring(0,80)}${(r.text||'').length>80?'...':''}</td>
+        <td>${r.city||'—'}</td>
+        <td>${r.date||'—'}</td>
+        <td><span class="badge ${r.status==='approved'?'badge-green':r.status==='pending'?'badge-gold':'badge-red'}">${r.status||'pending'}</span></td>
+        <td style="white-space:nowrap">
+          ${r.status!=='approved'?`<button class="btn btn-green btn-sm" onclick="approveReview('${d.id}')">✅ Approve</button>`:''}
+          ${r.featured?`<button class="btn btn-ghost btn-sm" onclick="unfeatureReview('${d.id}')">★ Unfeature</button>`:`<button class="btn btn-gold btn-sm" onclick="featureReview('${d.id}')">⭐ Feature</button>`}
+          <button class="btn btn-red btn-sm" onclick="deleteReview('${d.id}')">🗑️</button>
+        </td>
+      </tr>`;
+    }).join('');
+  }catch(e){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--red)">Error</td></tr>';}
+}
+window.filterReviews=function(val){loadReviews(val);};
+window.approveReview=async function(id){
+  try{await updateDoc(doc(db,'feedback',id),{status:'approved'});toast('✅ Review approved!');loadReviews();loadDashboard();}
+  catch(e){toast('Error: '+e.message,'error');}
+};
+window.featureReview=async function(id){
+  try{await updateDoc(doc(db,'feedback',id),{featured:true,status:'approved'});toast('⭐ Review featured on homepage!');loadReviews();}
+  catch(e){toast('Error: '+e.message,'error');}
+};
+window.unfeatureReview=async function(id){
+  try{await updateDoc(doc(db,'feedback',id),{featured:false});toast('Feature removed');loadReviews();}
+  catch(e){toast('Error: '+e.message,'error');}
+};
+window.deleteReview=async function(id){
+  if(!confirm('Delete this review?'))return;
+  try{await deleteDoc(doc(db,'feedback',id));toast('🗑️ Review deleted');loadReviews();loadDashboard();}
+  catch(e){toast('Error: '+e.message,'error');}
+};
+
+// ============ ENQUIRIES ============
+let allEnquiries=[];
+async function loadEnquiries(statusFilter='unread'){
+  const tbody=document.getElementById('enq-tbody');
+  try{
+    const snap=await getDocs(collection(db,'enquiries'));
+    allEnquiries=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    renderEnquiries(statusFilter);
+  }catch(e){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--red)">Error</td></tr>';}
+}
+function renderEnquiries(statusFilter){
+  const tbody=document.getElementById('enq-tbody');
+  const filtered=statusFilter==='all'?allEnquiries:allEnquiries.filter(e=>e.status===statusFilter||(statusFilter==='unread'&&!e.status));
+  if(!filtered.length){tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">No ${statusFilter} enquiries</td></tr>`;return;}
+  tbody.innerHTML=filtered.map(e=>`<tr>
+    <td style="font-weight:500">${e.name||'—'}</td>
+    <td><a href="https://wa.me/${(e.phone||'').replace(/\D/g,'')}" target="_blank" style="color:var(--green-mid)">${e.phone||'—'}</a></td>
+    <td>${e.city||'—'}</td>
+    <td>${e.type||'—'}</td>
+    <td>${e.budget||'—'}</td>
+    <td style="max-width:160px;font-size:11px;color:var(--muted)">${(e.message||'').substring(0,60)}...</td>
+    <td>${e.date?new Date(e.date).toLocaleDateString():'—'}</td>
+    <td><span class="badge ${e.status==='solved'?'badge-green':e.status==='read'?'badge-blue':'badge-gold'}">${e.status||'unread'}</span></td>
+    <td style="white-space:nowrap">
+      ${(!e.status||e.status==='unread')?`<button class="btn btn-blue btn-sm" onclick="updateEnqStatus('${e.id}','read')">📖 Read</button>`:''}
+      ${e.status!=='solved'?`<button class="btn btn-green btn-sm" onclick="updateEnqStatus('${e.id}','solved')" style="margin-left:3px">✅ Solved</button>`:''}
+      <button class="btn btn-red btn-sm" onclick="deleteEnq('${e.id}')" style="margin-left:3px">🗑️</button>
+    </td>
+  </tr>`).join('');
+}
+window.filterEnquiries=function(status,btn){
+  document.querySelectorAll('.enq-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderEnquiries(status);
+};
+window.updateEnqStatus=async function(id,status){
+  try{
+    await updateDoc(doc(db,'enquiries',id),{status});
+    const idx=allEnquiries.findIndex(e=>e.id===id);if(idx>=0)allEnquiries[idx].status=status;
+    const activeTab=document.querySelector('.enq-tab.active');
+    const curStatus=activeTab?activeTab.textContent.trim().split(' ')[0].toLowerCase():'unread';
+    renderEnquiries(curStatus);toast('Status updated');loadDashboard();
+  }catch(e){toast('Error: '+e.message,'error');}
+};
+window.deleteEnq=async function(id){
+  if(!confirm('Delete this enquiry?'))return;
+  try{await deleteDoc(doc(db,'enquiries',id));allEnquiries=allEnquiries.filter(e=>e.id!==id);renderEnquiries('all');toast('🗑️ Deleted');}
+  catch(e){toast('Error','error');}
+};
+
+// ============ BLOG ============
+async function loadBlogPosts(){
+  const tbody=document.getElementById('blog-tbody');
+  try{
+    const snap=await getDocs(collection(db,'blog'));
+    if(!snap.size){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No blog posts yet</td></tr>';return;}
+    const docs=snap.docs.sort((a,b)=>(b.data().date||'').localeCompare(a.data().date||''));
+    tbody.innerHTML=docs.map(d=>{
+      const p=d.data();
+      return `<tr>
+        <td style="font-weight:500;max-width:200px">${p.title||'—'}</td>
+        <td>${p.category||'—'}</td>
+        <td>${p.date||'—'}</td>
+        <td><span class="badge ${p.published?'badge-green':'badge-gray'}">${p.published?'Live':'Draft'}</span></td>
+        <td>${p.rating?'★'.repeat(p.rating):'—'}</td>
+        <td>
+          <button class="btn btn-ghost btn-sm" onclick="openBlogModal('${d.id}')">✏️ Edit</button>
+          <button class="btn btn-red btn-sm" onclick="deleteBlogPost('${d.id}')" style="margin-left:4px">🗑️</button>
+        </td>
+      </tr>`;
+    }).join('');
+  }catch(e){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--red)">Error</td></tr>';}
+}
+window.openBlogModal=async function(id=''){
+  ['bl-title','bl-title-ar','bl-excerpt','bl-excerpt-ar','bl-content','bl-content-ar','bl-cat','bl-img','bl-date'].forEach(fid=>{const el=document.getElementById(fid);if(el)el.value='';});
+  document.getElementById('bl-id').value=id;
+  document.getElementById('bl-published').checked=true;
+  if(id){
+    try{
+      const snap=await getDoc(doc(db,'blog',id));
+      if(snap.exists()){const p=snap.data();
+        document.getElementById('bl-title').value=p.title||'';
+        document.getElementById('bl-title-ar').value=p.titleAr||'';
+        document.getElementById('bl-excerpt').value=p.excerpt||'';
+        document.getElementById('bl-excerpt-ar').value=p.excerptAr||'';
+        document.getElementById('bl-content').value=p.content||'';
+        document.getElementById('bl-content-ar').value=p.contentAr||'';
+        document.getElementById('bl-cat').value=p.category||'';
+        document.getElementById('bl-img').value=p.img||'';
+        document.getElementById('bl-date').value=p.date||'';
+        document.getElementById('bl-published').checked=!!p.published;
+      }
+    }catch(e){}
+  }
+  document.getElementById('bl-delete-btn').style.display=id?'inline-flex':'none';
+  document.getElementById('blog-modal').classList.add('open');
+};
+window.saveBlogPost=async function(){
+  const id=document.getElementById('bl-id').value;
+  const title=document.getElementById('bl-title').value.trim();
+  if(!title){toast('Title is required','error');return;}
+  const data={
+    title,titleAr:document.getElementById('bl-title-ar').value.trim(),
+    excerpt:document.getElementById('bl-excerpt').value.trim(),
+    excerptAr:document.getElementById('bl-excerpt-ar').value.trim(),
+    content:document.getElementById('bl-content').value.trim(),
+    contentAr:document.getElementById('bl-content-ar').value.trim(),
+    category:document.getElementById('bl-cat').value.trim(),
+    img:document.getElementById('bl-img').value.trim(),
+    date:document.getElementById('bl-date').value,
+    published:document.getElementById('bl-published').checked,
+    updatedAt:new Date().toISOString()
+  };
+  try{
+    if(id)await updateDoc(doc(db,'blog',id),data);
+    else await addDoc(collection(db,'blog'),{...data,createdAt:new Date().toISOString()});
+    toast('✅ Blog post saved!');closeModal('blog-modal');loadBlogPosts();loadDashboard();
+  }catch(e){toast('Error: '+e.message,'error');}
+};
+window.deleteBlogPost=async function(id){
+  const bid=id||document.getElementById('bl-id').value;
+  if(!bid||!confirm('Delete this post?'))return;
+  try{await deleteDoc(doc(db,'blog',bid));toast('🗑️ Post deleted');closeModal('blog-modal');loadBlogPosts();}
+  catch(e){toast('Error','error');}
+};
+
+// ============ SETTINGS ============
+let currentSettings={};
+async function loadSettings(){
+  try{
+    const snap=await getDoc(doc(db,'settings','site'));
+    if(!snap.exists())return;
+    currentSettings=snap.data();
+    const s=currentSettings;
+    const fields=['siteName','phone','workingDays1','workingHours1','workingDays2','workingHours2','foundedYear','totalCities','heroImage','heroTitle','heroTitleAr','heroDesc','heroDescAr','reviewsHeading','aboutContent','aboutContentAr','missionContent','termsContent','privacyContent','clarityId','gaId'];
+    fields.forEach(f=>{const el=document.getElementById('set-'+f);if(el&&s[f]!==undefined)el.value=s[f];});
+    if(s.colorGreen){document.getElementById('set-colorGreen').value=s.colorGreen;}
+    if(s.colorGold){document.getElementById('set-colorGold').value=s.colorGold;}
+    // Clarity link
+    if(s.clarityId){document.getElementById('clarity-embed').textContent='Clarity ID: '+s.clarityId;document.getElementById('clarity-link').href='https://clarity.microsoft.com/projects/view/'+s.clarityId+'/dashboard';}
+  }catch(e){}
+}
+window.saveSettings=async function(){
+  const fields=['siteName','phone','workingDays1','workingHours1','workingDays2','workingHours2','foundedYear','totalCities','heroImage','heroTitle','heroTitleAr','heroDesc','heroDescAr','reviewsHeading','aboutContent','aboutContentAr','missionContent','termsContent','privacyContent','clarityId','gaId'];
+  const data={};
+  fields.forEach(f=>{const el=document.getElementById('set-'+f);if(el)data[f]=el.value;});
+  data.colorGreen=document.getElementById('set-colorGreen')?.value||'#0d4a2f';
+  data.colorGold=document.getElementById('set-colorGold')?.value||'#c9963a';
+  data.updatedAt=new Date().toISOString();
+  try{
+    await setDoc(doc(db,'settings','site'),data,{merge:true});
+    // Save history
+    await addDoc(collection(db,'settingsHistory'),{...data,savedAt:new Date().toISOString()});
+    toast('✅ Settings saved!');
+    currentSettings={...currentSettings,...data};
+    document.getElementById('preview-banner').classList.remove('show');
+  }catch(e){toast('Error: '+e.message,'error');}
+};
+window.previewChanges=function(){document.getElementById('preview-banner').classList.add('show');};
+window.cancelPreview=function(){document.getElementById('preview-banner').classList.remove('show');};
+window.publishChanges=function(){saveSettings();};
+
+// Settings History
+async function loadSettingsHistory(){
+  const el=document.getElementById('settings-history');
+  try{
+    const snap=await getDocs(collection(db,'settingsHistory'));
+    const docs=snap.docs.sort((a,b)=>(b.data().savedAt||'').localeCompare(a.data().savedAt||'')).slice(0,10);
+    if(!docs.length){el.innerHTML='<div style="font-size:12px;color:var(--muted)">No history yet</div>';return;}
+    el.innerHTML=docs.map(d=>{
+      const s=d.data();
+      return `<div class="history-item"><span>Saved: ${s.savedAt?new Date(s.savedAt).toLocaleString():'—'}</span><button class="btn btn-ghost btn-sm" onclick="restoreSettings('${d.id}')">↩️ Restore</button></div>`;
+    }).join('');
+  }catch(e){el.innerHTML='<div style="font-size:12px;color:var(--red)">Error loading history</div>';}
+}
+window.restoreSettings=async function(histId){
+  if(!confirm('Restore these settings?'))return;
+  try{
+    const snap=await getDoc(doc(db,'settingsHistory',histId));
+    if(!snap.exists())return;
+    await setDoc(doc(db,'settings','site'),snap.data(),{merge:true});
+    toast('↩️ Settings restored!');loadSettings();
+  }catch(e){toast('Error','error');}
+};
+window.exportSettings=async function(){
+  try{
+    const snap=await getDoc(doc(db,'settings','site'));
+    const data=snap.exists()?snap.data():{};
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sukoon-settings-'+Date.now()+'.json';a.click();
+    toast('📥 Settings exported!');
+  }catch(e){toast('Error','error');}
+};
+window.importSettings=async function(e){
+  const file=e.target.files[0];if(!file)return;
+  try{
+    const text=await file.text();const data=JSON.parse(text);
+    await setDoc(doc(db,'settings','site'),data,{merge:true});
+    toast('📤 Settings imported!');loadSettings();
+  }catch(e){toast('Invalid file','error');}
+};
+
+// ============ SNIPPETS ============
+async function loadSnippets(){
+  const el=document.getElementById('snippets-list');
+  try{
+    const snap=await getDocs(collection(db,'codeSnippets'));
+    if(!snap.size){el.innerHTML='<div style="color:var(--muted);font-size:12px">No snippets yet. Add your first!</div>';return;}
+    el.innerHTML=snap.docs.map(d=>{
+      const s=d.data();
+      return `<div class="snippet-row">
+        <div>
+          <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:3px">${s.name||'Unnamed'}</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            <span class="badge ${s.status==='active'?'badge-green':'badge-gray'}">${s.status||'inactive'}</span>
+            <span class="badge badge-blue">${s.position||'body'}</span>
+            <span style="font-size:10px;color:var(--muted)">${s.pages||'all'}</span>
+          </div>
+          <div class="snippet-code-preview" style="margin-top:4px">${(s.code||'').substring(0,80)}...</div>
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          <button class="btn btn-ghost btn-sm" onclick="openSnippetModal('${d.id}')">✏️ Edit</button>
+          <label class="toggle" title="Active/Inactive" style="margin-top:3px">
+            <input type="checkbox" ${s.status==='active'?'checked':''} onchange="toggleSnippet('${d.id}',this.checked)"/>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){el.innerHTML='<div style="color:var(--red);font-size:12px">Error loading</div>';}
+}
+window.toggleSnippet=async function(id,active){
+  try{await updateDoc(doc(db,'codeSnippets',id),{status:active?'active':'inactive'});toast(active?'Snippet activated':'Snippet deactivated');}
+  catch(e){toast('Error','error');}
+};
+window.openSnippetModal=async function(id=''){
+  ['sn-name','sn-pages','sn-code'].forEach(fid=>{const el=document.getElementById(fid);if(el)el.value='';});
+  document.getElementById('sn-id').value=id;
+  document.getElementById('sn-position').value='body';
+  document.getElementById('sn-status').value='active';
+  document.getElementById('sn-pages').value='all';
+  document.getElementById('sn-delete-btn').style.display='none';
+  if(id){
+    try{
+      const snap=await getDoc(doc(db,'codeSnippets',id));
+      if(snap.exists()){const s=snap.data();
+        document.getElementById('sn-name').value=s.name||'';
+        document.getElementById('sn-position').value=s.position||'body';
+        document.getElementById('sn-pages').value=s.pages||'all';
+        document.getElementById('sn-status').value=s.status||'active';
+        document.getElementById('sn-code').value=s.code||'';
+        document.getElementById('sn-delete-btn').style.display='inline-flex';
+      }
+    }catch(e){}
+  }
+  document.getElementById('snippet-modal').classList.add('open');
+};
+window.saveSnippet=async function(){
+  const id=document.getElementById('sn-id').value;
+  const name=document.getElementById('sn-name').value.trim();
+  const code=document.getElementById('sn-code').value.trim();
+  if(!code){toast('Code is required','error');return;}
+  const data={name:name||'Unnamed',position:document.getElementById('sn-position').value,pages:document.getElementById('sn-pages').value||'all',status:document.getElementById('sn-status').value,code,updatedAt:new Date().toISOString()};
+  try{
+    if(id)await updateDoc(doc(db,'codeSnippets',id),data);
+    else await addDoc(collection(db,'codeSnippets'),{...data,createdAt:new Date().toISOString()});
+    toast('✅ Snippet saved!');closeModal('snippet-modal');loadSnippets();
+  }catch(e){toast('Error: '+e.message,'error');}
+};
+window.deleteSnippet=async function(){
+  const id=document.getElementById('sn-id').value;
+  if(!id||!confirm('Delete this snippet?'))return;
+  try{await deleteDoc(doc(db,'codeSnippets',id));toast('🗑️ Snippet deleted');closeModal('snippet-modal');loadSnippets();}
+  catch(e){toast('Error','error');}
+};
+
+// ============ PAYMENT SETTINGS ============
+window.savePaymentSettings=async function(){
+  const data={
+    payments:{
+      moyasar:{active:document.getElementById('gw-moyasar-active').checked,pubKey:document.getElementById('gw-moyasar-pub').value,secKey:document.getElementById('gw-moyasar-sec').value},
+      tabby:{active:document.getElementById('gw-tabby-active').checked,pubKey:document.getElementById('gw-tabby-pub').value,merchant:document.getElementById('gw-tabby-merchant').value},
+      tamara:{active:document.getElementById('gw-tamara-active').checked,token:document.getElementById('gw-tamara-token').value,notifKey:document.getElementById('gw-tamara-notif').value}
+    },updatedAt:new Date().toISOString()
+  };
+  try{await setDoc(doc(db,'settings','payments'),data);toast('✅ Payment settings saved!');}
+  catch(e){toast('Error: '+e.message,'error');}
+};
+
+// ============ ANALYTICS ============
+async function loadAnalytics(){
+  try{
+    const [dSnap,lSnap,enqSnap,revSnap,blogSnap]=await Promise.all([getDocs(collection(db,'dailyRooms')),getDocs(collection(db,'longRooms')),getDocs(collection(db,'enquiries')),getDocs(collection(db,'feedback')),getDocs(collection(db,'blog'))]);
+    const allRooms=[...dSnap.docs.map(d=>({...d.data()})),...lSnap.docs.map(d=>({...d.data()}))];
+    const totalClicks=allRooms.reduce((s,r)=>s+(r.clicks||0),0);
+    const approvedRevs=revSnap.docs.filter(d=>d.data().status==='approved');
+    const avgRating=approvedRevs.length?Math.round(approvedRevs.reduce((s,d)=>s+(d.data().stars||5),0)/approvedRevs.length*10)/10:0;
+    document.getElementById('an-rooms').textContent=dSnap.size+lSnap.size;
+    document.getElementById('an-clicks').textContent=totalClicks;
+    document.getElementById('an-enqs').textContent=enqSnap.size;
+    document.getElementById('an-revs').textContent=approvedRevs.length;
+    document.getElementById('an-avg').textContent=avgRating||'—';
+    document.getElementById('an-blogs').textContent=blogSnap.docs.filter(d=>d.data().published).length;
+    // Top rooms
+    const topRooms=[...dSnap.docs.map(d=>({id:d.id,...d.data()})),...lSnap.docs.map(d=>({id:d.id,...d.data()}))].sort((a,b)=>(b.clicks||0)-(a.clicks||0)).slice(0,8);
+    const maxC=topRooms[0]?.clicks||1;
+    document.getElementById('top-rooms-chart').innerHTML=topRooms.map(r=>`<div class="bar-row">
+      <div class="bar-label" title="${r.name||''}">${r.name||'—'}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(((r.clicks||0)/maxC)*100)}%"></div></div>
+      <div class="bar-count">${r.clicks||0}</div>
+    </div>`).join('');
+    // By city
+    const cities={};
+    allRooms.forEach(r=>{if(r.city)cities[r.city]=(cities[r.city]||0)+1;});
+    const sortedCities=Object.entries(cities).sort((a,b)=>b[1]-a[1]);
+    const maxCity=sortedCities[0]?.[1]||1;
+    document.getElementById('city-chart').innerHTML=sortedCities.map(([city,count])=>`<div class="bar-row">
+      <div class="bar-label">${city}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round((count/maxCity)*100)}%"></div></div>
+      <div class="bar-count">${count}</div>
+    </div>`).join('');
+    // Load Clarity settings
+    const sSnap=await getDoc(doc(db,'settings','site'));
+    if(sSnap.exists()&&sSnap.data().clarityId){
+      document.getElementById('clarity-embed').textContent='Clarity ID: '+sSnap.data().clarityId;
+      document.getElementById('clarity-link').href='https://clarity.microsoft.com/projects/view/'+sSnap.data().clarityId+'/dashboard';
+    }
+  }catch(e){console.error(e);}
+}
+
+function updateTopbar(){setInterval(()=>{const el=document.getElementById('topbar-time');if(el)el.textContent=new Date().toLocaleTimeString('en-SA',{hour:'2-digit',minute:'2-digit'});},1000);}
+
+// ============ TEAM USERS ============
+window.loadTeamUsers=async function(){
+  const list=document.getElementById('users-list');
+  if(!list)return;
+  list.innerHTML='<div style="color:var(--muted);font-size:12px">Loading...</div>';
+  try{
+    const snap=await getDocs(collection(db,'adminUsers'));
+    if(snap.empty){list.innerHTML='<div style="color:var(--muted);font-size:12px">No users yet.</div>';return;}
+    let html='';
+    snap.forEach(d=>{
+      const u=d.data();
+      const initial=(u.email||'?')[0].toUpperCase();
+      const isMe=currentUser&&u.email===currentUser.email;
+      const roleBadge=`<span class="role-badge ${u.role||'staff'}">${u.role||'staff'}</span>`;
+      const deleteBtn=currentRole==='superadmin'&&!isMe
+        ?`<button type="button" class="btn btn-red btn-sm" onclick="removeTeamUser('${d.id}','${u.email}')">Remove</button>`
+        :'';
+      const roleBtn=currentRole==='superadmin'&&!isMe
+        ?`<button type="button" class="btn btn-ghost btn-sm" onclick="toggleUserRole('${d.id}','${u.role||'staff'}')">Change Role</button>`
+        :'';
+      html+=`<div class="user-card">
+        <div class="user-avatar">${initial}</div>
+        <div class="user-info">
+          <div class="user-name">${u.email}${isMe?' <span style="font-size:10px;color:var(--green-mid)">(You)</span>':''}</div>
+          <div class="user-email">${roleBadge} &nbsp;Added: ${u.addedAt||'—'}</div>
+        </div>
+        <div class="user-actions">${roleBtn}${deleteBtn}</div>
+      </div>`;
+    });
+    list.innerHTML=html;
+  }catch(e){list.innerHTML='<div style="color:var(--red);font-size:12px">Error loading users</div>';}
+};
+
+window.addTeamUser=async function(){
+  if(currentRole!=='superadmin'){toast('🔒 Superadmin only','error');return;}
+  const email=document.getElementById('new-user-email').value.trim().toLowerCase();
+  const role=document.getElementById('new-user-role').value;
+  const msg=document.getElementById('add-user-msg');
+  if(!email||!email.includes('@')){msg.style.color='var(--red)';msg.textContent='❌ Please enter a valid email';return;}
+  msg.style.color='var(--muted)';msg.textContent='Adding...';
+  try{
+    const existing=await getDocs(query(collection(db,'adminUsers'),where('email','==',email)));
+    if(!existing.empty){msg.style.color='var(--red)';msg.textContent='❌ This email is already added';return;}
+    await addDoc(collection(db,'adminUsers'),{
+      email,role,
+      addedBy:currentUser.email,
+      addedAt:new Date().toLocaleDateString('en-SA'),
+      createdAt:new Date().toISOString()
+    });
+    await sendSignInLinkToEmail(auth,email,ACTION_CODE_SETTINGS);
+    document.getElementById('new-user-email').value='';
+    msg.style.color='var(--green-mid)';
+    msg.textContent=`✅ ${email} added and magic link sent!`;
+    loadTeamUsers();
+    toast('✅ User added and link sent!');
+  }catch(e){msg.style.color='var(--red)';msg.textContent='❌ Error: '+e.message;}
+};
+
+window.removeTeamUser=async function(docId,email){
+  if(currentRole!=='superadmin'){toast('🔒 Superadmin only','error');return;}
+  if(!confirm('Remove '+email+'?'))return;
+  try{
+    await deleteDoc(doc(db,'adminUsers',docId));
+    toast('✅ User removed');loadTeamUsers();
+  }catch(e){toast('❌ Error: '+e.message,'error');}
+};
+
+window.toggleUserRole=async function(docId,curRole){
+  if(currentRole!=='superadmin'){toast('🔒 Superadmin only','error');return;}
+  const newRole=curRole==='superadmin'?'staff':'superadmin';
+  try{
+    await updateDoc(doc(db,'adminUsers',docId),{role:newRole});
+    toast('✅ Role changed to '+newRole);loadTeamUsers();
+  }catch(e){toast('❌ Error: '+e.message,'error');}
+};
+
+// ============ SUKOON AI SIDEKICK ============
+let aiData={rooms:[],longRooms:[],reviews:[],enquiries:[],submissions:[],loaded:false};
+
+// Show AI fab only for superadmin
+function initAI(){
+  if(currentRole==='superadmin'){
+    document.getElementById('ai-fab').classList.add('visible');
+    loadAIData();
+  }
+}
+
+async function loadAIData(){
+  try{
+    const [dr,lr,rv,enq,sub]=await Promise.all([
+      getDocs(collection(db,'dailyRooms')),
+      getDocs(collection(db,'longRooms')),
+      getDocs(collection(db,'feedback')),
+      getDocs(collection(db,'enquiries')),
+      getDocs(collection(db,'submissions'))
+    ]);
+    aiData.rooms=dr.docs.map(d=>({id:d.id,...d.data()}));
+    aiData.longRooms=lr.docs.map(d=>({id:d.id,...d.data()}));
+    aiData.reviews=rv.docs.map(d=>({id:d.id,...d.data()}));
+    aiData.enquiries=enq.docs.map(d=>({id:d.id,...d.data()}));
+    aiData.submissions=sub.docs.map(d=>({id:d.id,...d.data()}));
+    aiData.loaded=true;
+    document.querySelector('.ai-header-status').innerHTML='<span class="ai-status-dot"></span> Online — '+
+      (aiData.rooms.length+aiData.longRooms.length)+' rooms loaded';
+  }catch(e){console.error('AI data load error',e);}
+}
+
+window.toggleAI=function(){
+  const panel=document.getElementById('ai-panel');
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open'))document.getElementById('ai-input').focus();
+};
+
+window.aiQuick=function(type){
+  const queries={
+    audit:'Full site audit ചെയ്യൂ',
+    complaints:'Complaints and negative reviews കാണിക്കൂ',
+    security:'Security threats check ചെയ്യൂ',
+    stats:'Site statistics കാണിക്കൂ',
+    lowrating:'Low rating rooms ഏതൊക്കെ?',
+    pending:'Pending submissions and reviews കാണിക്കൂ'
+  };
+  document.getElementById('ai-input').value=queries[type]||'';
+  aiSend();
+};
+
+window.aiSend=function(){
+  const input=document.getElementById('ai-input');
+  const q=input.value.trim();
+  if(!q)return;
+  input.value='';
+  input.style.height='auto';
+  addAIMessage(q,'user');
+  showTyping();
+  setTimeout(()=>{
+    const response=aiEngine(q);
+    hideTyping();
+    addAIMessage(response,'bot');
+  },600+Math.random()*400);
+};
+
+function addAIMessage(text,type){
+  const msgs=document.getElementById('ai-messages');
+  const typing=document.getElementById('ai-typing');
+  const div=document.createElement('div');
+  div.className='ai-msg '+type;
+  const time=new Date().toLocaleTimeString('en-SA',{hour:'2-digit',minute:'2-digit'});
+  div.innerHTML=`<div class="ai-msg-bubble">${text}</div><div class="ai-msg-time">${time}</div>`;
+  msgs.insertBefore(div,typing);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function showTyping(){document.getElementById('ai-typing').style.display='flex';}
+function hideTyping(){document.getElementById('ai-typing').style.display='none';}
+
+// ============ AI BRAIN ============
+function aiEngine(q){
+  if(!aiData.loaded)return '⏳ Data loading... ഒരു നിമിഷം കഴിഞ്ഞ് try ചെയ്യൂ.';
+  const ql=q.toLowerCase();
+  const allRooms=[...aiData.rooms,...aiData.longRooms];
+
+  // ---- FULL AUDIT ----
+  if(ql.includes('audit')||ql.includes('full')||ql.includes('report')||ql.includes('analyze')){
+    return doFullAudit();
+  }
+
+  // ---- SECURITY ----
+  if(ql.includes('security')||ql.includes('threat')||ql.includes('suspicious')||ql.includes('spam')||ql.includes('fake')||ql.includes('സെക്യൂരിറ്റി')||ql.includes('threat')){
+    return doSecurityCheck();
+  }
+
+  // ---- COMPLAINTS ----
+  if(ql.includes('complaint')||ql.includes('negative')||ql.includes('bad')||ql.includes('problem')||ql.includes('issue')||ql.includes('complaint')||ql.includes('പരാതി')||ql.includes('നെഗറ്റീവ്')){
+    return doComplaintScan();
+  }
+
+  // ---- STATS ----
+  if(ql.includes('stat')||ql.includes('count')||ql.includes('how many')||ql.includes('total')||ql.includes('സ്റ്റാറ്റ്')||ql.includes('എത്ര')||ql.includes('total')){
+    return doStats();
+  }
+
+  // ---- LOW RATING ----
+  if(ql.includes('low rating')||ql.includes('low star')||ql.includes('poor')||ql.includes('rating')||ql.includes('star')||ql.includes('rating')||ql.includes('rating കുറ')){
+    return doLowRatings();
+  }
+
+  // ---- PENDING ----
+  if(ql.includes('pending')||ql.includes('unread')||ql.includes('pending')||ql.includes('waiting')){
+    return doPending();
+  }
+
+  // ---- CITY QUERY ----
+  const cities=['riyadh','jeddah','dammam','makkah','madinah','khobar','tabuk','abha','الرياض','جدة','الدمام','مكة','المدينة'];
+  for(const city of cities){
+    if(ql.includes(city)){
+      return doCityQuery(city,allRooms);
+    }
+  }
+
+  // ---- ROOMS QUERY ----
+  if(ql.includes('room')||ql.includes('listing')||ql.includes('available')||ql.includes('ഗുണ്ട്')||ql.includes('rooms')){
+    return doRoomsQuery(ql,allRooms);
+  }
+
+  // ---- REVIEWS ----
+  if(ql.includes('review')||ql.includes('feedback')||ql.includes('rating')||ql.includes('റിവ്യൂ')){
+    return doReviewsQuery();
+  }
+
+  // ---- ENQUIRIES ----
+  if(ql.includes('enquir')||ql.includes('contact')||ql.includes('message')||ql.includes('enquiries')||ql.includes('enquiry')){
+    return doEnquiriesQuery();
+  }
+
+  // ---- GREETINGS ----
+  if(ql.includes('hello')||ql.includes('hi')||ql.includes('hey')||ql.includes('ഹലോ')||ql.includes('നമസ്കാരം')||ql.includes('مرحبا')){
+    return '👋 Hello! I\'m Sukoon AI — your site assistant.<br><br>ഞാൻ ഇനിപ്പറയുന്നവ help ചെയ്യും:<br>🔍 Site audit<br>⚠️ Complaints detect<br>🔒 Security threats<br>📊 Statistics<br>⭐ Low ratings<br><br>Quick buttons use ചെയ്‌തോ or type ചെയ്യൂ!';
+  }
+
+  // ---- DEFAULT ----
+  return '🤔 ഞാൻ ഇത് properly understand ചെയ്‌തില്ല.<br><br>Try ചെയ്യൂ:<br>• "Full audit"<br>• "Complaints കാണിക്കൂ"<br>• "Security check"<br>• "Riyadh rooms"<br>• "Statistics"<br>• "Pending submissions"';
+}
+
+// ---- AUDIT ----
+function doFullAudit(){
+  const allRooms=[...aiData.rooms,...aiData.longRooms];
+  const published=allRooms.filter(r=>r.published);
+  const unpublished=allRooms.filter(r=>!r.published);
+  const noImg=allRooms.filter(r=>!r.img||r.img==='');
+  const noDesc=allRooms.filter(r=>!r.desc||r.desc.length<20);
+  const lowRating=allRooms.filter(r=>r.rating&&r.rating<=2);
+  const pendingSubs=aiData.submissions.filter(r=>r.status==='pending'||!r.status);
+  const pendingRevs=aiData.reviews.filter(r=>r.status==='pending'||!r.status);
+  const unreadEnq=aiData.enquiries.filter(r=>r.status==='unread'||!r.status);
+  const negReviews=doComplaintScanRaw();
+
+  let score=100;
+  let issues=[];
+  let warnings=[];
+
+  if(noImg.length>0){score-=10;issues.push(`❌ ${noImg.length} rooms without images`);}
+  if(noDesc.length>0){score-=8;issues.push(`❌ ${noDesc.length} rooms with incomplete description`);}
+  if(lowRating.length>0){score-=5;warnings.push(`⚠️ ${lowRating.length} rooms with rating ≤ 2 stars`);}
+  if(pendingSubs.length>0){score-=3;warnings.push(`⚠️ ${pendingSubs.length} pending submissions`);}
+  if(pendingRevs.length>0){score-=3;warnings.push(`⚠️ ${pendingRevs.length} reviews awaiting approval`);}
+  if(unreadEnq.length>0){score-=2;warnings.push(`⚠️ ${unreadEnq.length} unread enquiries`);}
+  if(negReviews.length>0){score-=5;issues.push(`❌ ${negReviews.length} negative/complaint reviews detected`);}
+
+  const scoreColor=score>=80?'🟢':score>=60?'🟡':'🔴';
+  let html=`<strong>📊 Sukoon Homes — Full Site Audit</strong><br><br>`;
+  html+=`${scoreColor} <strong>Site Health Score: ${score}/100</strong><br><br>`;
+  html+=`📦 Total Rooms: ${allRooms.length} (${published.length} live, ${unpublished.length} hidden)<br>`;
+  html+=`📝 Daily Rooms: ${aiData.rooms.length} | Long Stay: ${aiData.longRooms.length}<br>`;
+  html+=`⭐ Reviews: ${aiData.reviews.length} | 📩 Enquiries: ${aiData.enquiries.length}<br><br>`;
+
+  if(issues.length>0){html+=`<strong>🔴 Issues (fix needed):</strong><br>${issues.join('<br>')}<br><br>`;}
+  if(warnings.length>0){html+=`<strong>🟡 Warnings:</strong><br>${warnings.join('<br>')}<br><br>`;}
+  if(issues.length===0&&warnings.length===0){html+=`✅ <strong>Site looks great!</strong> No major issues found.<br><br>`;}
+
+  html+=`💡 <em>Type "complaints" or "security check" for detailed analysis.</em>`;
+  return html;
+}
+
+// ---- SECURITY ----
+function doSecurityCheck(){
+  const allRooms=[...aiData.rooms,...aiData.longRooms];
+  let threats=[];
+  let warnings=[];
+
+  // Duplicate phone numbers
+  const phones={};
+  allRooms.forEach(r=>{if(r.phone)phones[r.phone]=(phones[r.phone]||0)+1;});
+  const dupPhones=Object.entries(phones).filter(([,c])=>c>5);
+  if(dupPhones.length>0)warnings.push(`⚠️ Phone number used in ${dupPhones[0][1]}+ rooms — possible spam listing`);
+
+  // Suspicious reviews
+  const suspReviews=aiData.reviews.filter(r=>{
+    const t=(r.review||r.text||'').toLowerCase();
+    return t.includes('whatsapp')||t.includes('http')||t.includes('www.')||t.includes('call me')||t.includes('contact');
+  });
+  if(suspReviews.length>0)threats.push(`🔴 ${suspReviews.length} reviews contain links/phone numbers — possible spam`);
+
+  // Very short reviews (fake)
+  const fakeRevs=aiData.reviews.filter(r=>(r.review||r.text||'').length<10);
+  if(fakeRevs.length>2)warnings.push(`⚠️ ${fakeRevs.length} very short reviews — may be fake`);
+
+  // All 5-star with no text
+  const empty5star=aiData.reviews.filter(r=>r.rating===5&&(r.review||r.text||'').length<5);
+  if(empty5star.length>3)warnings.push(`⚠️ ${empty5star.length} empty 5-star reviews — suspicious pattern`);
+
+  // Rooms with no SKU
+  const noSKU=allRooms.filter(r=>!r.sku||r.sku==='');
+  if(noSKU.length>0)warnings.push(`⚠️ ${noSKU.length} rooms missing SKU`);
+
+  // Recent submissions spike
+  const recentSubs=aiData.submissions.filter(r=>{
+    if(!r.createdAt)return false;
+    const d=new Date(r.createdAt);
+    return (Date.now()-d)<86400000*3;
+  });
+  if(recentSubs.length>5)warnings.push(`⚠️ ${recentSubs.length} submissions in last 3 days — review carefully`);
+
+  let html=`<strong>🔒 Security Analysis</strong><br><br>`;
+  if(threats.length===0&&warnings.length===0){
+    html+=`✅ <strong>No security threats detected!</strong><br><br>Site looks clean and secure. 👍`;
+  } else {
+    if(threats.length>0)html+=`<strong>🔴 Threats:</strong><br>${threats.join('<br>')}<br><br>`;
+    if(warnings.length>0)html+=`<strong>🟡 Warnings:</strong><br>${warnings.join('<br>')}<br><br>`;
+    html+=`💡 Review flagged items in admin panel.`;
+  }
+  return html;
+}
+
+// ---- COMPLAINTS (raw) ----
+function doComplaintScanRaw(){
+  const negKeywords=['bad','dirty','noise','problem','issue','complaint','worst','terrible','awful','disappointed','broken','leak','smell','cockroach','pest','rude','lied','scam','fraud','fake','overpriced','never','avoid','disgusting','horrible','poor','not clean','no wifi','slow wifi','no water','no ac','hot','cold','unsafe','dangerous','thief','stolen'];
+  const arNeg=['سيء','قذر','مشكلة','رائحة','نظافة','حشرات','احتيال','غير نظيف','مخيف'];
+  const allKeywords=[...negKeywords,...arNeg];
+  return aiData.reviews.filter(r=>{
+    const t=((r.review||r.text||r.comment||'')+(r.name||'')).toLowerCase();
+    return allKeywords.some(k=>t.includes(k));
+  });
+}
+
+// ---- COMPLAINTS ----
+function doComplaintScan(){
+  const negReviews=doComplaintScanRaw();
+  const negEnq=aiData.enquiries.filter(r=>{
+    const t=((r.message||r.msg||'')+(r.name||'')).toLowerCase();
+    return ['urgent','problem','issue','complaint','bad','worst','refund','cheat','fraud'].some(k=>t.includes(k));
+  });
+
+  let html=`<strong>⚠️ Complaint & Negative Feedback Analysis</strong><br><br>`;
+
+  if(negReviews.length===0&&negEnq.length===0){
+    html+=`✅ <strong>No complaints detected!</strong><br><br>All reviews and enquiries look positive. Keep it up! 🎉`;
+    return html;
+  }
+
+  if(negReviews.length>0){
+    html+=`🔴 <strong>${negReviews.length} negative review(s) detected:</strong><br>`;
+    negReviews.slice(0,3).forEach(r=>{
+      const text=(r.review||r.text||r.comment||'').substring(0,80);
+      const stars='⭐'.repeat(r.rating||1);
+      html+=`<br>• ${stars} "${text}..." — <em>${r.name||'Anonymous'}</em>`;
+    });
+    if(negReviews.length>3)html+=`<br><em>...and ${negReviews.length-3} more</em>`;
+    html+='<br><br>';
+  }
+
+  if(negEnq.length>0){
+    html+=`🟡 <strong>${negEnq.length} urgent enquiry/complaint message(s):</strong><br>`;
+    negEnq.slice(0,2).forEach(e=>{
+      const text=(e.message||e.msg||'').substring(0,60);
+      html+=`<br>• "${text}..." — <em>${e.name||'User'}</em>`;
+    });
+    html+='<br><br>';
+  }
+
+  html+=`💡 Go to Reviews / Enquiries tab to respond.`;
+  return html;
+}
+
+// ---- STATS ----
+function doStats(){
+  const allRooms=[...aiData.rooms,...aiData.longRooms];
+  const cities={};
+  allRooms.forEach(r=>{if(r.city)cities[r.city]=(cities[r.city]||0)+1;});
+  const topCity=Object.entries(cities).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const avgRating=allRooms.filter(r=>r.rating).reduce((a,r)=>a+r.rating,0)/Math.max(allRooms.filter(r=>r.rating).length,1);
+  const totalClicks=allRooms.reduce((a,r)=>a+(r.clicks||0),0);
+  const featured=allRooms.filter(r=>r.featured).length;
+
+  let html=`<strong>📊 Site Statistics</strong><br><br>`;
+  html+=`🏠 Total Rooms: <strong>${allRooms.length}</strong><br>`;
+  html+=`📅 Daily Rooms: ${aiData.rooms.length} | 🗓 Long Stay: ${aiData.longRooms.length}<br>`;
+  html+=`⭐ Avg Rating: <strong>${avgRating.toFixed(1)}/5</strong><br>`;
+  html+=`👆 Total Clicks: <strong>${totalClicks}</strong><br>`;
+  html+=`🌟 Featured Rooms: ${featured}<br>`;
+  html+=`⭐ Reviews: ${aiData.reviews.length}<br>`;
+  html+=`📩 Enquiries: ${aiData.enquiries.length}<br>`;
+  html+=`📋 Submissions: ${aiData.submissions.length}<br><br>`;
+  html+=`🏙 <strong>Top Cities:</strong><br>`;
+  topCity.forEach(([city,count])=>{html+=`• ${city}: ${count} rooms<br>`;});
+  return html;
+}
+
+// ---- LOW RATINGS ----
+function doLowRatings(){
+  const allRooms=[...aiData.rooms,...aiData.longRooms];
+  const low=allRooms.filter(r=>r.rating&&r.rating<=3).sort((a,b)=>a.rating-b.rating);
+  if(low.length===0)return `✅ <strong>All rooms have good ratings!</strong><br><br>No rooms with ≤3 stars found. 🎉`;
+  let html=`<strong>⭐ Low Rating Rooms (≤3 stars)</strong><br><br>`;
+  low.slice(0,8).forEach(r=>{
+    const stars='⭐'.repeat(r.rating||1);
+    html+=`${stars} <strong>${r.name||'Unnamed'}</strong> — ${r.city||'—'}<br>`;
+    html+=`<small>SKU: ${r.sku||'—'} | ${r.stayType==='long'?'Long Stay':'Daily'}</small><br><br>`;
+  });
+  if(low.length>8)html+=`<em>...and ${low.length-8} more rooms</em><br>`;
+  html+=`<br>💡 Consider updating these listings or investigating complaints.`;
+  return html;
+}
+
+// ---- PENDING ----
+function doPending(){
+  const pendingSubs=aiData.submissions.filter(r=>r.status==='pending'||!r.status);
+  const pendingRevs=aiData.reviews.filter(r=>r.status==='pending'||!r.status);
+  const unreadEnq=aiData.enquiries.filter(r=>r.status==='unread'||!r.status);
+
+  let html=`<strong>📋 Pending Items</strong><br><br>`;
+  html+=`📬 Submissions awaiting approval: <strong>${pendingSubs.length}</strong><br>`;
+  html+=`⭐ Reviews awaiting approval: <strong>${pendingRevs.length}</strong><br>`;
+  html+=`📩 Unread enquiries: <strong>${unreadEnq.length}</strong><br><br>`;
+
+  if(pendingSubs.length>0){
+    html+=`<strong>Latest submissions:</strong><br>`;
+    pendingSubs.slice(0,3).forEach(s=>{
+      html+=`• ${s.name||'Room'} — ${s.city||'—'}<br>`;
+    });
+    html+='<br>';
+  }
+  if(unreadEnq.length>0){
+    html+=`<strong>Unread enquiries from:</strong><br>`;
+    unreadEnq.slice(0,3).forEach(e=>{
+      html+=`• ${e.name||'User'} — ${e.city||'—'}<br>`;
+    });
+  }
+  if(pendingSubs.length===0&&pendingRevs.length===0&&unreadEnq.length===0){
+    html=`✅ <strong>All clear!</strong> No pending items. Everything is up to date. 🎉`;
+  }
+  return html;
+}
+
+// ---- CITY QUERY ----
+function doCityQuery(city,allRooms){
+  const cityRooms=allRooms.filter(r=>(r.city||'').toLowerCase().includes(city));
+  if(cityRooms.length===0)return `🏙 No rooms found in <strong>${city}</strong> yet.`;
+  const available=cityRooms.filter(r=>r.published);
+  const avgRating=cityRooms.filter(r=>r.rating).reduce((a,r)=>a+r.rating,0)/Math.max(cityRooms.filter(r=>r.rating).length,1);
+  let html=`<strong>🏙 ${city.charAt(0).toUpperCase()+city.slice(1)} — Room Analysis</strong><br><br>`;
+  html+=`Total rooms: <strong>${cityRooms.length}</strong> (${available.length} live)<br>`;
+  html+=`Avg rating: <strong>${avgRating.toFixed(1)}/5</strong><br><br>`;
+  cityRooms.slice(0,4).forEach(r=>{
+    html+=`• <strong>${r.name||'Room'}</strong><br>`;
+    html+=`  SAR ${r.price||'—'} | ${'⭐'.repeat(r.rating||3)} | ${r.status||'Available'}<br>`;
+  });
+  if(cityRooms.length>4)html+=`<br><em>...and ${cityRooms.length-4} more rooms</em>`;
+  return html;
+}
+
+// ---- ROOMS QUERY ----
+function doRoomsQuery(ql,allRooms){
+  const available=allRooms.filter(r=>r.published);
+  const featured=allRooms.filter(r=>r.featured);
+  let html=`<strong>🏠 Rooms Overview</strong><br><br>`;
+  html+=`Total: ${allRooms.length} | Live: ${available.length} | Featured: ${featured.length}<br><br>`;
+  html+=`<strong>Recently added:</strong><br>`;
+  allRooms.slice(0,4).forEach(r=>{
+    html+=`• ${r.name||'Room'} — ${r.city||'—'} (SAR ${r.price||'—'})<br>`;
+  });
+  return html;
+}
+
+// ---- REVIEWS QUERY ----
+function doReviewsQuery(){
+  const approved=aiData.reviews.filter(r=>r.status==='approved');
+  const pending=aiData.reviews.filter(r=>r.status==='pending'||!r.status);
+  const avgRating=aiData.reviews.filter(r=>r.rating).reduce((a,r)=>a+r.rating,0)/Math.max(aiData.reviews.filter(r=>r.rating).length,1);
+  let html=`<strong>⭐ Reviews Overview</strong><br><br>`;
+  html+=`Total: ${aiData.reviews.length} | Approved: ${approved.length} | Pending: ${pending.length}<br>`;
+  html+=`Avg Rating: <strong>${avgRating.toFixed(1)}/5</strong><br><br>`;
+  const neg=doComplaintScanRaw();
+  if(neg.length>0)html+=`⚠️ ${neg.length} negative review(s) detected — type "complaints" for details.`;
+  else html+=`✅ No negative reviews detected!`;
+  return html;
+}
+
+// ---- ENQUIRIES QUERY ----
+function doEnquiriesQuery(){
+  const unread=aiData.enquiries.filter(r=>r.status==='unread'||!r.status);
+  const solved=aiData.enquiries.filter(r=>r.status==='solved');
+  let html=`<strong>📩 Enquiries Overview</strong><br><br>`;
+  html+=`Total: ${aiData.enquiries.length} | Unread: ${unread.length} | Solved: ${solved.length}<br><br>`;
+  if(unread.length>0){
+    html+=`<strong>Latest unread:</strong><br>`;
+    unread.slice(0,3).forEach(e=>{
+      html+=`• ${e.name||'User'} — ${e.city||'—'}: "${(e.message||e.msg||'').substring(0,40)}..."<br>`;
+    });
+  } else html+=`✅ No unread enquiries!`;
+  return html;
+}
+
+// ============ BULK DEMO ROOMS ============
+window.bulkAddDemo=async function(){
+  if(!confirm('Add 24 demo rooms to Firebase? (12 Daily + 12 Long Stay)'))return;
+  const btn=event.target;btn.disabled=true;btn.textContent='Adding...';
+
+  const DAILY=[
+    {city:"Riyadh",district:"Al Olaya",name:"Luxury Single Room — Al Olaya Riyadh",nameAr:"غرفة مفردة فاخرة — العليا الرياض",type:"Single Room",price:850,desc:"Premium single room in the heart of Al Olaya business district. Walking distance to malls, restaurants and metro. Fully furnished with high-speed WiFi and private bathroom.",descAr:"غرفة مفردة راقية في قلب حي العليا التجاري.",amenities:["AC","WiFi","Furnished","Private Bath","TV","Fridge","Security","Elevator"],img:"https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80",rating:5,sku:"SH-D1001",featured:true,phone:"966541873266"},
+    {city:"Jeddah",district:"Al Hamra",name:"Sea View Studio — Al Hamra Jeddah",nameAr:"استوديو إطلالة بحرية — الحمراء جدة",type:"Studio",price:1500,desc:"Beautiful studio with partial sea view on the famous Jeddah Corniche. Fully furnished with balcony, modern kitchen, and high-speed internet.",descAr:"استوديو رائع بإطلالة على البحر في كورنيش جدة.",amenities:["AC","WiFi","Kitchen","Furnished","Balcony","Private Bath","TV","Parking"],img:"https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80",rating:5,sku:"SH-D2001",featured:true,phone:"966541873266"},
+    {city:"Dammam",district:"Al Shati",name:"Executive Room — Al Shati Dammam",nameAr:"غرفة تنفيذية — الشاطئ الدمام",type:"Single Room",price:900,desc:"Premium executive room near Dammam Corniche. Modern furnishings, private bath, fast WiFi.",descAr:"غرفة تنفيذية راقية قرب كورنيش الدمام.",amenities:["AC","WiFi","Furnished","Private Bath","TV","Security","Elevator","Parking"],img:"https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80",rating:4,sku:"SH-D3001",featured:true,phone:"966541873266"},
+    {city:"Makkah",district:"Ajyad",name:"Haram View Room — Ajyad Makkah",nameAr:"غرفة بإطلالة الحرم — أجياد مكة",type:"Single Room",price:1800,desc:"Blessed room with partial Haram view just 5 minutes walking to Masjid Al-Haram. Perfect for Umrah visitors.",descAr:"غرفة مباركة بإطلالة على الحرم. 5 دقائق مشياً للمسجد الحرام.",amenities:["AC","WiFi","Furnished","Private Bath","TV","Security","Elevator"],img:"https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=800&q=80",rating:5,sku:"SH-D4001",featured:true,phone:"966541873266"},
+    {city:"Madinah",district:"Al Anbariyah",name:"Nabawi Walking Room — Madinah",nameAr:"غرفة قرب النبوي — المدينة المنورة",type:"Single Room",price:1200,desc:"Peaceful room just 8 minutes walk to Masjid Al-Nabawi. Clean, quiet and comfortable.",descAr:"غرفة هادئة على بعد 8 دقائق مشياً من المسجد النبوي.",amenities:["AC","WiFi","Furnished","Private Bath","TV","Security","Elevator"],img:"https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&q=80",rating:5,sku:"SH-D5001",featured:true,phone:"966541873266"},
+    {city:"Khobar",district:"Al Corniche",name:"Corniche Studio — Al Khobar",nameAr:"استوديو الكورنيش — الخبر",type:"Studio",price:1100,desc:"Modern studio apartment on the famous Khobar Corniche. Sea breeze, beautiful views.",descAr:"شقة استوديو حديثة على كورنيش الخبر.",amenities:["AC","WiFi","Kitchen","Furnished","Balcony","Private Bath","TV","Parking"],img:"https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80",rating:4,sku:"SH-D6001",featured:false,phone:"966541873266"},
+    {city:"Tabuk",district:"Al Wahah",name:"Modern Room — Al Wahah Tabuk",nameAr:"غرفة حديثة — الواحة تبوك",type:"Single Room",price:600,desc:"Modern single room in the heart of Tabuk. Close to Tabuk Castle and restaurants.",descAr:"غرفة مفردة حديثة في قلب تبوك. قريبة من قلعة تبوك.",amenities:["AC","WiFi","Furnished","Private Bath","TV","Security"],img:"https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80",rating:4,sku:"SH-D7001",featured:false,phone:"966541873266"},
+    {city:"Abha",district:"Al Manhal",name:"Mountain View Room — Abha",nameAr:"غرفة إطلالة الجبل — أبها",type:"Single Room",price:750,desc:"Stunning mountain view room in cool Abha. Enjoy refreshing Asir climate and green mountains.",descAr:"غرفة بإطلالة جبلية في مدينة أبها المنعشة.",amenities:["AC","WiFi","Furnished","Private Bath","Balcony","TV","Security"],img:"https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&q=80",rating:5,sku:"SH-D8001",featured:true,phone:"966541873266"},
+    {city:"Riyadh",district:"Al Malaz",name:"Cozy Studio — Al Malaz Riyadh",nameAr:"استوديو مريح — الملز الرياض",type:"Studio",price:1200,desc:"Modern studio in Al Malaz. Equipped kitchen, private bathroom, fast WiFi.",descAr:"استوديو حديث في الملز. مطبخ مجهز وحمام خاص.",amenities:["AC","WiFi","Kitchen","Furnished","Private Bath","Washing Machine","Parking"],img:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",rating:4,sku:"SH-D1002",featured:false,phone:"966541873266"},
+    {city:"Jeddah",district:"Al Salamah",name:"Modern Single — Al Salamah Jeddah",nameAr:"غرفة مفردة — السلامة جدة",type:"Single Room",price:700,desc:"Clean modern single room in Al Salamah. Close to shopping centers and hospitals.",descAr:"غرفة مفردة نظيفة في السلامة. قريبة من المراكز التجارية.",amenities:["AC","WiFi","Furnished","Private Bath","TV","Security"],img:"https://images.unsplash.com/photo-1631049421450-348ccd7f8949?w=800&q=80",rating:4,sku:"SH-D2002",featured:false,phone:"966541873266"},
+    {city:"Dammam",district:"Al Nuzha",name:"Budget Bed Space — Al Nuzha Dammam",nameAr:"سرير مشترك — النزهة الدمام",type:"Bed Space",price:280,desc:"Clean affordable bed space in Al Nuzha. Shared kitchen and bathrooms. WiFi included.",descAr:"سرير مشترك نظيف في النزهة. مطبخ وحمامات مشتركة.",amenities:["AC","WiFi","Kitchen","Security"],img:"https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80",rating:3,sku:"SH-D3002",featured:false,phone:"966541873266"},
+    {city:"Makkah",district:"Al Aziziyah",name:"Budget Room — Al Aziziyah Makkah",nameAr:"غرفة اقتصادية — العزيزية مكة",type:"Single Room",price:650,desc:"Affordable clean room in Al Aziziyah. 15 minutes by bus to Masjid Al-Haram.",descAr:"غرفة نظيفة في العزيزية. 15 دقيقة للمسجد الحرام.",amenities:["AC","WiFi","Security"],img:"https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80",rating:3,sku:"SH-D4002",featured:false,phone:"966541873266"},
+  ];
+
+  const LONG=[
+    {city:"Riyadh",district:"Al Sulimaniyah",name:"Premium Monthly Room — Al Sulimaniyah",nameAr:"غرفة شهرية مميزة — السليمانية",type:"Single Room",price:1800,duration:"Monthly",desc:"Spacious single room in upscale Al Sulimaniyah. All bills included, gym access.",descAr:"غرفة مفردة واسعة في السليمانية الراقية. جميع الفواتير مشمولة.",amenities:["AC","WiFi","Furnished","Private Bath","Gym","Security","Elevator","Parking"],inclusions:{water:"yes",electricity:"yes",internet:"yes",cleaning:"yes"},img:"https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80",rating:5,sku:"SH-L1001",featured:true,phone:"966541873266"},
+    {city:"Jeddah",district:"Al Rawdah",name:"Family Apartment — Al Rawdah Jeddah",nameAr:"شقة عائلية — الروضة جدة",type:"Family Apartment",price:3500,duration:"Monthly",desc:"Spacious family apartment in quiet Al Rawdah. 2 bedrooms, full kitchen, 2 bathrooms.",descAr:"شقة عائلية واسعة في الروضة. غرفتان ومطبخ كامل.",amenities:["AC","WiFi","Kitchen","Furnished","Washing Machine","Parking","Balcony","TV","Fridge"],inclusions:{water:"yes",electricity:"no",internet:"yes",cleaning:"no"},img:"https://images.unsplash.com/photo-1556020685-ae41abfc9365?w=800&q=80",rating:5,sku:"SH-L2001",featured:true,phone:"966541873266"},
+    {city:"Dammam",district:"Al Faisaliyah",name:"Studio Near Aramco — Dammam",nameAr:"استوديو قرب أرامكو — الدمام",type:"Studio",price:2200,duration:"Monthly",desc:"Well-equipped studio near Saudi Aramco HQ. Perfect for oil and gas professionals.",descAr:"استوديو مجهز قرب أرامكو. مثالي لمهنيي النفط.",amenities:["AC","WiFi","Kitchen","Furnished","Parking","Washing Machine","Private Bath"],inclusions:{water:"yes",electricity:"no",internet:"yes",cleaning:"no"},img:"https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&q=80",rating:4,sku:"SH-L3001",featured:false,phone:"966541873266"},
+    {city:"Makkah",district:"Al Rusayfah",name:"Family Suite — Al Rusayfah Makkah",nameAr:"جناح عائلي — الرصيفة مكة",type:"Family Apartment",price:4500,duration:"Monthly",desc:"Spacious family suite for up to 6 guests. 3 bedrooms, full kitchen. Free Haram shuttle.",descAr:"جناح عائلي فسيح لـ 6 أشخاص. 3 غرف ومطبخ. شاتل مجاني للحرم.",amenities:["AC","WiFi","Kitchen","Furnished","Washing Machine","TV","Fridge","Elevator"],inclusions:{water:"yes",electricity:"yes",internet:"yes",cleaning:"yes"},img:"https://images.unsplash.com/photo-1556020685-ae41abfc9365?w=800&q=80",rating:5,sku:"SH-L4001",featured:false,phone:"966541873266"},
+    {city:"Madinah",district:"Quba",name:"Family Flat — Quba Madinah",nameAr:"شقة عائلية — قباء المدينة",type:"Family Apartment",price:2800,duration:"Monthly",desc:"Comfortable family flat near Quba Mosque. 2 bedrooms, full kitchen, parking.",descAr:"شقة عائلية قرب مسجد قباء. غرفتان ومطبخ.",amenities:["AC","WiFi","Kitchen","Furnished","Parking","TV","Fridge","Washing Machine"],inclusions:{water:"yes",electricity:"no",internet:"yes",cleaning:"no"},img:"https://images.unsplash.com/photo-1505873242700-f289a29e1e0f?w=800&q=80",rating:4,sku:"SH-L5001",featured:false,phone:"966541873266"},
+    {city:"Khobar",district:"Al Thuqbah",name:"Executive Single — Al Thuqbah Khobar",nameAr:"غرفة تنفيذية — الثقبة الخبر",type:"Single Room",price:2000,duration:"Monthly",desc:"Well-furnished executive room near Aramco and SABIC offices. All bills included.",descAr:"غرفة تنفيذية قرب أرامكو وسابك. جميع الفواتير مشمولة.",amenities:["AC","WiFi","Furnished","Private Bath","Parking","Security","TV"],inclusions:{water:"yes",electricity:"yes",internet:"yes",cleaning:"yes"},img:"https://images.unsplash.com/photo-1631049421450-348ccd7f8949?w=800&q=80",rating:4,sku:"SH-L6001",featured:true,phone:"966541873266"},
+    {city:"Tabuk",district:"Al Rawdah",name:"Nature Studio — Al Rawdah Tabuk",nameAr:"استوديو الطبيعة — الروضة تبوك",type:"Studio",price:1500,duration:"Monthly",desc:"Peaceful studio surrounded by Tabuk nature. Perfect for NEOM and Wadi Rum explorers.",descAr:"استوديو هادئ وسط طبيعة تبوك.",amenities:["AC","WiFi","Kitchen","Furnished","Parking","TV"],inclusions:{water:"yes",electricity:"no",internet:"yes",cleaning:"no"},img:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",rating:4,sku:"SH-L7001",featured:false,phone:"966541873266"},
+    {city:"Abha",district:"Al Aziziyah",name:"Cool Studio Monthly — Abha",nameAr:"استوديو شهري منعش — أبها",type:"Studio",price:1600,duration:"Monthly",desc:"Charming studio in Abha city of mist. Cool weather year-round, fully furnished.",descAr:"استوديو ساحر في أبها مدينة الضباب. طقس منعش طوال العام.",amenities:["AC","WiFi","Kitchen","Furnished","Parking","TV","Fridge"],inclusions:{water:"yes",electricity:"no",internet:"yes",cleaning:"no"},img:"https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&q=80",rating:4,sku:"SH-L8001",featured:false,phone:"966541873266"},
+    {city:"Riyadh",district:"Al Nakheel",name:"Sharing Room — Al Nakheel Riyadh",nameAr:"غرفة مشتركة — النخيل الرياض",type:"Sharing Room",price:900,duration:"Monthly",desc:"Affordable sharing room in northern Riyadh. All utilities included. Close to Ring Road.",descAr:"غرفة مشتركة في شمال الرياض. جميع الخدمات مشمولة.",amenities:["AC","WiFi","Kitchen","Security","Washing Machine"],inclusions:{water:"yes",electricity:"yes",internet:"yes",cleaning:"no"},img:"https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80",rating:3,sku:"SH-L1002",featured:false,phone:"966541873266"},
+    {city:"Jeddah",district:"Al Shati",name:"Beachside Room — Al Shati Jeddah",nameAr:"غرفة قرب الشاطئ — الشاطئ جدة",type:"Single Room",price:2500,duration:"Monthly",desc:"Lovely single room steps from Al Shati beach. Sea breeze daily. All bills included.",descAr:"غرفة جميلة خطوات من شاطئ الشاطئ. نسيم البحر يومياً.",amenities:["AC","WiFi","Furnished","Private Bath","Balcony","TV","Security"],inclusions:{water:"yes",electricity:"yes",internet:"yes",cleaning:"yes"},img:"https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80",rating:5,sku:"SH-L2002",featured:true,phone:"966541873266"},
+    {city:"Dammam",district:"Al Rawdah",name:"Family Apartment — Al Rawdah Dammam",nameAr:"شقة عائلية — الروضة الدمام",type:"Family Apartment",price:3200,duration:"Monthly",desc:"Spacious 3-bedroom family apartment in Al Rawdah. Quiet neighborhood, close to schools.",descAr:"شقة عائلية 3 غرف في الروضة. حي هادئ قرب المدارس.",amenities:["AC","WiFi","Kitchen","Furnished","Washing Machine","Parking","TV","Fridge"],inclusions:{water:"yes",electricity:"no",internet:"yes",cleaning:"no"},img:"https://images.unsplash.com/photo-1505873242700-f289a29e1e0f?w=800&q=80",rating:4,sku:"SH-L3002",featured:false,phone:"966541873266"},
+    {city:"Khobar",district:"Al Rawdah",name:"Sharing Room — Al Rawdah Khobar",nameAr:"غرفة مشتركة — الروضة الخبر",type:"Sharing Room",price:800,duration:"Monthly",desc:"Clean sharing room in Al Rawdah Khobar. 2 occupants max. WiFi and AC included.",descAr:"غرفة مشتركة نظيفة في روضة الخبر. واي فاي ومكيف.",amenities:["AC","WiFi","Kitchen","Security"],inclusions:{water:"yes",electricity:"no",internet:"yes",cleaning:"no"},img:"https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80",rating:3,sku:"SH-L6002",featured:false,phone:"966541873266"},
+  ];
+
+  let ok=0,fail=0;
+  const now=new Date().toISOString();
+  const today=new Date().toLocaleDateString('en-SA');
+
+  for(const r of DAILY){
+    try{
+      await addDoc(collection(db,'dailyRooms'),{
+        ...r,stayType:'daily',status:'Available',published:true,
+        clicks:0,isDemo:true,createdAt:now,date:today
+      });
+      ok++;
+    }catch(e){fail++;console.error(r.name,e);}
+  }
+  for(const r of LONG){
+    try{
+      await addDoc(collection(db,'longRooms'),{
+        ...r,stayType:'long',status:'Available',published:true,
+        clicks:0,isDemo:true,createdAt:now,date:today
+      });
+      ok++;
+    }catch(e){fail++;console.error(r.name,e);}
+  }
+
+  btn.disabled=false;
+  btn.textContent='🚀 Add 24 Demo Rooms';
+  if(fail===0){
+    toast(`✅ ${ok} demo rooms added successfully!`);
+    loadRooms('dailyRooms','daily-tbody');
+    loadRooms('longRooms','long-tbody');
+    loadDashboard();
+  } else {
+    toast(`⚠️ ${ok} added, ${fail} failed`,'error');
+  }
+};
+</script>
+</body>
+</html>
