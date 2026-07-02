@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dv5erwivl/image/upload/v1779383751/IMG_3500_rwh6pl.png"/>
+<link rel="apple-touch-icon" href="https://res.cloudinary.com/dv5erwivl/image/upload/v1779383751/IMG_3500_rwh6pl.png"/>
+<title>Sukoon Homes | Find Your Space, Sleep in Peace | سكون هومز</title>
+<meta name="description" content="Find verified rooms for rent in Saudi Arabia. Daily & monthly rooms in Riyadh, Jeddah, Dammam, Makkah. Free listings. سكون هومز"/>
+<link rel="canonical" href="https://www.sukoonhomesksa.com/"/>
+<link rel="alternate" hreflang="en" href="https://www.sukoonhomesksa.com/"/>
+<link rel="alternate" hreflang="ar" href="https://www.sukoonhomesksa.com/"/>
+<meta property="og:title" content="Sukoon Homes | Find Your Space, Sleep in Peace"/>
+<meta property="og:description" content="Verified rooms for rent across Saudi Arabia. Free listings, no commission."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://www.sukoonhomesksa.com/"/>
+<meta property="og:image" content="https://res.cloudinary.com/dv5erwivl/image/upload/w_1200,h_630,c_pad,b_rgb:0d4a2f/v1779383751/IMG_3500_rwh6pl.png"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:locale:alternate" content="ar_SA"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Sukoon Homes | Find Your Space, Sleep in Peace"/>
+<meta name="twitter:description" content="Verified rooms for rent across Saudi Arabia. Daily & monthly. Free listings, no commission."/>
+<meta name="twitter:image" content="https://res.cloudinary.com/dv5erwivl/image/upload/w_1200,h_630,c_pad,b_rgb:0d4a2f/v1779383751/IMG_3500_rwh6pl.png"/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Sukoon Homes","alternateName":"سكون هومز","url":"https://www.sukoonhomesksa.com","telephone":"+966541873266","logo":{"@type":"ImageObject","url":"https://res.cloudinary.com/dv5erwivl/image/upload/v1779383751/IMG_3500_rwh6pl.png","width":512,"height":512},"sameAs":[],"areaServed":{"@type":"Country","name":"Saudi Arabia"},"description":"Verified rooms for rent across Saudi Arabia. Daily and monthly rentals. Free listings, no commission."}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"Sukoon Homes","alternateName":"سكون هومز","url":"https://www.sukoonhomesksa.com","potentialAction":{"@type":"SearchAction","target":"https://www.sukoonhomesksa.com/rooms-daily.html?q={search_term_string}","query-input":"required name=search_term_string"}}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+<!-- NON-MODULE script — runs immediately, no timing issues -->
+<script>
+// ============ LANGUAGE (non-module, runs immediately) ============
+var SH = window.SH = {
+  lg: localStorage.getItem('sh_lang') || 'en',
+
+  setLang: function(l, _autoApply) {
+    SH.lg = l;
+    if (!_autoApply) localStorage.setItem('sh_lang', l);
+    var root = document.getElementById('html-root');
+    root.setAttribute('lang', l);
+    root.setAttribute('dir', l === 'ar' ? 'rtl' : 'ltr');
+    // Toggle active buttons
+    ['btn-en','btn-ar','mm-btn-en','mm-btn-ar'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle('active', id.indexOf(l === 'ar' ? 'ar' : 'en') > -1);
+    });
+    // Translate all data-en/data-ar elements
+    document.querySelectorAll('[data-en]').forEach(function(el) {
+      var t = l === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+      if (!t || ['INPUT','TEXTAREA','SELECT'].includes(el.tagName)) return;
+      if (l === 'ar' && t.indexOf('<') > -1) {
+        var tmp = document.createElement('div');
+        tmp.innerHTML = t;
+        el.textContent = tmp.textContent;
+      } else {
+        el.innerHTML = t;
+      }
+    });
+    document.querySelectorAll('[data-placeholder-en]').forEach(function(el) {
+      el.placeholder = l === 'ar' ? (el.getAttribute('data-placeholder-ar') || '') : (el.getAttribute('data-placeholder-en') || '');
+    });
+    // Hide lang popup
+    // Only hide popup if user explicitly chose (not on auto-apply)
+    if (!_autoApply) {
+      var lo = document.getElementById('lang-overlay');
+      if (lo) { lo.classList.remove('show'); localStorage.setItem('sh_lang', l); }
+    }
+  },
+
+  // Menu
+  toggleMM: function() {
+    document.getElementById('mobile-menu').classList.toggle('open');
+    document.getElementById('mm-overlay').classList.toggle('show');
+  },
+  closeMM: function() {
+    document.getElementById('mobile-menu').classList.remove('open');
+    document.getElementById('mm-overlay').classList.remove('show');
+  },
+
+  // Search
+  searchTab: 'daily',
+  setSearchTab: function(tab) {
+    SH.searchTab = tab;
+    document.getElementById('tab-daily').classList.toggle('active', tab === 'daily');
+    document.getElementById('tab-long').classList.toggle('active', tab === 'long');
+  },
+  doSearch: function() {
+    var q = (document.getElementById('search-q') || {value:''}).value.trim();
+    var page = SH.searchTab === 'long' ? 'rooms-longstay.html' : 'rooms-daily.html';
+    window.location.href = page + (q ? '?q=' + encodeURIComponent(q) : '');
+  },
+
+  // FAQ
+  toggleFaq: function(btn) {
+    var item = btn.parentElement;
+    var wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
+    if (!wasOpen) item.classList.add('open');
+  },
+
+  // Wishlist
+  getWL: function() {
+    try { return JSON.parse(localStorage.getItem('sh_wl') || '[]'); } catch(e) { return []; }
+  },
+  updWC: function() {
+    var el = document.getElementById('wl-count');
+    if (!el) return;
+    var n = SH.getWL().length;
+    el.textContent = n > 0 ? n : '';
+    el.style.display = n > 0 ? 'inline' : 'none';
+  },
+  toggleFav: function(id) {
+    var wl = SH.getWL();
+    var idx = wl.indexOf(String(id));
+    if (idx > -1) wl.splice(idx, 1); else wl.push(String(id));
+    localStorage.setItem('sh_wl', JSON.stringify(wl));
+    SH.updWC();
+  },
+  openWL: function() {
+    var ov = document.getElementById('wl-overlay');
+    if (!ov) return;
+    ov.classList.add('open');
+    SH.loadWLContent();
+  },
+  closeWL: function() {
+    var ov = document.getElementById('wl-overlay');
+    if (ov) ov.classList.remove('open');
+  },
+  loadWLContent: function() {
+    var el = document.getElementById('wl-content');
+    if (!el) return;
+    var wl = SH.getWL();
+    if (!wl.length) {
+      el.innerHTML = '<div style="text-align:center;padding:36px 16px;color:#7a9e88"> ' + (SH.lg === 'ar' ? 'لا توجد غرف محفوظة' : 'No saved rooms yet') + '<br/><a href="rooms-daily.html" style="color:#1a7a4a;font-size:12px;margin-top:8px;display:inline-block">' + (SH.lg === 'ar' ? 'تصفح الغرف →' : 'Browse Rooms →') + '</a></div>';
+      return;
+    }
+    el.innerHTML = '<div style="text-align:center;padding:16px;color:#7a9e88;font-size:12px">' + (SH.lg === 'ar' ? 'جاري التحميل...' : 'Loading...') + '</div>';
+    // Firebase load — called from module script
+    if (window._loadWLFromFirebase) window._loadWLFromFirebase(wl, el, SH.lg);
+  }
+};
+
+// Apply language on page load immediately
+document.addEventListener('DOMContentLoaded', function() {
+  var urlLang = new URLSearchParams(window.location.search).get('lang');
+  var savedLang = localStorage.getItem('sh_lang');
+  if (urlLang === 'ar' || urlLang === 'en') {
+    savedLang = urlLang;
+    localStorage.setItem('sh_lang', urlLang);
+  }
+  var lo = document.getElementById('lang-overlay');
+  if (savedLang) {
+    if (lo) lo.classList.remove('show');
+    if (savedLang !== 'en') SH.setLang(savedLang, true);
+  } else {
+    // First visit — show popup
+    if (lo) lo.classList.add('show');
+  }
+  SH.updWC();
+});
+
+window.addEventListener('storage', function(e) {
+  if (e.key === 'sh_wl') SH.updWC();
+});
+// ============ SMOOTH LOADING ============
+window.addEventListener('load', function() {
+  document.body.classList.add('loaded');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.sec-fade').forEach(function(el) { observer.observe(el); });
+});
+
+window.addEventListener('pageshow', function() {
+  document.body.style.opacity = '1';
+  SH.updWC();
+});
+</script>
+
+<style>
+:root{--green:#0d4a2f;--green-mid:#1a7a4a;--green-soft:#2eaa6a;--green-pale:#e6f5ee;--green-light:#c2e8d4;--white:#fff;--off:#f7faf8;--cream:#fdfaf5;--text:#0d2e1c;--muted:#7a9e88;--mid:#3a5a46;--gold:#c9963a;--gold-pale:#fdf3e3;--border:#d4e8dc;--red:#c0392b;--red-pale:#fdecea;--shadow:0 4px 24px rgba(13,74,47,.10);--shadow-lg:0 12px 48px rgba(13,74,47,.16);}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;}
+[dir="rtl"]{font-family:'Tajawal',sans-serif;}
+img{max-width:100%;display:block;}a{text-decoration:none;}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 5%;}
+.nav-logo{display:flex;align-items:center;gap:9px;}
+.nav-logo svg{width:34px;height:34px;flex-shrink:0;}
+.logo-name{font-family:'Playfair Display',serif;font-size:16px;color:var(--green);font-weight:700;white-space:nowrap;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-links{display:flex;align-items:center;gap:2px;}
+.nav-links a{font-size:12px;font-weight:500;color:var(--mid);padding:6px 10px;border-radius:7px;transition:all .2s;}
+.nav-links a:hover{background:var(--green-pale);color:var(--green);}
+.nav-wl{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--mid);padding:6px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:transparent;}
+.nav-wl:hover{border-color:var(--green-soft);color:var(--green);}
+.wl-count{background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:100px;display:none;}
+.lang-toggle{display:flex;background:var(--green-pale);border:1px solid var(--green-light);border-radius:100px;padding:3px;}
+.lang-toggle button{padding:3px 10px;border-radius:100px;border:none;background:transparent;font-size:11px;font-weight:600;cursor:pointer;color:var(--mid);}
+.lang-toggle button.active{background:var(--green);color:#fff;}
+.hamburger{display:flex;flex-direction:column;gap:4px;cursor:pointer;padding:7px;background:none;border:1px solid var(--border);border-radius:7px;}
+.hamburger span{display:block;width:16px;height:2px;background:var(--green);border-radius:2px;}
+
+.mm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199;}
+.mm-overlay.show{display:block;}
+.mobile-menu{position:fixed;top:0;right:-300px;width:280px;height:100vh;background:#fff;z-index:200;box-shadow:-4px 0 24px rgba(0,0,0,.15);overflow-y:auto;transition:right .3s cubic-bezier(.4,0,.2,1);padding:20px 0;}
+[dir="rtl"] .mobile-menu{right:auto;left:-300px;box-shadow:4px 0 24px rgba(0,0,0,.15);transition:left .3s cubic-bezier(.4,0,.2,1);}
+.mobile-menu.open{right:0;}
+[dir="rtl"] .mobile-menu.open{right:auto;left:0;}
+.mm-header{display:flex;align-items:center;justify-content:space-between;padding:0 18px 16px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.mm-logo-name{font-family:'Playfair Display',serif;font-size:15px;color:var(--green);}
+.mm-close{background:none;border:1px solid var(--border);border-radius:7px;padding:6px 9px;cursor:pointer;font-size:16px;color:var(--mid);}
+.mobile-menu a{display:flex;align-items:center;gap:9px;padding:11px 18px;font-size:13px;font-weight:500;color:var(--mid);border-radius:8px;margin:2px 8px;transition:all .15s;}
+.mobile-menu a:hover,.mobile-menu a.mm-active{background:var(--green-pale);color:var(--green);}
+.mm-lang{display:flex;gap:8px;padding:12px 18px;margin-top:8px;border-top:1px solid var(--border);}
+.mm-lang button{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:var(--mid);}
+.mm-lang button.active{background:var(--green);color:#fff;border-color:var(--green);}
+
+/* SMOOTH LOADING — Cartier style */
+body{opacity:0;transition:opacity .4s ease;}
+body.loaded{opacity:1;}
+.sec-fade{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.25,.46,.45,.94),transform .7s cubic-bezier(.25,.46,.45,.94);}
+.sec-fade.visible{opacity:1;transform:none;}
+.sec-fade-delay1{transition-delay:.1s;}
+.sec-fade-delay2{transition-delay:.2s;}
+.sec-fade-delay3{transition-delay:.3s;}
+/* TWO WAYS TO STAY */
+.stay-card-link{display:block;border-radius:18px;overflow:hidden;text-decoration:none;}
+.stay-card-wrap{position:relative;height:240px;border-radius:18px;overflow:hidden;}
+.stay-card-wrap:hover .stay-card-img{transform:scale(1.04);}
+.stay-card-img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s ease;}
+.stay-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(13,74,47,.88) 0%,rgba(13,74,47,.2) 55%,transparent 100%);}
+.stay-card-arrow{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;backdrop-filter:blur(6px);}
+[dir="rtl"] .stay-card-arrow{right:auto;left:14px;}
+.stay-card-body{position:absolute;bottom:0;left:0;right:0;padding:18px 20px;}
+.stay-card-icon{font-size:26px;margin-bottom:6px;}
+.stay-card-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:3px;}
+.stay-card-sub{font-size:12px;color:rgba(255,255,255,.65);}
+.lang-overlay{position:fixed;inset:0;background:rgba(13,74,47,.93);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+.lang-overlay.show{display:flex;}
+.lang-overlay.hidden{display:none!important;}
+.lang-box{background:#fff;border-radius:20px;padding:36px 28px;width:100%;max-width:360px;text-align:center;margin:16px;}
+.lang-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px;}
+.lang-logo-name{font-family:'Playfair Display',serif;font-size:18px;color:var(--green);}
+.lang-logo-ar{font-family:'Tajawal',sans-serif;font-size:13px;color:var(--muted);}
+.lang-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.lang-title-ar{font-family:'Tajawal',sans-serif;font-size:13px;color:var(--muted);direction:rtl;margin-bottom:20px;}
+.lang-btns{display:flex;gap:10px;}
+.lang-btn{flex:1;padding:14px;border-radius:12px;border:2px solid var(--border);cursor:pointer;transition:all .2s;font-family:inherit;background:#fff;}
+.lang-btn:hover{border-color:var(--green);background:var(--green-pale);}
+.lang-btn-title{display:block;font-size:16px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.lang-btn-sub{display:block;font-size:11px;color:var(--muted);}
+
+.hero{position:relative;min-height:88vh;display:flex;align-items:center;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background-size:cover;background-position:center top;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,74,47,.92) 0%,rgba(13,74,47,.55) 100%);}
+.hero-content{position:relative;z-index:2;padding:60px 5%;width:100%;max-width:680px;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.85);margin-bottom:18px;letter-spacing:.08em;text-transform:uppercase;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,58px);color:#fff;font-weight:700;line-height:1.15;margin-bottom:10px;}
+.hero h1 em{color:#7ee8b0;font-style:normal;}
+.hero-ar{font-family:'Tajawal',sans-serif;font-size:18px;color:rgba(255,255,255,.45);direction:rtl;margin-bottom:12px;}
+.hero-desc{font-size:15px;color:rgba(255,255,255,.75);line-height:1.7;max-width:480px;margin-bottom:28px;}
+
+
+
+
+section{padding:52px 5%;}
+.sec-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--green-soft);margin-bottom:6px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(24px,3.5vw,36px);color:var(--text);font-weight:700;margin-bottom:6px;}
+.sec-ar{font-family:'Tajawal',sans-serif;font-size:14px;color:var(--muted);direction:rtl;margin-bottom:20px;}
+.sec-center{text-align:center;margin-bottom:32px;}
+
+.cities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+.city-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 14px;cursor:pointer;transition:all .2s;text-align:center;}
+.city-card:hover{border-color:var(--green-soft);background:var(--green-pale);transform:translateY(-2px);}
+.city-icon{font-size:24px;margin-bottom:6px;}
+.city-name{font-size:13px;font-weight:600;color:var(--text);}
+.city-name-ar{font-family:'Tajawal',sans-serif;font-size:11px;color:var(--muted);}
+
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+.review-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;}
+.review-stars{font-size:14px;color:#25a244;margin-bottom:8px;}
+.review-text{font-size:13px;color:var(--mid);line-height:1.7;font-style:italic;margin-bottom:12px;}
+.review-author{display:flex;align-items:center;gap:9px;}
+.review-av{width:34px;height:34px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.review-name{font-size:12px;font-weight:600;color:var(--text);}
+.review-loc{font-size:11px;color:var(--muted);}
+
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;}
+.step-card{padding:24px 20px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.08);text-align:center;}
+.step-icon{font-size:28px;margin-bottom:10px;}
+.step-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:5px;}
+.step-desc{font-size:12px;color:rgba(255,255,255,.55);line-height:1.6;}
+
+.faq-item{border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;background:#fff;}
+.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;padding:15px 20px;background:none;border:none;cursor:pointer;font-size:14px;font-weight:500;color:var(--text);font-family:inherit;text-align:left;}
+[dir="rtl"] .faq-q{text-align:right;}
+.faq-q:hover{background:var(--green-pale);}
+.faq-icon{font-size:18px;color:var(--green);flex-shrink:0;margin-left:10px;transition:transform .2s;}
+[dir="rtl"] .faq-icon{margin-left:0;margin-right:10px;}
+.faq-a{display:none;padding:0 20px 15px;font-size:13px;color:var(--mid);line-height:1.7;}
+.faq-item.open .faq-a{display:block;}
+.faq-item.open .faq-icon{transform:rotate(45deg);}
+
+.wl-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;justify-content:flex-end;}
+.wl-overlay.open{display:flex;}
+[dir="rtl"] .wl-overlay{justify-content:flex-start;}
+.wl-panel{background:#fff;width:100%;max-width:320px;height:100%;overflow-y:auto;padding:20px;}
+.wl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.wl-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--green);}
+.wl-close-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);}
+
+footer{background:#071a0f;padding:36px 5% 18px;}
+.footer-inner{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:28px;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:16px;}
+.footer-brand-name{font-family:'Playfair Display',serif;font-size:16px;color:#fff;margin-bottom:3px;}
+.footer-brand-ar{font-family:'Tajawal',sans-serif;font-size:12px;color:rgba(255,255,255,.3);}
+.footer-brand-tag{font-size:11px;color:rgba(255,255,255,.3);margin-top:6px;line-height:1.6;}
+.footer-col h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.28);margin-bottom:10px;}
+.footer-col a{display:block;font-size:12px;color:rgba(255,255,255,.45);margin-bottom:6px;}
+.footer-col a:hover{color:var(--green-soft);}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.footer-copy{font-size:11px;color:rgba(255,255,255,.2);}
+.footer-links-row{display:flex;gap:12px;}
+.footer-links-row a{font-size:11px;color:rgba(255,255,255,.25);}
+
+.wa-float{position:fixed;bottom:22px;right:22px;z-index:150;}
+[dir="rtl"] .wa-float{right:auto;left:22px;}
+.wa-btn-float{width:50px;height:50px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(37,211,102,.4);border:none;cursor:pointer;}
+
+@media(max-width:768px){
+  .nav-links,.lang-toggle{display:none;}
+  .footer-inner{grid-template-columns:1fr;}
+  .hero{min-height:100svh;}
+  .search-row{flex-direction:column;}
+  [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;}
+  .stay-card-wrap{height:200px;}
+}
+@media(min-width:769px){.hamburger{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- LANG POPUP -->
+<div class="lang-overlay" id="lang-overlay">
+  <div class="lang-box">
+    <div class="lang-logo">
+      <svg viewBox="0 0 36 36" fill="none" width="40" height="40"><rect width="36" height="36" rx="8" fill="#0d4a2f"/><path d="M18 6L6 16H9V30H16V23H20V30H27V16H30L18 6Z" fill="#fff" opacity=".95"/><circle cx="18" cy="19" r="3" fill="#2eaa6a"/></svg>
+      <div><div class="lang-logo-name">Sukoon Homes</div><div class="lang-logo-ar">سكون هومز</div></div>
+    </div>
+    <div class="lang-title">Choose your language</div>
+    <div class="lang-title-ar">اختر لغتك المفضلة</div>
+    <div class="lang-btns">
+      <button type="button" class="lang-btn" onclick="SH.setLang('en')">
+        <span class="lang-btn-title">🇬🇧 English</span>
+        <span class="lang-btn-sub">Continue in English</span>
+      </button>
+      <button type="button" class="lang-btn" onclick="SH.setLang('ar')">
+        <span class="lang-btn-title">🇸🇦 العربية</span>
+        <span class="lang-btn-sub">تابع بالعربية</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <svg viewBox="0 0 36 36" fill="none"><rect width="36" height="36" rx="8" fill="#0d4a2f"/><path d="M18 6L6 16H9V30H16V23H20V30H27V16H30L18 6Z" fill="#fff" opacity=".95"/><circle cx="18" cy="19" r="3" fill="#2eaa6a"/></svg>
+      <span class="logo-name" id="site-name">Sukoon Homes</span>
+    </a>
+    <div class="nav-right">
+      <nav class="nav-links">
+        <a href="rooms-daily.html" data-en="Daily" data-ar="يومي">Daily</a>
+        <a href="rooms-longstay.html" data-en="Long Stay" data-ar="إقامة طويلة">Long Stay</a>
+        <a href="blog.html" data-en="Blog" data-ar="مدونة">Blog</a>
+        <a href="feedback.html" data-en="Reviews" data-ar="تقييمات">Reviews</a>
+        <a href="contact.html" data-en="Contact" data-ar="اتصل">Contact</a>
+        <a href="landlord.html" data-en="My Rooms" data-ar="غرفي" style="color:var(--green);font-weight:600">My Rooms</a>
+      </nav>
+      <button class="nav-chat-btn" onclick="SHChat.open()" id="nav-chat-icon" style="margin-right:4px">💬<span class="nav-chat-badge" id="nav-chat-badge"></span></button>
+      <a href="#" class="nav-wl" onclick="SH.openWL();return false;">
+         <span data-en="Wishlist" data-ar="المفضلة">Wishlist</span>
+        <span class="wl-count" id="wl-count"></span>
+      </a>
+      <div class="lang-toggle">
+        <button id="btn-en" type="button" onclick="SH.setLang('en')" class="active">EN</button>
+        <button id="btn-ar" type="button" onclick="SH.setLang('ar')">AR</button>
+      </div>
+      <button class="hamburger" onclick="SH.toggleMM()"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mm-overlay" id="mm-overlay" onclick="SH.closeMM()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mm-header">
+    <span class="mm-logo-name">Sukoon Homes</span>
+    <button class="mm-close" type="button" onclick="SH.closeMM()">✕</button>
+  </div>
+  <a href="index.html" onclick="SH.closeMM()" class="mm-active"><span data-en="Home" data-ar="الرئيسية">Home</span></a>
+  <a href="rooms-daily.html" onclick="SH.closeMM()"><span data-en="Daily Rooms" data-ar="غرف يومية">Daily Rooms</span></a>
+  <a href="rooms-longstay.html" onclick="SH.closeMM()"><span data-en="Long Stay" data-ar="إقامة طويلة">Long Stay</span></a>
+  <a href="blog.html" onclick="SH.closeMM()"><span data-en="Blog" data-ar="مدونة">Blog</span></a>
+  <a href="feedback.html" onclick="SH.closeMM()"><span data-en="Reviews" data-ar="تقييمات">Reviews</span></a>
+  <a href="contact.html" onclick="SH.closeMM()"><span data-en="Contact" data-ar="اتصل بنا">Contact</span></a>
+  <a href="about.html" onclick="SH.closeMM()"><span data-en="About Us" data-ar="من نحن">About Us</span></a>
+  <a href="sukoon-submit.html" onclick="SH.closeMM()" style="background:var(--green-pale);color:var(--green);font-weight:600;"><span data-en="List Your Room Free" data-ar="أضف غرفتك مجاناً">List Your Room Free</span></a>
+  <a href="landlord.html" onclick="SH.closeMM()" style="color:var(--green);font-weight:600;"><span data-en="🏠 My Rooms" data-ar="🏠 غرفي">🏠 My Rooms</span></a>
+  <div class="mm-lang">
+    <button id="mm-btn-en" type="button" onclick="SH.setLang('en')" class="active">🇬🇧 English</button>
+    <button id="mm-btn-ar" type="button" onclick="SH.setLang('ar')">🇸🇦 العربية</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" id="hero-bg" style="background-image:url('https://images.unsplash.com/photo-1586105251261-72a756497a11?w=1600&q=80')"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✅ <span data-en="Verified Listings — Saudi Arabia" data-ar="إعلانات موثقة — المملكة العربية السعودية">Verified Listings — Saudi Arabia</span></div>
+    <h1 data-en="Find Your <em>Space</em>,<br/>Sleep in Peace" data-ar="اعثر على <em>مكانك</em>،<br/>نَم بسلام">Find Your <em>Space</em>,<br/>Sleep in Peace</h1>
+    <div class="hero-ar">اعثر على مكانك، نَم بسلام</div>
+    <p class="hero-desc" id="hero-desc" data-en="Verified daily and monthly rooms across Saudi Arabia. Real photos, real prices. No middleman!" data-ar="غرف يومية وشهرية موثقة في جميع أنحاء المملكة. صور حقيقية، أسعار حقيقية. بدون وسيط!">Verified daily and monthly rooms across Saudi Arabia. Real photos, real prices. No middleman!</p>
+  </div>
+</section>
+<!-- STATS DARK BAR -->
+<style>
+#stats-bar-inner{display:grid;grid-template-columns:repeat(4,1fr);max-width:900px;margin:0 auto;}
+@media(max-width:600px){#stats-bar-inner{grid-template-columns:repeat(2,1fr);gap:0;}
+#stats-bar-inner>div{border-right:none!important;border-bottom:1px solid rgba(255,255,255,.12);}}
+</style>
+<div id="stats-bar" class="sec-fade" style="background:#0d2e1c;padding:14px 5%;">
+  <div id="stats-bar-inner">
+    <div style="text-align:center;padding:10px 8px;border-right:1px solid rgba(255,255,255,.12);">
+      <div style="font-family:'Playfair Display',serif;font-size:24px;color:#fff;font-weight:700;" id="stat-rooms">—</div>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.45);margin-top:3px;" data-en="Active Listings" data-ar="إعلانات نشطة">Active Listings</div>
+    </div>
+    <div style="text-align:center;padding:10px 8px;border-right:1px solid rgba(255,255,255,.12);">
+      <div style="font-family:'Playfair Display',serif;font-size:24px;color:#fff;font-weight:700;" id="stat-cities">18+</div>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.45);margin-top:3px;" data-en="Cities" data-ar="مدينة">Cities</div>
+    </div>
+    <div style="text-align:center;padding:10px 8px;border-right:1px solid rgba(255,255,255,.12);">
+      <div style="font-family:'Playfair Display',serif;font-size:24px;color:#fff;font-weight:700;" id="stat-tenants">500+</div>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.45);margin-top:3px;" data-en="Happy Tenants" data-ar="مستأجر سعيد">Happy Tenants</div>
+    </div>
+    <div style="text-align:center;padding:10px 8px;">
+      <div style="font-family:'Playfair Display',serif;font-size:24px;color:#fff;font-weight:700;" id="stat-free">100%</div>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.45);margin-top:3px;" data-en="Free Listings" data-ar="نشر مجاني">Free Listings</div>
+    </div>
+  </div>
+</div>
+
+<!-- ROOM CARDS — Two Ways to Stay -->
+<section class="sec-fade" style="background:var(--off)">
+  <div class="sec-center">
+    <div class="sec-label" data-en="CHOOSE YOUR STAY" data-ar="اختر إقامتك">CHOOSE YOUR STAY</div>
+    <div class="sec-title" data-en="Two Ways to Stay" data-ar="طريقتان للإقامة">Two Ways to Stay</div>
+    <p style="color:var(--muted);font-size:14px;margin-top:4px" data-en="Choose the stay that fits you best" data-ar="اختر الإقامة التي تناسبك">Choose the stay that fits you best</p>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:900px;margin:0 auto;">
+    <a href="rooms-daily.html" class="stay-card-link">
+      <div class="stay-card-wrap">
+        <div class="stay-card-img" style="background-image:url('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80')"></div>
+        <div class="stay-card-overlay"></div>
+        <div class="stay-card-arrow">→</div>
+        <div class="stay-card-body">
+          <div class="stay-card-icon">🌙</div>
+          <div class="stay-card-title" data-en="Daily Rooms" data-ar="غرف يومية">Daily Rooms</div>
+          <div class="stay-card-sub" data-en="Per night or weekly stays" data-ar="إقامة ليلية أو أسبوعية">Per night or weekly stays</div>
+        </div>
+      </div>
+    </a>
+    <a href="rooms-longstay.html" class="stay-card-link">
+      <div class="stay-card-wrap">
+        <div class="stay-card-img" style="background-image:url('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80')"></div>
+        <div class="stay-card-overlay"></div>
+        <div class="stay-card-arrow">→</div>
+        <div class="stay-card-body">
+          <div class="stay-card-icon">🏠</div>
+          <div class="stay-card-title" data-en="Long Stay" data-ar="إقامة طويلة">Long Stay</div>
+          <div class="stay-card-sub" data-en="3 months · 6 months · 1 year" data-ar="٣ أشهر · ٦ أشهر · سنة">3 months · 6 months · 1 year</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- CITIES -->
+<section class="sec-fade">
+  <div class="sec-center">
+    <div class="sec-label" data-en="Browse by City" data-ar="تصفح حسب المدينة">Browse by City</div>
+    <div class="sec-title" data-en="Popular <em style='color:var(--green-soft);font-style:normal'>Cities</em>" data-ar="المدن <em style='color:var(--green-soft);font-style:normal'>الشهيرة</em>">Popular <em style="color:var(--green-soft);font-style:normal">Cities</em></div>
+  </div>
+  <div class="cities-grid">
+    <div class="city-card" onclick="window.location.href='rooms-daily.html?city=Riyadh'"><div class="city-icon">🏙️</div><div class="city-name" data-en="Riyadh" data-ar="الرياض">Riyadh</div><div class="city-name-ar">الرياض</div></div>
+    <div class="city-card" onclick="window.location.href='rooms-daily.html?city=Jeddah'"><div class="city-icon">🌊</div><div class="city-name" data-en="Jeddah" data-ar="جدة">Jeddah</div><div class="city-name-ar">جدة</div></div>
+    <div class="city-card" onclick="window.location.href='rooms-daily.html?city=Dammam'"><div class="city-icon">🏭</div><div class="city-name" data-en="Dammam" data-ar="الدمام">Dammam</div><div class="city-name-ar">الدمام</div></div>
+    <div class="city-card" onclick="window.location.href='rooms-daily.html?city=Makkah'"><div class="city-icon">🕋</div><div class="city-name" data-en="Makkah" data-ar="مكة">Makkah</div><div class="city-name-ar">مكة المكرمة</div></div>
+    <div class="city-card" onclick="window.location.href='rooms-daily.html?city=Madinah'"><div class="city-icon">🕌</div><div class="city-name" data-en="Madinah" data-ar="المدينة">Madinah</div><div class="city-name-ar">المدينة المنورة</div></div>
+    <div class="city-card" onclick="window.location.href='rooms-daily.html?city=Khobar'"><div class="city-icon">🏖️</div><div class="city-name" data-en="Khobar" data-ar="الخبر">Khobar</div><div class="city-name-ar">الخبر</div></div>
+    <div class="city-card" onclick="window.location.href='rooms-daily.html?city=Tabuk'"><div class="city-icon">🏔️</div><div class="city-name" data-en="Tabuk" data-ar="تبوك">Tabuk</div><div class="city-name-ar">تبوك</div></div>
+    <div class="city-card" onclick="window.location.href='rooms-daily.html?city=Abha'"><div class="city-icon">🌿</div><div class="city-name" data-en="Abha" data-ar="أبها">Abha</div><div class="city-name-ar">أبها</div></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec-fade" style="background:var(--green)">
+  <div class="sec-center">
+    <div class="sec-label" style="color:rgba(255,255,255,.5)" data-en="Simple Process" data-ar="عملية بسيطة">Simple Process</div>
+    <div class="sec-title" style="color:#fff" data-en="How It <em style='color:#7ee8b0;font-style:normal'>Works</em>" data-ar="كيف <em style='color:#7ee8b0;font-style:normal'>يعمل</em>">How It <em style="color:#7ee8b0;font-style:normal">Works</em></div>
+  </div>
+  <div class="steps-grid">
+    <div class="step-card"><div class="step-icon">🏪</div><div class="step-title" data-en="We Visit Property" data-ar="نزور العقار">We Visit Property</div><div class="step-desc" data-en="Our team visits, takes real photos and verifies details." data-ar="يزور فريقنا العقار ويأخذ صوراً حقيقية.">Our team visits and verifies details.</div></div>
+    <div class="step-card"><div class="step-icon">📱</div><div class="step-title" data-en="We List Online" data-ar="ننشر عبر الإنترنت">We List Online</div><div class="step-desc" data-en="Listing goes live within 24 hours — 100% free." data-ar="ينشر الإعلان خلال 24 ساعة — مجاناً 100%.">Listing goes live within 24 hours — free.</div></div>
+    <div class="step-card"><div class="step-icon">💬</div><div class="step-title" data-en="You Contact Direct" data-ar="تتواصل مباشرة">You Contact Direct</div><div class="step-desc" data-en="WhatsApp the landlord directly. No middleman." data-ar="تواصل مع المالك مباشرة عبر واتساب.">WhatsApp landlord directly. No middleman.</div></div>
+    <div class="step-card"><div class="step-icon">🏠</div><div class="step-title" data-en="Move In!" data-ar="انتقل للسكن!">Move In!</div><div class="step-desc" data-en="Visit, confirm and move in. Simple and transparent." data-ar="زر العقار وانتقل لمكانك الجديد.">Visit, confirm and move in.</div></div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="sec-fade" style="background:var(--off)">
+  <div class="sec-center">
+    <div class="sec-label" data-en="What Tenants Say" data-ar="آراء المستأجرين">What Tenants Say</div>
+    <div class="sec-title" data-en="Real <em style='color:var(--green-soft);font-style:normal'>Reviews</em>" data-ar="تقييمات <em style='color:var(--green-soft);font-style:normal'>حقيقية</em>">Real <em style="color:var(--green-soft);font-style:normal">Reviews</em></div>
+    <div class="sec-ar">تجارب حقيقية من مستأجرينا</div>
+  </div>
+  <div class="reviews-grid" id="home-reviews-grid">
+    <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--muted);font-size:13px" data-en="Loading reviews..." data-ar="جاري التحميل...">Loading reviews...</div>
+  </div>
+  <div style="text-align:center;margin-top:22px">
+    <a href="feedback.html" style="display:inline-flex;align-items:center;gap:6px;padding:11px 24px;background:var(--gold);color:#fff;border-radius:9px;font-size:13px;font-weight:500;" data-en="See All Reviews →" data-ar="عرض كل التقييمات →">See All Reviews →</a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec-fade">
+  <div class="sec-center">
+    <div class="sec-label" data-en="Common Questions" data-ar="أسئلة شائعة">Common Questions</div>
+    <div class="sec-title" data-en="Frequently Asked <em style='color:var(--green-soft);font-style:normal'>Questions</em>" data-ar="الأسئلة <em style='color:var(--green-soft);font-style:normal'>الشائعة</em>">Frequently Asked <em style="color:var(--green-soft);font-style:normal">Questions</em></div>
+  </div>
+  <div style="max-width:700px;margin:0 auto">
+    <div class="faq-item">
+      <button class="faq-q" type="button" onclick="SH.toggleFaq(this)">
+        <span data-en="How much does it cost to list a room?" data-ar="كم تكلفة نشر غرفة؟">How much does it cost to list a room?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a" data-en="Listing is 100% FREE. No hidden charges, no commission!" data-ar="النشر مجاني 100%. بدون رسوم خفية، بدون عمولة!">Listing is 100% FREE. No hidden charges, no commission!</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button" onclick="SH.toggleFaq(this)">
+        <span data-en="What cities does Sukoon Homes cover?" data-ar="ما المدن التي تغطيها سكون هومز؟">What cities does Sukoon Homes cover?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a" data-en="We cover Riyadh, Jeddah, Dammam, Makkah, Madinah, Khobar, Tabuk, Abha and more!" data-ar="نغطي الرياض، جدة، الدمام، مكة، المدينة، الخبر، تبوك، أبها والمزيد!">We cover Riyadh, Jeddah, Dammam, Makkah, Madinah, Khobar, Tabuk, Abha and more!</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button" onclick="SH.toggleFaq(this)">
+        <span data-en="Are the listings verified?" data-ar="هل الإعلانات موثقة؟">Are the listings verified?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a" data-en="Yes! Our team physically visits every property. Real photos, real prices, zero fake listings." data-ar="نعم! فريقنا يزور كل عقار. صور حقيقية، أسعار حقيقية، لا إعلانات مزيفة.">Yes! Our team physically visits every property.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button" onclick="SH.toggleFaq(this)">
+        <span data-en="How do I contact the landlord?" data-ar="كيف أتواصل مع المالك؟">How do I contact the landlord?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a" data-en="Click WhatsApp on any listing to contact the landlord directly. No middleman!" data-ar="اضغط واتساب في أي إعلان للتواصل مع المالك مباشرة. بدون وسيط!">Click WhatsApp on any listing. No middleman!</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec-fade" style="background:var(--green);text-align:center">
+  <div class="sec-label" style="color:rgba(255,255,255,.5)" data-en="Own a Room?" data-ar="هل لديك غرفة؟">Own a Room?</div>
+  <div class="sec-title" style="color:#fff;margin-bottom:10px" data-en="List Your Room — <em style='color:#7ee8b0;font-style:normal'>100% Free!</em>" data-ar="أضف غرفتك — <em style='color:#7ee8b0;font-style:normal'>مجاناً 100%!</em>">List Your Room — <em style="color:#7ee8b0;font-style:normal">100% Free!</em></div>
+  <p style="color:rgba(255,255,255,.65);font-size:14px;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto" data-en="No commission. No hidden fees. We publish within 24 hours." data-ar="بدون عمولة. بدون رسوم خفية. ننشر خلال 24 ساعة.">No commission. No hidden fees. We publish within 24 hours.</p>
+  <a href="sukoon-submit.html" style="display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:var(--gold);color:#fff;border-radius:10px;font-size:14px;font-weight:600;" data-en="➕ List Your Room Free →" data-ar="➕ أضف غرفتك مجاناً →">➕ List Your Room Free →</a>
+</section>
+
+<!-- WISHLIST PANEL -->
+<div class="wl-overlay" id="wl-overlay" onclick="if(event.target===this)SH.closeWL()">
+  <div class="wl-panel">
+    <div class="wl-header">
+      <div class="wl-title" data-en=" My Wishlist" data-ar=" المفضلة"> My Wishlist</div>
+      <button class="wl-close-btn" type="button" onclick="SH.closeWL()">✕</button>
+    </div>
+    <div id="wl-content"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand-name">Sukoon Homes</div>
+      <div class="footer-brand-ar">سكون هومز</div>
+      <p class="footer-brand-tag" data-en="Find Your Space, Sleep in Peace" data-ar="اعثر على مكانك، نَم بسلام">Find Your Space, Sleep in Peace</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-en="Rooms" data-ar="الغرف">Rooms</h4>
+      <a href="rooms-daily.html" data-en="Daily Rooms" data-ar="غرف يومية">Daily Rooms</a>
+      <a href="rooms-longstay.html" data-en="Long Stay" data-ar="إقامة طويلة">Long Stay</a>
+      <a href="sukoon-submit.html" data-en="List Your Room" data-ar="أضف غرفتك">List Your Room</a>
+    </div>
+    <div class="footer-col">
+      <h4 data-en="Info" data-ar="معلومات">Info</h4>
+      <a href="blog.html" data-en="Blog" data-ar="مدونة">Blog</a>
+      <a href="feedback.html" data-en="Reviews" data-ar="تقييمات">Reviews</a>
+      <a href="contact.html" data-en="Contact" data-ar="اتصل بنا">Contact</a>
+      <a href="about.html" data-en="About Us" data-ar="من نحن">About Us</a>
+      <a href="terms.html" data-en="Terms" data-ar="الشروط">Terms</a>
+      <a href="privacy.html" data-en="Privacy" data-ar="الخصوصية">Privacy</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Sukoon Homes · سكون هومز</span>
+    <div class="footer-links-row">
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<div class="wa-float">
+  <a class="wa-btn-float wa-link" id="wa-main" href="https://wa.me/966541873266" target="_blank">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.113.549 4.197 1.595 6.03L.057 24l6.097-1.594A11.933 11.933 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.795 9.795 0 01-5.007-1.373l-.36-.213-3.722.974.997-3.635-.234-.374A9.786 9.786 0 012.182 12C2.182 6.566 6.566 2.182 12 2.182S21.818 6.566 21.818 12 17.434 21.818 12 21.818z"/></svg>
+  </a>
+</div>
+
+<!-- FIREBASE MODULE SCRIPT -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const FC = {apiKey:"AIzaSyDAOPIT2TtKtxyHCi3Sg2WapIDhvfk1jlo",authDomain:"sukoon-homes.firebaseapp.com",projectId:"sukoon-homes",storageBucket:"sukoon-homes.firebasestorage.app",messagingSenderId:"351838802115",appId:"1:351838802115:web:207c60810ebe0930c65276"};
+const app = initializeApp(FC);
+const db = getFirestore(app);
+
+// ============ WISHLIST FIREBASE LOADER ============
+window._loadWLFromFirebase = async function(wl, el, lg) {
+  try {
+    const [snapD, snapL] = await Promise.all([
+      getDocs(collection(db,'dailyRooms')),
+      getDocs(collection(db,'longRooms'))
+    ]);
+    const all = [
+      ...snapD.docs.map(d => ({id:d.id,...d.data(),rtype:'daily'})),
+      ...snapL.docs.map(d => ({id:d.id,...d.data(),rtype:'long'}))
+    ];
+    const saved = wl.map(id => all.find(r => String(r.id) === String(id))).filter(Boolean);
+    if (!saved.length) {
+      el.innerHTML = '<div style="text-align:center;padding:36px 16px;color:#7a9e88"> ' + (lg==='ar'?'الغرف غير موجودة':'Rooms not found') + '</div>';
+      return;
+    }
+    el.innerHTML = saved.map(r => `
+      <div style="display:flex;gap:9px;padding:10px 0;border-bottom:1px solid #d4e8dc;cursor:pointer" onclick="window.location='${r.rtype==='daily'?'rooms-daily':'rooms-longstay'}.html?room=${r.id}'">
+        <div style="width:56px;height:46px;border-radius:6px;overflow:hidden;background:#e6f5ee;flex-shrink:0">
+          ${r.img ? `<img src="${r.img}" style="width:100%;height:100%;object-fit:cover" loading="lazy" alt=""/>` : ''}
+        </div>
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:500;color:#0d2e1c">${r.name||'—'}</div>
+          <div style="font-size:11px;color:#1a7a4a;font-weight:600">SAR ${r.price} <span style="color:#7a9e88;font-weight:400">${r.rtype==='daily'?'/night':'/mo'}</span></div>
+          <div style="font-size:10px;color:#7a9e88">📍 ${r.city||''}</div>
+        </div>
+        <button type="button" onclick="event.stopPropagation();SH.removeWL('${r.id}')" style="background:none;border:none;color:#7a9e88;cursor:pointer;font-size:15px">✕</button>
+      </div>`).join('');
+  } catch(e) {
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:#7a9e88;font-size:12px">' + (lg==='ar'?'تعذر التحميل':'Unable to load') + '</div>';
+  }
+};
+
+// removeWL on SH object
+SH.removeWL = function(id) {
+  var wl = SH.getWL().filter(function(w) { return String(w) !== String(id); });
+  localStorage.setItem('sh_wl', JSON.stringify(wl));
+  SH.updWC();
+  SH.loadWLContent();
+};
+
+// ============ REVIEWS ============
+async function loadReviews() {
+  const grid = document.getElementById('home-reviews-grid');
+  if (!grid) return;
+  try {
+    const snap = await getDocs(collection(db,'feedback'));
+    const reviews = snap.docs.map(d=>({id:d.id,...d.data()}))
+      .filter(r => r.status === 'approved' || r.featured === true)
+      .sort((a,b) => (b.stars||5) - (a.stars||5))
+      .slice(0, 6);
+    if (!reviews.length) { grid.parentElement.style.display = 'none'; return; }
+    const lg = SH.lg;
+    grid.innerHTML = reviews.map(r => `
+      <div class="review-card">
+        <div class="review-stars">${'★'.repeat(r.stars||5)}${'☆'.repeat(5-(r.stars||5))}</div>
+        <div class="review-text">"${lg==='ar'&&r.textAr ? r.textAr : r.text||''}"</div>
+        <div class="review-author">
+          <div class="review-av">${(r.name||'?').charAt(0).toUpperCase()}</div>
+          <div><div class="review-name">${r.name||'—'}</div><div class="review-loc">${r.city||''} · ${r.date||''}</div></div>
+        </div>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+// ============ SETTINGS ============
+async function applySettings() {
+  try {
+    const snap = await getDoc(doc(db,'settings','site'));
+    if (!snap.exists()) return;
+    const s = snap.data();
+    if (s.colorGreen) document.documentElement.style.setProperty('--green', s.colorGreen);
+    if (s.colorGold) document.documentElement.style.setProperty('--gold', s.colorGold);
+    const phone = s.phone || '966541873266';
+    document.querySelectorAll('.wa-link').forEach(el => el.href = 'https://wa.me/' + phone);
+    if (s.siteName) document.querySelectorAll('#site-name').forEach(el => el.textContent = s.siteName);
+    if (s.heroImage) {
+      const bg = document.getElementById('hero-bg');
+      if (bg) {
+        const img = new Image();
+        img.onload = () => { bg.style.backgroundImage = `url('${s.heroImage}')`; };
+        img.src = s.heroImage;
+      }
+    }
+    if (s.clarityId) {
+      const sc = document.createElement('script');
+      sc.innerHTML = `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${s.clarityId}");`;
+      document.head.appendChild(sc);
+    }
+    // Stats
+    try {
+      const [d, l] = await Promise.all([getDocs(collection(db,'dailyRooms')), getDocs(collection(db,'longRooms'))]);
+      const total = d.size + l.size;
+      const el = document.getElementById('stat-rooms');
+      if (el) el.textContent = total + '+';
+    } catch(e) {}
+    // Code snippets
+    try {
+      const snaps = await getDocs(collection(db,'codeSnippets'));
+      snaps.docs.forEach(d => {
+        const sn = d.data();
+        if (sn.status !== 'active') return;
+        const pages = sn.pages || 'all';
+        if (pages !== 'all' && !pages.split(',').map(p=>p.trim()).includes('index.html')) return;
+        const el = document.createElement('div');
+        el.innerHTML = sn.code || '';
+        const target = sn.position === 'head' ? document.head : document.body;
+        Array.from(el.childNodes).forEach(node => target.appendChild(node.cloneNode(true)));
+      });
+    } catch(e) {}
+  } catch(e) {}
+}
+
+// ============ INIT ============
+window.addEventListener('load', function() {
+  applySettings();
+  loadReviews();
+  SH.updWC();
+});
+</script>
+<!-- ===== SUKOON CHAT PANEL ===== -->
+<!-- Add this before </body> in all pages -->
+
+<style>
+/* NAV CHAT ICON */
+.nav-chat-btn{position:relative;width:36px;height:36px;border-radius:50%;background:var(--green-pale);border:1px solid var(--green-light);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0;}
+.nav-chat-btn:hover{background:var(--green-light);}
+.nav-chat-badge{position:absolute;top:-3px;right:-3px;background:var(--red);color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:100px;display:none;align-items:center;justify-content:center;padding:0 3px;}
+.nav-chat-badge.show{display:flex;}
+
+/* CHAT PANEL OVERLAY */
+.chat-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:998;display:none;opacity:0;transition:opacity .2s;}
+.chat-panel-overlay.open{display:block;opacity:1;}
+
+/* CHAT PANEL */
+.chat-panel{position:fixed;top:0;right:-480px;width:480px;height:100vh;background:#fff;z-index:999;display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,.15);transition:right .3s cubic-bezier(.4,0,.2,1);}
+.chat-panel.open{right:0;}
+@media(max-width:520px){
+  .chat-panel{width:100vw;right:-100vw;}
+}
+
+/* PANEL HEADER */
+.cp-header{background:var(--green);color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.cp-header-title{font-size:16px;font-weight:700;flex:1;}
+.cp-close{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1;}
+.cp-back{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;display:none;}
+
+/* LOGIN VIEW */
+.cp-login{padding:32px 24px;text-align:center;}
+.cp-login-icon{font-size:48px;margin-bottom:12px;}
+.cp-login-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.cp-login-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.cp-google-btn{width:100%;padding:12px;background:#fff;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;}
+.cp-google-btn:hover{background:var(--green-pale);}
+.cp-divider{display:flex;align-items:center;gap:8px;margin:10px 0;}
+.cp-divider div{flex:1;height:1px;background:var(--border);}
+.cp-divider span{font-size:11px;color:var(--muted);}
+.cp-input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none;margin-bottom:8px;box-sizing:border-box;}
+.cp-input:focus{border-color:var(--green-soft);}
+.cp-btn-primary{width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:8px;}
+.cp-btn-secondary{width:100%;padding:11px;background:#fff;color:var(--green);border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
+.cp-err{color:var(--red);font-size:12px;margin-bottom:8px;display:none;}
+
+/* CHAT LIST */
+.cp-list{flex:1;overflow-y:auto;}
+.cp-list-item{padding:14px 18px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:12px;align-items:center;transition:background .1s;}
+.cp-list-item:hover{background:var(--green-pale);}
+.cp-avatar{width:44px;height:44px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0;}
+.cp-item-info{flex:1;min-width:0;}
+.cp-item-room{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cp-item-preview{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.cp-item-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.cp-item-time{font-size:10px;color:var(--muted);}
+.cp-unread-badge{background:var(--green);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:100px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+
+/* CHAT WINDOW */
+.cp-window{display:none;flex-direction:column;flex:1;min-height:0;}
+.cp-window.active{display:flex;}
+.cp-win-room{font-size:11px;opacity:.7;margin-top:2px;}
+.cp-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;}
+.cp-msg{max-width:78%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.5;word-break:break-word;}
+.cp-msg-in{background:var(--green-pale);color:var(--text);border-bottom-left-radius:4px;align-self:flex-start;}
+.cp-msg-out{background:var(--green);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;}
+.cp-msg-time{font-size:10px;color:var(--muted);margin-top:2px;}
+.cp-msg-time-out{text-align:right;color:var(--muted);}
+.cp-input-row{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.cp-text-input{flex:1;padding:9px 13px;border:1.5px solid var(--border);border-radius:20px;font-size:13px;font-family:inherit;outline:none;}
+.cp-text-input:focus{border-color:var(--green-soft);}
+.cp-send-btn{width:36px;height:36px;border-radius:50%;background:var(--green);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cp-img-btn{background:none;border:none;cursor:pointer;font-size:20px;padding:4px;flex-shrink:0;}
+.cp-empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.cp-empty-icon{font-size:40px;margin-bottom:10px;}
+.cp-empty-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;}
+</style>
+
+<!-- NAV CHAT ICON (add manually to each nav) -->
+<!-- <button class="nav-chat-btn" onclick="SHChat.open()" id="nav-chat-icon">💬<span class="nav-chat-badge" id="nav-chat-badge"></span></button> -->
+
+<!-- CHAT PANEL -->
+<div class="chat-panel-overlay" id="cp-overlay" onclick="SHChat.close()"></div>
+<div class="chat-panel" id="chat-panel">
+
+  <!-- HEADER -->
+  <div class="cp-header">
+    <button class="cp-back" id="cp-back-btn" onclick="SHChat.showList()">←</button>
+    <div style="flex:1">
+      <div class="cp-header-title" id="cp-header-title">💬 My Chats</div>
+      <div class="cp-win-room" id="cp-header-sub"></div>
+    </div>
+    <button class="cp-close" onclick="SHChat.close()">✕</button>
+  </div>
+
+  <!-- LOGIN VIEW -->
+  <div id="cp-login-view" class="cp-login" style="display:none;">
+    <div class="cp-login-icon">💬</div>
+    <div class="cp-login-title">Sign in to view chats</div>
+    <div class="cp-login-sub">Login to message landlords and track your conversations</div>
+    <button class="cp-google-btn" onclick="SHChat.googleLogin()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <div class="cp-divider"><div></div><span>OR</span><div></div></div>
+    <input class="cp-input" id="cp-email" type="email" placeholder="Email address"/>
+    <input class="cp-input" id="cp-pass" type="password" placeholder="Password (min 6 chars)" onkeydown="if(event.key==='Enter')SHChat.emailLogin()"/>
+    <div class="cp-err" id="cp-err"></div>
+    <button class="cp-btn-primary" onclick="SHChat.emailLogin()">Login</button>
+    <button class="cp-btn-secondary" onclick="SHChat.emailSignup()">Create New Account</button>
+  </div>
+
+  <!-- CHAT LIST VIEW -->
+  <div id="cp-list-view" style="display:none;flex:1;overflow-y:auto;">
+    <div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;">
+      <button id="cp-filter-all" onclick="SHChat.filter('all')" style="padding:5px 12px;border-radius:20px;border:1.5px solid var(--green);background:var(--green);color:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">All</button>
+      <button id="cp-filter-unread" onclick="SHChat.filter('unread')" style="padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--mid);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">Unread</button>
+    </div>
+    <div id="cp-chat-list"></div>
+  </div>
+
+  <!-- CHAT WINDOW -->
+  <div id="cp-window-view" class="cp-window">
+    <div class="cp-messages" id="cp-messages"></div>
+    <div class="cp-input-row">
+      <input type="file" id="cp-img-file" accept="image/*" style="display:none;" onchange="SHChat.sendImage(event)"/>
+      <button class="cp-img-btn" onclick="document.getElementById('cp-img-file').click()">📷</button>
+      <input class="cp-text-input" id="cp-msg-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')SHChat.sendMsg()"/>
+      <button class="cp-send-btn" onclick="SHChat.sendMsg()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, doc, setDoc, getDocs, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const FC={apiKey:"AIzaSyDAOPIT2TtKtxyHCi3Sg2WapIDhvfk1jlo",authDomain:"sukoon-homes.firebaseapp.com",projectId:"sukoon-homes"};
+const app=getApps().length?getApps()[0]:initializeApp(FC,'sh-chat');
+const db=getFirestore(app);
+const auth=getAuth(app);
+const gp=new GoogleAuthProvider();
+setPersistence(auth,browserLocalPersistence).catch(()=>{});
+
+let _user=null;
+let _chats=[];
+let _activeChatId=null;
+let _chatUnsub=null;
+let _listUnsub=null;
+let _filter='all';
+
+// ===== AUTH STATE =====
+onAuthStateChanged(auth,user=>{
+  _user=user;
+  if(user){
+    _startListening();
+  } else {
+    _stopListening();
+    _updateBadge(0);
+  }
+});
+
+function _startListening(){
+  if(_listUnsub)_listUnsub();
+  // Listen for user's chats realtime
+  try{
+    _listUnsub=onSnapshot(
+      query(collection(db,'chats'),where('customerId','==',_user.uid)),
+      snap=>{
+        _chats=snap.docs.map(d=>({...d.data(),id:d.id}))
+          .sort((a,b)=>(b.lastMessageAt?.toMillis?.()??0)-(a.lastMessageAt?.toMillis?.()??0));
+        const unread=_chats.filter(c=>c.unreadCustomer>0).length;
+        _updateBadge(unread);
+        _renderList();
+      }
+    );
+  }catch(e){console.error('Chat listen:',e);}
+}
+
+function _stopListening(){
+  if(_listUnsub){_listUnsub();_listUnsub=null;}
+  _chats=[];
+}
+
+function _updateBadge(n){
+  const badge=document.getElementById('nav-chat-badge');
+  if(!badge)return;
+  if(n>0){badge.classList.add('show');badge.textContent=n;}
+  else{badge.classList.remove('show');badge.textContent='';}
+}
+
+function _renderList(){
+  const list=document.getElementById('cp-chat-list');
+  if(!list)return;
+  const filtered=_filter==='unread'?_chats.filter(c=>c.unreadCustomer>0):_chats;
+  if(filtered.length===0){
+    list.innerHTML=`<div class="cp-empty"><div class="cp-empty-icon">💬</div><div class="cp-empty-title">${_filter==='unread'?'No unread messages':'No chats yet'}</div><p style="font-size:12px;color:var(--muted)">Browse rooms and start a conversation</p><a href="rooms-daily.html" style="display:inline-block;margin-top:12px;padding:9px 18px;background:var(--green);color:#fff;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;">Browse Rooms →</a></div>`;
+    return;
+  }
+  list.innerHTML=filtered.map(c=>{
+    const room=c.roomName||'Room';
+    const last=c.lastMessage||'...';
+    const time=_fmtTime(c.lastMessageAt);
+    const uc=c.unreadCustomer||0;
+    return `<div class="cp-list-item" onclick="SHChat.openChat('${c.id}','${room.replace(/'/g,"\\'")}')">
+      <div class="cp-avatar">🏠</div>
+      <div class="cp-item-info">
+        <div class="cp-item-room">${room}</div>
+        <div class="cp-item-preview" style="font-weight:${uc>0?600:400};color:${uc>0?'var(--text)':'var(--muted)'}">${last}</div>
+      </div>
+      <div class="cp-item-meta">
+        <div class="cp-item-time">${time}</div>
+        ${uc>0?`<div class="cp-unread-badge">${uc}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function _fmtTime(ts){
+  if(!ts)return '';
+  const d=ts.toDate?ts.toDate():new Date(ts);
+  const now=new Date();
+  if(now-d<86400000)return d.toLocaleTimeString('en-SA',{hour:'2-digit',minute:'2-digit'});
+  return d.toLocaleDateString('en-SA',{month:'short',day:'numeric'});
+}
+
+// ===== PUBLIC API =====
+window.SHChat={
+  open(){
+    document.getElementById('chat-panel').classList.add('open');
+    document.getElementById('cp-overlay').classList.add('open');
+    if(!_user){
+      this._show('login');
+    } else {
+      this._show('list');
+    }
+  },
+  close(){
+    document.getElementById('chat-panel').classList.remove('open');
+    document.getElementById('cp-overlay').classList.remove('open');
+    if(_chatUnsub){_chatUnsub();_chatUnsub=null;}
+  },
+  _show(view){
+    document.getElementById('cp-login-view').style.display=view==='login'?'block':'none';
+    document.getElementById('cp-list-view').style.display=view==='list'?'flex':'none';
+    document.getElementById('cp-list-view').style.flexDirection='column';
+    document.getElementById('cp-window-view').classList.toggle('active',view==='window');
+    document.getElementById('cp-back-btn').style.display=view==='window'?'block':'none';
+    document.getElementById('cp-header-title').textContent=view==='window'?(_activeChatId&&_chats.find(c=>c.id===_activeChatId)?.roomName||'Chat'):'💬 My Chats';
+    document.getElementById('cp-header-sub').textContent=view==='window'?'Room conversation':'';
+    if(view==='list')_renderList();
+  },
+  showList(){
+    if(_chatUnsub){_chatUnsub();_chatUnsub=null;}
+    _activeChatId=null;
+    this._show('list');
+  },
+  filter(f){
+    _filter=f;
+    document.getElementById('cp-filter-all').style.background=f==='all'?'var(--green)':'#fff';
+    document.getElementById('cp-filter-all').style.color=f==='all'?'#fff':'var(--mid)';
+    document.getElementById('cp-filter-unread').style.background=f==='unread'?'var(--green)':'#fff';
+    document.getElementById('cp-filter-unread').style.color=f==='unread'?'#fff':'var(--mid)';
+    _renderList();
+  },
+  async googleLogin(){
+    const err=document.getElementById('cp-err');
+    err.style.display='none';
+    try{await signInWithPopup(auth,gp);this._show('list');}
+    catch(e){if(e.code!=='auth/popup-closed-by-user'){err.style.display='block';err.textContent='❌ Google login failed.';}}
+  },
+  async emailLogin(){
+    const email=document.getElementById('cp-email').value.trim();
+    const pass=document.getElementById('cp-pass').value;
+    const err=document.getElementById('cp-err');
+    err.style.display='none';
+    if(!email||!pass){err.style.display='block';err.textContent='Enter email and password';return;}
+    try{await signInWithEmailAndPassword(auth,email,pass);this._show('list');}
+    catch(e){
+      let msg=e.message;
+      if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential')msg='Wrong email or password.';
+      if(e.code==='auth/user-not-found')msg='No account found. Create one below.';
+      err.style.display='block';err.textContent='❌ '+msg;
+    }
+  },
+  async emailSignup(){
+    const email=document.getElementById('cp-email').value.trim();
+    const pass=document.getElementById('cp-pass').value;
+    const err=document.getElementById('cp-err');
+    err.style.display='none';
+    if(!email||!pass||pass.length<6){err.style.display='block';err.textContent='Enter email and password (min 6 chars)';return;}
+    try{await createUserWithEmailAndPassword(auth,email,pass);this._show('list');}
+    catch(e){
+      let msg=e.message;
+      if(e.code==='auth/email-already-in-use')msg='Email exists. Use Login.';
+      err.style.display='block';err.textContent='❌ '+msg;
+    }
+  },
+  openChat(chatId,roomName){
+    _activeChatId=chatId;
+    this._show('window');
+    document.getElementById('cp-header-title').textContent=roomName;
+    // Mark as read
+    setDoc(doc(db,'chats',chatId),{unreadCustomer:0},{merge:true}).catch(()=>{});
+    // Load messages
+    if(_chatUnsub){_chatUnsub();_chatUnsub=null;}
+    const msgsEl=document.getElementById('cp-messages');
+    msgsEl.innerHTML='';
+    _chatUnsub=onSnapshot(
+      query(collection(db,'chats',chatId,'messages'),orderBy('createdAt')),
+      snap=>{
+        if(snap.empty){msgsEl.innerHTML='<div style="text-align:center;color:var(--muted);font-size:12px;padding:20px;">Start the conversation! 👋</div>';return;}
+        msgsEl.innerHTML=snap.docs.map(d=>{
+          const m=d.data();
+          const isOut=m.senderId===_user?.uid||m.senderType==='customer';
+          const time=_fmtTime(m.createdAt);
+          const ticks=isOut?(m.seen?'<span style="color:var(--green-soft);font-size:10px;margin-left:2px">✓✓</span>':'<span style="color:var(--muted);font-size:10px;margin-left:2px">✓</span>'):'';
+          const bubble=m.imageUrl?`<img src="${m.imageUrl}" style="max-width:200px;border-radius:8px;display:block;cursor:pointer;" onclick="window.open('${m.imageUrl}','_blank')"/>`:m.text||'';
+          return `<div style="display:flex;flex-direction:column;">
+            <div class="cp-msg ${isOut?'cp-msg-out':'cp-msg-in'}">${bubble}</div>
+            <div class="cp-msg-time ${isOut?'cp-msg-time-out':''}">${time}${ticks}</div>
+          </div>`;
+        }).join('');
+        msgsEl.scrollTop=msgsEl.scrollHeight;
+        // Mark landlord msgs as seen
+        snap.docs.forEach(d=>{
+          if(d.data().senderType==='landlord'&&!d.data().seen){
+            setDoc(doc(db,'chats',chatId,'messages',d.id),{seen:true},{merge:true}).catch(()=>{});
+          }
+        });
+      }
+    );
+  },
+  async sendMsg(){
+    const input=document.getElementById('cp-msg-input');
+    const text=input.value.trim();
+    if(!text||!_activeChatId||!_user)return;
+    input.value='';
+    await addDoc(collection(db,'chats',_activeChatId,'messages'),{
+      text,senderId:_user.uid,senderType:'customer',seen:false,createdAt:serverTimestamp()
+    });
+    await setDoc(doc(db,'chats',_activeChatId),{
+      lastMessage:text,lastMessageAt:serverTimestamp(),unreadLandlord:1
+    },{merge:true});
+  },
+  async sendImage(e){
+    const file=e.target.files[0];
+    if(!file||!_activeChatId||!_user)return;
+    const canvas=document.createElement('canvas');
+    const img=new Image();
+    img.onload=async()=>{
+      const max=800;let w=img.width,h=img.height;
+      if(w>max){h=h*(max/w);w=max;}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      canvas.toBlob(async blob=>{
+        const fd=new FormData();
+        fd.append('file',blob,'img.jpg');fd.append('upload_preset','sukoon-upload');
+        const res=await fetch('https://api.cloudinary.com/v1_1/dv5erwivl/image/upload',{method:'POST',body:fd});
+        const data=await res.json();
+        if(data.secure_url){
+          await addDoc(collection(db,'chats',_activeChatId,'messages'),{imageUrl:data.secure_url,text:'📷 Image',senderId:_user.uid,senderType:'customer',seen:false,createdAt:serverTimestamp()});
+          await setDoc(doc(db,'chats',_activeChatId),{lastMessage:'📷 Image',lastMessageAt:serverTimestamp(),unreadLandlord:1},{merge:true});
+        }
+      },'image/jpeg',0.8);
+    };
+    img.src=URL.createObjectURL(file);
+    e.target.value='';
+  }
+};
+</script>
+
+</body>
+</html>
