@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+<meta charset="UTF-8"/>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dv5erwivl/image/upload/v1779383751/IMG_3500_rwh6pl.png"/>
+<link rel="apple-touch-icon" href="https://res.cloudinary.com/dv5erwivl/image/upload/v1779383751/IMG_3500_rwh6pl.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>List Your Room Free | Sukoon Homes</title>
+<meta name="description" content="List your room for free on Sukoon Homes. No commission, no hidden fees. Verified listings across Saudi Arabia."/>
+<link rel="canonical" href="https://www.sukoonhomesksa.com/sukoon-submit.html"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--green:#0d4a2f;--green-mid:#1a7a4a;--green-soft:#2eaa6a;--green-pale:#e6f5ee;--green-light:#c2e8d4;--cream:#fdfaf5;--off:#f7faf8;--text:#0d2e1c;--muted:#7a9e88;--mid:#3a5a46;--gold:#c9963a;--border:#d4e8dc;--red:#c0392b;--red-pale:#fdecea;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);}
+[dir="rtl"]{font-family:'Tajawal',sans-serif;}
+a{text-decoration:none;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 5%;}
+.nav-logo{display:flex;align-items:center;gap:9px;}
+.logo-name{font-family:'Playfair Display',serif;font-size:16px;color:var(--green);font-weight:700;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-links a{font-size:12px;font-weight:500;color:var(--mid);padding:6px 10px;border-radius:7px;}
+.nav-links a:hover{background:var(--green-pale);color:var(--green);}
+.lang-toggle{display:flex;background:var(--green-pale);border:1px solid var(--green-light);border-radius:100px;padding:3px;}
+.lang-toggle button{padding:3px 10px;border-radius:100px;border:none;background:transparent;font-size:11px;font-weight:600;cursor:pointer;color:var(--mid);}
+.lang-toggle button.active{background:var(--green);color:#fff;}
+.hamburger{display:flex;flex-direction:column;gap:4px;cursor:pointer;padding:7px;background:none;border:1px solid var(--border);border-radius:7px;}
+.hamburger span{display:block;width:16px;height:2px;background:var(--green);border-radius:2px;}
+.mm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199;}
+.mm-overlay.show{display:block;}
+.mobile-menu{position:fixed;top:0;right:-300px;width:280px;height:100vh;background:#fff;z-index:200;overflow-y:auto;transition:right .3s;padding:20px 0;}
+[dir="rtl"] .mobile-menu{right:auto;left:-300px;transition:left .3s;}
+.mobile-menu.open{right:0;}[dir="rtl"] .mobile-menu.open{right:auto;left:0;}
+.mm-header{display:flex;align-items:center;justify-content:space-between;padding:0 18px 16px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.mm-logo-name{font-family:'Playfair Display',serif;font-size:15px;color:var(--green);}
+.mm-close-btn{background:none;border:1px solid var(--border);border-radius:7px;padding:6px 9px;cursor:pointer;}
+.mobile-menu a{display:flex;align-items:center;gap:9px;padding:11px 18px;font-size:13px;font-weight:500;color:var(--mid);border-radius:8px;margin:2px 8px;}
+.mobile-menu a:hover{background:var(--green-pale);color:var(--green);}
+.mm-lang{display:flex;gap:8px;padding:12px 18px;margin-top:8px;border-top:1px solid var(--border);}
+.mm-lang button{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:var(--mid);}
+.mm-lang button.active{background:var(--green);color:#fff;border-color:var(--green);}
+
+/* PAGE */
+.page-wrap{max-width:680px;margin:0 auto;padding:32px 5% 60px;}
+.form-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:28px;}
+.form-card h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--green);margin-bottom:18px;}
+.step-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green-soft);margin:20px 0 10px;padding:5px 10px;background:var(--green-pale);border-radius:5px;display:inline-block;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:11px;font-weight:600;color:var(--mid);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;}
+.req{color:var(--red);}
+.form-control{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none;background:#fff;transition:border-color .2s;}
+.form-control:focus{border-color:var(--green-soft);}
+.form-control.error{border-color:var(--red)!important;background:var(--red-pale);}
+select.form-control{cursor:pointer;}
+textarea.form-control{resize:vertical;min-height:80px;}
+.divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
+
+/* WIZARD STEPS */
+.wiz-progress{display:flex;align-items:center;gap:0;margin-bottom:24px;}
+.wiz-step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;transition:all .2s;}
+.wiz-step-dot.active{border-color:var(--green);background:var(--green);color:#fff;}
+.wiz-step-dot.done{border-color:var(--green-soft);background:var(--green-soft);color:#fff;}
+.wiz-line{flex:1;height:2px;background:var(--border);transition:background .2s;}
+.wiz-line.done{background:var(--green-soft);}
+.wiz-section{display:none;}
+.wiz-section.active{display:block;}
+.wiz-nav{display:flex;gap:10px;margin-top:20px;}
+.wiz-back{flex:1;padding:13px;background:#fff;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--mid);}
+.wiz-next{flex:2;padding:13px;background:var(--green);border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#fff;}
+.wiz-radio-error label{border-color:var(--red)!important;}
+.form-control.error{border-color:var(--red)!important;background:var(--red-pale);}
+.stay-type-btn{transition:all .2s;}
+.stay-type-btn.active{border-color:var(--green)!important;background:var(--green)!important;color:#fff!important;}
+.city-other{display:none;}
+
+/* STAY TYPE BUTTONS */
+.stay-type-wrap{display:flex;gap:10px;margin-bottom:20px;}
+.stay-type-btn{flex:1;padding:14px 10px;border-radius:12px;border:2px solid var(--border);background:#fff;color:var(--mid);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center;}
+.stay-type-btn.active{border-color:var(--green);background:var(--green);color:#fff;}
+
+/* AMENITIES */
+.amenities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;}
+.amenity-tag{display:flex;align-items:center;gap:7px;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:12px;color:var(--mid);transition:all .18s;background:#fff;user-select:none;}
+.amenity-tag:hover{border-color:var(--green-soft);background:var(--green-pale);}
+.amenity-tag.on{border-color:var(--green);background:var(--green-pale);color:var(--green);font-weight:600;}
+.amenity-tag .tick{width:16px;height:16px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .18s;}
+.amenity-tag.on .tick{background:var(--green);border-color:var(--green);color:#fff;}
+
+/* INCLUSIONS */
+.incl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.incl-tag{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:13px;color:var(--mid);transition:all .18s;background:#fff;user-select:none;}
+.incl-tag:hover{border-color:var(--green-soft);}
+.incl-tag.on{border-color:var(--green);background:var(--green-pale);color:var(--green);font-weight:600;}
+.incl-tag .tick{width:18px;height:18px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .18s;}
+.incl-tag.on .tick{background:var(--green);border-color:var(--green);color:#fff;}
+
+/* PHOTO UPLOAD */
+.img-upload-area{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.img-upload-area:hover{border-color:var(--green-soft);background:var(--green-pale);}
+.img-upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.img-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.img-prev-item{position:relative;width:72px;height:60px;border-radius:8px;overflow:hidden;}
+.img-prev-item img{width:100%;height:100%;object-fit:cover;}
+.img-prev-del{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:18px;height:18px;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;}
+.upload-progress{height:4px;background:var(--border);border-radius:4px;margin-top:8px;overflow:hidden;display:none;}
+.upload-progress-bar{height:100%;background:var(--green);border-radius:4px;transition:width .3s;}
+.upload-status{font-size:11px;color:var(--muted);margin-top:6px;}
+
+/* SUBMIT BUTTON */
+.submit-btn{width:100%;padding:14px;background:var(--green-mid);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;}
+.submit-btn:hover{background:var(--green);}
+.submit-btn:disabled{background:#9cc;cursor:not-allowed;}
+
+/* SUCCESS CARD */
+.success-card{display:none;background:#fff;border:1px solid var(--border);border-radius:18px;padding:36px;text-align:center;}
+.success-icon{font-size:52px;margin-bottom:12px;}
+.success-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--green);margin-bottom:8px;}
+.success-desc{font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:16px;}
+
+/* POPUP OVERLAY */
+.popup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;align-items:center;justify-content:center;padding:20px;}
+.popup-overlay.open{display:flex;}
+.popup-box{background:#fff;border-radius:20px;padding:26px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow-y:auto;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0d2e1c;color:#fff;padding:10px 22px;border-radius:100px;font-size:13px;z-index:9999;opacity:0;transition:opacity .3s;}
+.toast.show{opacity:1;}
+
+/* WA FLOAT */
+.wa-float{position:fixed;bottom:22px;right:22px;z-index:150;}
+[dir="rtl"] .wa-float{right:auto;left:22px;}
+.wa-btn-float{width:50px;height:50px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(37,211,102,.4);border:none;cursor:pointer;}
+
+footer{background:#071a0f;padding:24px 5% 14px;margin-top:0;}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;max-width:1100px;margin:0 auto;}
+.footer-copy{font-size:11px;color:rgba(255,255,255,.25);}
+.footer-links a{font-size:11px;color:rgba(255,255,255,.25);margin-left:12px;}
+
+@media(max-width:768px){
+  .nav-links,.lang-toggle{display:none;}
+  .form-row{grid-template-columns:1fr;}
+  .amenities-grid{grid-template-columns:1fr 1fr;}
+}
+@media(min-width:769px){.hamburger{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <svg viewBox="0 0 36 36" fill="none" width="34" height="34"><rect width="36" height="36" rx="8" fill="#0d4a2f"/><path d="M18 6L6 16H9V30H16V23H20V30H27V16H30L18 6Z" fill="#fff" opacity=".95"/><circle cx="18" cy="19" r="3" fill="#2eaa6a"/></svg>
+      <span class="logo-name" id="site-name">Sukoon Homes</span>
+    </a>
+    <div class="nav-right">
+            <nav class="nav-links">
+        <a href="rooms-daily.html" data-en="Daily" data-ar="يومي">Daily</a>
+        <a href="rooms-longstay.html" data-en="Long Stay" data-ar="إقامة طويلة">Long Stay</a>
+        <a href="blog.html" data-en="Blog" data-ar="مدونة">Blog</a>
+        <a href="feedback.html" data-en="Reviews" data-ar="تقييمات">Reviews</a>
+        <a href="contact.html" data-en="Contact" data-ar="اتصل">Contact</a>
+      </nav>
+      <div class="lang-toggle">
+        <button id="btn-en" type="button" onclick="sL('en')" class="active">EN</button>
+        <button id="btn-ar" type="button" onclick="sL('ar')">AR</button>
+      </div>
+      <button class="hamburger" onclick="document.getElementById('mobile-menu').classList.toggle('open');document.getElementById('mm-overlay').classList.toggle('show')"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="mm-overlay" id="mm-overlay" onclick="this.classList.remove('show');document.getElementById('mobile-menu').classList.remove('open')"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mm-header"><span class="mm-logo-name">Sukoon Homes</span><button class="mm-close-btn" type="button" onclick="document.getElementById('mobile-menu').classList.remove('open');document.getElementById('mm-overlay').classList.remove('show')">✕</button></div>
+  <a href="index.html"><span data-en="Home" data-ar="الرئيسية">Home</span></a>
+  <a href="rooms-daily.html"><span data-en="Daily Rooms" data-ar="غرف يومية">Daily Rooms</span></a>
+  <a href="rooms-longstay.html"><span data-en="Long Stay" data-ar="إقامة طويلة">Long Stay</span></a>
+  <a href="contact.html"><span data-en="Contact" data-ar="اتصل بنا">Contact</span></a>
+  <div class="mm-lang">
+    <button id="mm-btn-en" type="button" onclick="sL('en')" class="active">🇬🇧 English</button>
+    <button id="mm-btn-ar" type="button" onclick="sL('ar')">🇸🇦 العربية</button>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+  <!-- FORM CARD -->
+  <div class="form-card" id="submit-form-card">
+    <h2 data-en="➕ List Your Room Free" data-ar="➕ أضف غرفتك مجاناً">➕ List Your Room Free</h2>
+
+    <!-- NOTE -->
+    <div style="background:var(--green-pale);border:1.5px solid var(--green-light);border-radius:12px;padding:13px 15px;margin-bottom:16px;font-size:12px;color:var(--mid);line-height:1.6;">
+      ℹ️ <strong data-en="Free listing — No commission!" data-ar="نشر مجاني — بدون عمولة!">Free listing — No commission!</strong>
+      <span data-en=" Fields marked * are required." data-ar=" الحقول المميزة بـ * مطلوبة."> Fields marked * are required.</span>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="wiz-progress">
+      <div class="wiz-step-dot active" id="wiz-dot-1">1</div>
+      <div class="wiz-line" id="wiz-line-1"></div>
+      <div class="wiz-step-dot" id="wiz-dot-2">2</div>
+      <div class="wiz-line" id="wiz-line-2"></div>
+      <div class="wiz-step-dot" id="wiz-dot-3">3</div>
+      <div class="wiz-line" id="wiz-line-3"></div>
+      <div class="wiz-step-dot" id="wiz-dot-4">4</div>
+      <div class="wiz-line" id="wiz-line-4"></div>
+      <div class="wiz-step-dot" id="wiz-dot-5">5</div>
+      <div class="wiz-line" id="wiz-line-5"></div>
+      <div class="wiz-step-dot" id="wiz-dot-6">6</div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="wiz-section active" id="wiz-sec-1">
+      <div class="step-label"><span data-en="Step 1: Room Info" data-ar="الخطوة 1: معلومات الغرفة">Step 1: Room Info</span></div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);margin-bottom:8px;"><span data-en="Listing Type" data-ar="نوع الإعلان">Listing Type</span> <span class="req">*</span> <span id="st-selected-label" style="font-size:10px;font-weight:600;color:var(--green-mid);background:var(--green-pale);padding:2px 8px;border-radius:20px;text-transform:none;letter-spacing:0">✓ Daily / Nightly selected</span></div>
+        <div class="stay-type-wrap">
+          <button type="button" class="stay-type-btn active" id="type-btn-daily" onclick="setST('daily')"><span data-en="Daily / Nightly" data-ar="يومي / ليلي">Daily / Nightly</span></button>
+          <button type="button" class="stay-type-btn" id="type-btn-long" onclick="setST('long')"><span data-en="Monthly / Long Stay" data-ar="شهري / إقامة طويلة">Monthly / Long Stay</span></button>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Room Name (EN) <span class="req">*</span></label>
+          <input class="form-control" id="s-name" type="text" placeholder="e.g. Cozy Single Room in Riyadh"/>
+        </div>
+        <div class="form-group">
+          <label>Room Name (AR) <span style="font-size:10px;color:var(--muted);font-weight:400">(Optional)</span></label>
+          <input class="form-control" id="s-name-ar" type="text" placeholder="اسم الغرفة بالعربية" style="font-family:Tajawal,sans-serif;direction:rtl;"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label><span data-en="Room Type" data-ar="نوع الغرفة">Room Type</span> <span class="req">*</span></label>
+          <select class="form-control" id="s-type">
+            <option value="" data-en="Select type..." data-ar="اختر النوع...">Select type...</option>
+            <option value="Single Room" data-en="Single Room" data-ar="غرفة مفردة">Single Room</option>
+            <option value="Sharing Room" data-en="Sharing Room" data-ar="غرفة مشتركة">Sharing Room</option>
+            <option value="Bed Space" data-en="Bed Space" data-ar="سرير مشترك">Bed Space</option>
+            <option value="Studio" data-en="Studio" data-ar="استوديو">Studio</option>
+            <option value="Family Apartment" data-en="Family Apartment" data-ar="شقة عائلية">Family Apartment</option>
+            <option value="Full Flat" data-en="Full Flat" data-ar="شقة كاملة">Full Flat</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label><span data-en="Price (SAR)" data-ar="السعر (ريال)">Price (SAR)</span> <span class="req">*</span> <span id="price-unit-label" style="font-size:10px;color:var(--green-mid);font-weight:600;background:var(--green-pale);padding:2px 7px;border-radius:20px">/ Night</span></label>
+          <input class="form-control" id="s-price" type="number" min="0" placeholder="e.g. 150"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label><span data-en="Suitable For" data-ar="مناسب لـ">Suitable For</span> <span class="req">*</span></label>
+        <div style="display:flex;gap:10px;margin-top:6px;" class="suit-wrap">
+          <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:13px;" id="suit-bach-lbl">
+            <input type="radio" name="s-suitable" value="Bachelors" id="suit-bach" style="accent-color:var(--green);width:16px;height:16px;" onchange="document.querySelectorAll('[id^=suit-]').forEach(l=>l.style.borderColor='var(--border)');document.getElementById('suit-bach-lbl').style.borderColor='var(--green)'"/>
+            <span>👨 <span data-en="Bachelors" data-ar="عزاب">Bachelors</span></span>
+          </label>
+          <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:13px;" id="suit-fam-lbl">
+            <input type="radio" name="s-suitable" value="Families" id="suit-fam" style="accent-color:var(--green);width:16px;height:16px;" onchange="document.querySelectorAll('[id^=suit-]').forEach(l=>l.style.borderColor='var(--border)');document.getElementById('suit-fam-lbl').style.borderColor='var(--green)'"/>
+            <span>👨‍👩‍👧 <span data-en="Families" data-ar="عائلات">Families</span></span>
+          </label>
+          <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:13px;" id="suit-both-lbl">
+            <input type="radio" name="s-suitable" value="Both" id="suit-both" style="accent-color:var(--green);width:16px;height:16px;" onchange="document.querySelectorAll('[id^=suit-]').forEach(l=>l.style.borderColor='var(--border)');document.getElementById('suit-both-lbl').style.borderColor='var(--green)'"/>
+            <span>✅ <span data-en="Both" data-ar="الجميع">Both</span></span>
+          </label>
+        </div>
+      </div>
+      </div>
+      <div class="wiz-nav"><button type="button" class="wiz-next" style="width:100%" onclick="wizGo(2)"><span data-en="Next →" data-ar="→ التالي">Next →</span></button></div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="wiz-section" id="wiz-sec-2">
+      <div class="step-label"><span data-en="Step 2: Location" data-ar="الخطوة 2: الموقع">Step 2: Location</span></div>
+
+      <!-- GPS BUTTON -->
+      <button type="button" id="gps-btn" onclick="detectLocation()" style="width:100%;padding:11px;background:var(--green-pale);border:1.5px solid var(--green-light);border-radius:10px;font-size:13px;font-weight:600;color:var(--green);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;">
+        📍 <span data-en="Detect My Location Automatically" data-ar="تحديد موقعي تلقائياً">Detect My Location Automatically</span>
+      </button>
+      <div id="gps-status" style="font-size:11px;color:var(--muted);text-align:center;margin-top:-10px;margin-bottom:10px;display:none;"></div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;color:var(--muted);" data-en="or fill manually" data-ar="أو أدخل يدوياً"><span data-en="or fill manually" data-ar="أو أدخل يدوياً">or fill manually</span></span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label><span data-en="City" data-ar="المدينة">City</span> <span class="req">*</span></label>
+          <select class="form-control" id="s-city" onchange="document.getElementById('s-city-other').style.display=this.value==='Other'?'block':'none'">
+            <option value="">Select city...</option>
+            <option value="Riyadh">Riyadh — الرياض</option>
+            <option value="Jeddah">Jeddah — جدة</option>
+            <option value="Dammam">Dammam — الدمام</option>
+            <option value="Makkah">Makkah — مكة المكرمة</option>
+            <option value="Madinah">Madinah — المدينة المنورة</option>
+            <option value="Khobar">Khobar — الخبر</option>
+            <option value="Tabuk">Tabuk — تبوك</option>
+            <option value="Abha">Abha — أبها</option>
+            <option value="Buraydah">Buraydah — بريدة</option>
+            <option value="Hail">Hail — حائل</option>
+            <option value="Taif">Taif — الطائف</option>
+            <option value="Najran">Najran — نجران</option>
+            <option value="Jizan">Jizan — جازان</option>
+            <option value="Al Ahsa">Al Ahsa — الأحساء</option>
+            <option value="Yanbu">Yanbu — ينبع</option>
+            <option value="Qatif">Qatif — القطيف</option>
+            <option value="Jubail">Jubail — الجبيل</option>
+            <option value="Other">Other — أخرى</option>
+          </select>
+          <input class="form-control" id="s-city-other" type="text" placeholder="Enter city name..." style="display:none;margin-top:6px;"/>
+        </div>
+        <div class="form-group">
+          <label><span data-en="District / Area" data-ar="الحي / المنطقة">District / Area</span></label>
+          <input class="form-control" id="s-district" type="text" data-placeholder-en="e.g. Al Olaya" data-placeholder-ar="مثال: العليا" placeholder="e.g. Al Olaya"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label><span data-en="Street / Landmark" data-ar="الشارع / المعلم">Street / Landmark</span></label>
+        <input class="form-control" id="s-street" type="text" data-placeholder-en="Nearby landmark or street" data-placeholder-ar="معلم قريب أو اسم الشارع" placeholder="Nearby landmark or street"/>
+      </div>
+      <div class="wiz-nav">
+        <button type="button" class="wiz-back" onclick="wizGo(1)"><span data-en="← Back" data-ar="→ السابق">← Back</span></button>
+        <button type="button" class="wiz-next" onclick="wizGo(3)"><span data-en="Next →" data-ar="→ التالي">Next →</span></button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="wiz-section" id="wiz-sec-3">
+      <div class="step-label"><span data-en="Step 3: Contact" data-ar="الخطوة 3: التواصل">Step 3: Contact</span></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your Name <span class="req">*</span></label>
+          <input class="form-control" id="s-contact-name" type="text" data-placeholder-en="Landlord / Agent name" data-placeholder-ar="اسم المالك / الوكيل" placeholder="Landlord / Agent name"/>
+        </div>
+        <div class="form-group">
+          <label>WhatsApp Number <span class="req">*</span></label>
+          <input class="form-control" id="s-phone" type="tel" data-placeholder-en="+966 5XX XXX XXX" data-placeholder-ar="+966 5XX XXX XXX" placeholder="+966 5XX XXX XXX"/>
+        </div>
+      </div>
+      <div class="wiz-nav">
+        <button type="button" class="wiz-back" onclick="wizGo(2)"><span data-en="← Back" data-ar="→ السابق">← Back</span></button>
+        <button type="button" class="wiz-next" onclick="wizGo(4)"><span data-en="Next →" data-ar="→ التالي">Next →</span></button>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="wiz-section" id="wiz-sec-4">
+      <div class="step-label"><span data-en="Step 4: Amenities" data-ar="الخطوة 4: المرافق">Step 4: Amenities</span></div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;" data-en="Tap to select all that apply" data-ar="اضغط لاختيار ما ينطبق">Tap to select all that apply</div>
+      <div class="amenities-grid" id="amenities-grid">
+        <div class="amenity-tag" onclick="toggleAmenity(this,'WiFi')"><span class="tick"></span><span data-en="📶 WiFi" data-ar="📶 واي فاي">📶 WiFi</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'AC')"><span class="tick"></span><span data-en="❄️ AC" data-ar="❄️ مكيف">❄️ AC</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'Parking')"><span class="tick"></span><span data-en="🅿️ Parking" data-ar="🅿️ موقف">🅿️ Parking</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'Kitchen')"><span class="tick"></span><span data-en="🍳 Kitchen" data-ar="🍳 مطبخ">🍳 Kitchen</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'Washing Machine')"><span class="tick"></span><span data-en="🫧 Washing Machine" data-ar="🫧 غسالة">🫧 Washing Machine</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'Private Bathroom')"><span class="tick"></span><span data-en="🚿 Private Bath" data-ar="🚿 حمام خاص">🚿 Private Bath</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'Shared Bathroom')"><span class="tick"></span><span data-en="🪠 Shared Bath" data-ar="🪠 حمام مشترك">🪠 Shared Bath</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'Security')"><span class="tick"></span><span data-en="🔒 Security" data-ar="🔒 أمن">🔒 Security</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'Elevator')"><span class="tick"></span><span data-en="🛗 Elevator" data-ar="🛗 مصعد">🛗 Elevator</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'Balcony')"><span class="tick"></span><span data-en="🌅 Balcony" data-ar="🌅 شرفة">🌅 Balcony</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'Furnished')"><span class="tick"></span><span data-en="🛋️ Furnished" data-ar="🛋️ مفروش">🛋️ Furnished</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'TV')"><span class="tick"></span><span data-en="📺 TV" data-ar="📺 تلفزيون">📺 TV</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'Fridge')"><span class="tick"></span><span data-en="🧊 Fridge" data-ar="🧊 ثلاجة">🧊 Fridge</span></div>
+        <div class="amenity-tag" onclick="toggleAmenity(this,'Gym')"><span class="tick"></span><span data-en="🏋️ Gym" data-ar="🏋️ صالة رياضية">🏋️ Gym</span></div>
+      </div>
+      <div id="inclusions-wrap" style="display:none;margin-top:14px;">
+        <div style="background:#fff8e6;border:1px solid #f0d890;border-radius:9px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:#8a6200;" data-en="🏠 What is included in the monthly rent?" data-ar="🏠 ماذا يشمل الإيجار الشهري؟">🏠 What is included in the monthly rent?</div>
+        <div class="incl-grid">
+          <div class="incl-tag" onclick="toggleIncl(this,'water')"><span class="tick"></span>💧 Water</div>
+          <div class="incl-tag" onclick="toggleIncl(this,'electricity')"><span class="tick"></span>⚡ Electricity</div>
+          <div class="incl-tag" onclick="toggleIncl(this,'internet')"><span class="tick"></span>📶 Internet</div>
+          <div class="incl-tag" onclick="toggleIncl(this,'cleaning')"><span class="tick"></span>🧹 Cleaning</div>
+        </div>
+      </div>
+      <div class="wiz-nav">
+        <button type="button" class="wiz-back" onclick="wizGo(3)"><span data-en="← Back" data-ar="→ السابق">← Back</span></button>
+        <button type="button" class="wiz-next" onclick="wizGo(5)"><span data-en="Next →" data-ar="→ التالي">Next →</span></button>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="wiz-section" id="wiz-sec-5">
+      <div class="step-label"><span data-en="Step 5: Description" data-ar="الخطوة 5: الوصف">Step 5: Description</span></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label><span data-en="Description (EN)" data-ar="الوصف (EN)">Description (EN)</span></label>
+          <textarea class="form-control" id="s-desc" data-placeholder-en="Describe the room, neighborhood, features..." data-placeholder-ar="صف الغرفة، الحي، المميزات..." placeholder="Describe the room, neighborhood, features..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>الوصف (AR) <span style="font-size:10px;color:var(--muted);font-weight:400">(Optional)</span></label>
+          <textarea class="form-control" id="s-desc-ar" placeholder="وصف الغرفة..." style="font-family:Tajawal,sans-serif;direction:rtl;"></textarea>
+        </div>
+      </div>
+      <div class="wiz-nav">
+        <button type="button" class="wiz-back" onclick="wizGo(4)"><span data-en="← Back" data-ar="→ السابق">← Back</span></button>
+        <button type="button" class="wiz-next" onclick="wizGo(6)"><span data-en="Next →" data-ar="→ التالي">Next →</span></button>
+      </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="wiz-section" id="wiz-sec-6">
+      <div class="step-label"><span data-en="Step 6: Photos & Submit" data-ar="الخطوة 6: الصور والإرسال">Step 6: Photos & Submit</span></div>
+      <div class="form-group">
+        <div class="img-upload-area" id="upload-area" onclick="document.getElementById('photo-input').click()">
+          <input type="file" id="photo-input" accept="image/*" multiple style="display:none" onchange="handlePhotos(event)"/>
+          <div style="font-size:32px;margin-bottom:6px">📸</div>
+          <div style="font-size:13px;font-weight:500;color:var(--mid)" data-en="Tap to upload photos" data-ar="اضغط لرفع الصور">Tap to upload photos</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px" data-en="JPG, PNG — up to 8 photos" data-ar="JPG، PNG — حتى 8 صور">JPG, PNG — up to 8 photos</div>
+        </div>
+        <div class="upload-progress" id="upload-progress"><div class="upload-progress-bar" id="upload-bar"></div></div>
+        <div class="img-preview" id="img-preview"></div>
+        <div class="upload-status" id="upload-status"></div>
+      </div>
+      <div class="wiz-nav">
+        <button type="button" class="wiz-back" onclick="wizGo(5)"><span data-en="← Back" data-ar="→ السابق">← Back</span></button>
+        <button type="button" class="wiz-next" id="submit-btn" onclick="submitRoom()"><span data-en="➕ Submit Room Free →" data-ar="➕ أرسل الغرفة مجاناً →">➕ Submit Room Free →</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS CARD -->
+  <div class="success-card" id="success-card">
+    <div class="success-icon">🎉</div>
+    <div class="success-title" data-en="Submitted for Review!" data-ar="تم الإرسال للمراجعة!">Submitted for Review!</div>
+    <div class="success-desc" data-en="Thank you! Our team will verify and publish your room within 24-48 hours. We'll contact you on WhatsApp." data-ar="شكراً! سيتحقق فريقنا وينشر غرفتك خلال 24-48 ساعة. سنتواصل معك عبر واتساب.">Thank you! Our team will verify and publish within 24-48 hours.</div>
+    <div id="success-sku-box"></div>
+    <a href="index.html" style="display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:12px 24px;background:var(--green);color:#fff;border-radius:9px;font-size:13px;font-weight:600;" data-en="Back to Home →" data-ar="العودة للرئيسية →">Back to Home →</a>
+  </div>
+</div>
+
+<!-- PREVIEW POPUP -->
+<div class="popup-overlay" id="preview-popup">
+  <div class="popup-box">
+    <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--green);margin-bottom:4px;" data-en="🏠 Room Preview" data-ar="🏠 معاينة الغرفة">🏠 Room Preview</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;" data-en="Your room has been saved. What would you like to do?" data-ar="تم حفظ الغرفة. ماذا تريد أن تفعل؟">Your room has been saved. What would you like to do?</div>
+
+    <!-- PREVIEW CARD -->
+    <div style="background:var(--off);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div id="prev-img" style="width:68px;height:56px;border-radius:8px;overflow:hidden;background:var(--green-pale);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px;">🏠</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="prev-name">—</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:3px;" id="prev-loc">📍 —</div>
+          <div style="font-size:14px;font-weight:700;color:var(--green);" id="prev-price">SAR —</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--mid);line-height:1.6;" id="prev-desc"></div>
+      <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap;" id="prev-amenities"></div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;color:var(--muted);" data-en="Room ID:" data-ar="رمز الغرفة:">Room ID:</span>
+        <span style="font-family:monospace;font-size:13px;font-weight:700;color:var(--green);" id="prev-sku">—</span>
+      </div>
+    </div>
+
+    <!-- WARNING -->
+    <div style="background:#fff8e6;border:1px solid #f0d890;border-radius:9px;padding:10px 13px;font-size:12px;color:#8a6200;margin-bottom:16px;" data-en="⏳ Under Review — Our team will verify and publish within 24-48 hours." data-ar="⏳ قيد المراجعة — سيتحقق فريقنا وينشر خلال 24-48 ساعة.">⏳ Under Review — Our team will verify and publish within 24-48 hours.</div>
+
+    <!-- 2 OPTIONS ONLY -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:10px;" data-en="Choose an option:" data-ar="اختر خياراً:">Choose an option:</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button type="button" onclick="doEdit()" style="padding:13px;background:var(--green-pale);color:var(--green);border:1.5px solid var(--green-light);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;" data-en="✏️ Edit Before Submitting" data-ar="✏️ تعديل قبل الإرسال">✏️ Edit Before Submitting</button>
+      <button type="button" id="approve-btn" onclick="doApprove()" style="padding:13px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;" data-en="✅ Submit for Approval →" data-ar="✅ إرسال للموافقة →">✅ Submit for Approval →</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN UP MODAL -->
+<div class="popup-overlay" id="signup-modal">
+  <div class="popup-box" style="max-width:380px;">
+
+    <!-- SIGN UP / LOGIN TABS -->
+    <div style="display:flex;gap:0;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;">
+      <button type="button" id="su-tab-signup" onclick="suSwitchTab('signup')" style="flex:1;padding:10px;background:var(--green);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Sign Up</button>
+      <button type="button" id="su-tab-login" onclick="suSwitchTab('login')" style="flex:1;padding:10px;background:#fff;color:var(--mid);border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Login</button>
+    </div>
+
+    <!-- GOOGLE -->
+    <button type="button" onclick="doGoogleSubmit()" style="width:100%;padding:12px;background:#fff;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <span style="font-size:11px;color:var(--muted);">OR</span>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:14px;">
+      <div style="font-size:28px;margin-bottom:6px;">🏠</div>
+      <div id="su-modal-title" style="font-family:'Playfair Display',serif;font-size:17px;color:var(--green);margin-bottom:4px;">Create Account & Submit</div>
+      <div id="su-modal-sub" style="font-size:12px;color:var(--muted);">Sign up to track your room in My Rooms</div>
+    </div>
+
+    <input class="form-control" id="su-email" type="email" placeholder="Email address" style="margin-bottom:8px;" onkeydown="if(event.key==='Enter')document.getElementById('su-pass').focus()"/>
+    <div style="position:relative;margin-bottom:8px;">
+      <input class="form-control" id="su-pass" type="password" placeholder="Password (min 6 characters)" style="padding-right:40px;" onkeydown="if(event.key==='Enter')doSignupSubmit()"/>
+      <button type="button" onclick="togglePassVis()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;" id="pass-vis-btn">👁</button>
+    </div>
+    <div id="su-err" style="color:var(--red);font-size:12px;margin-bottom:8px;display:none;"></div>
+    <button type="button" class="submit-btn" onclick="doSignupSubmit()" id="su-submit-btn" style="padding:13px;font-size:13px;margin-bottom:10px;">
+      <span id="su-btn-text">Create Account & Submit Room →</span>
+    </button>
+    <div style="text-align:center;">
+      <button type="button" style="background:none;border:none;font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;" onclick="document.getElementById('signup-modal').classList.remove('open')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<div class="wa-float">
+  <a class="wa-btn-float wa-link" href="https://wa.me/966541873266" target="_blank">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.113.549 4.197 1.595 6.03L.057 24l6.097-1.594A11.933 11.933 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.795 9.795 0 01-5.007-1.373l-.36-.213-3.722.974.997-3.635-.234-.374A9.786 9.786 0 012.182 12C2.182 6.566 6.566 2.182 12 2.182S21.818 6.566 21.818 12 17.434 21.818 12 21.818z"/></svg>
+  </a>
+</div>
+
+<footer>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Sukoon Homes · سكون هومز</span>
+    <div class="footer-links">
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function wizGo(step){if(window._wizGo)window._wizGo(step);else setTimeout(()=>window._wizGo&&window._wizGo(step),300);}
+function setST(t){if(window._setST)window._setST(t);}
+function detectLocation(){if(window._detectLocation)window._detectLocation();}
+function submitRoom(){if(window._submitRoom)window._submitRoom();}
+function doEdit(){if(window._doEdit)window._doEdit();}
+function doApprove(){if(window._doApprove)window._doApprove();}
+function doSignupSubmit(){if(window._doSignupSubmit)window._doSignupSubmit();}
+function suSwitchTab(t){if(window._suSwitchTab)window._suSwitchTab(t);}
+function togglePassVis(){if(window._togglePassVis)window._togglePassVis();}
+function goToMyRooms(){window.location.href='landlord.html';}
+function toggleAmenity(el,val){if(window._toggleAmenity)window._toggleAmenity(el,val);}
+function toggleIncl(el,val){if(window._toggleIncl)window._toggleIncl(el,val);}
+function handlePhotos(e){if(window._handlePhotos)window._handlePhotos(e);}
+function removePhoto(idx,el){if(window._removePhoto)window._removePhoto(idx,el);}
+function sL(l){if(window._sL)window._sL(l);}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, doc, getDoc, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const FC={apiKey:"AIzaSyDAOPIT2TtKtxyHCi3Sg2WapIDhvfk1jlo",authDomain:"sukoon-homes.firebaseapp.com",projectId:"sukoon-homes",storageBucket:"sukoon-homes.firebasestorage.app",messagingSenderId:"351838802115",appId:"1:351838802115:web:207c60810ebe0930c65276"};
+const app=initializeApp(FC);
+const db=getFirestore(app);
+const auth=getAuth(app);
+const googleProvider=new GoogleAuthProvider();
+setPersistence(auth,browserLocalPersistence).catch(()=>{});
+const CLOUD='dv5erwivl', PRESET='sukoon-upload';
+
+let currentUser=null;
+let suMode='signup';
+
+onAuthStateChanged(auth,(user)=>{ currentUser=user; });
+
+window._showSignupModal=window.showSignupModal=function(){
+  document.getElementById('signup-modal').classList.add('open');
+};
+
+window._doGoogleSubmit=window.doGoogleSubmit=async function(){
+  const err=document.getElementById('su-err');
+  try{
+    const uc=await signInWithPopup(auth,googleProvider);
+    currentUser=uc.user;
+    await setDoc(doc(db,'landlords',currentUser.uid),{email:currentUser.email,lastLogin:new Date().toISOString()},{merge:true});
+    if(savedDocId){
+      const {updateDoc}=await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+      await updateDoc(doc(db,'submissions',savedDocId),{submitterEmail:currentUser.email,landlordId:currentUser.uid});
+    }
+    document.getElementById('signup-modal').classList.remove('open');
+    showSuccessCard();
+  }catch(e){
+    if(e.code!=='auth/popup-closed-by-user'){
+      err.style.display='block';err.textContent='❌ Google login failed.';
+    }
+  }
+};
+
+window._suSwitchTab=window.suSwitchTab=function(mode){
+  suMode=mode;
+  const isSignup=mode==='signup';
+  document.getElementById('su-tab-signup').style.background=isSignup?'var(--green)':'#fff';
+  document.getElementById('su-tab-signup').style.color=isSignup?'#fff':'var(--mid)';
+  document.getElementById('su-tab-login').style.background=isSignup?'#fff':'var(--green)';
+  document.getElementById('su-tab-login').style.color=isSignup?'var(--mid)':'#fff';
+  document.getElementById('su-modal-title').textContent=isSignup?'Create Account & Submit':'Login & Submit';
+  document.getElementById('su-modal-sub').textContent=isSignup?'Sign up to track your room in My Rooms':'Login to submit and track your room';
+  document.getElementById('su-btn-text').textContent=isSignup?'Create Account & Submit Room →':'Login & Submit Room →';
+};
+
+window._togglePassVis=window.togglePassVis=function(){
+  const input=document.getElementById('su-pass');
+  input.type=input.type==='password'?'text':'password';
+};
+
+window._doSignupSubmit=window.doSignupSubmit=async function(){
+  const email=document.getElementById('su-email').value.trim();
+  const pass=document.getElementById('su-pass').value;
+  const err=document.getElementById('su-err');
+  const btn=document.getElementById('su-submit-btn');
+  err.style.display='none';
+  if(!email||!email.includes('@')){err.style.display='block';err.textContent='Please enter a valid email';return;}
+  if(!pass||pass.length<6){err.style.display='block';err.textContent='Password must be at least 6 characters';return;}
+  btn.disabled=true;
+  document.getElementById('su-btn-text').textContent='Processing...';
+  try{
+    let uc;
+    if(suMode==='signup') uc=await createUserWithEmailAndPassword(auth,email,pass);
+    else uc=await signInWithEmailAndPassword(auth,email,pass);
+    currentUser=uc.user;
+    await setDoc(doc(db,'landlords',currentUser.uid),{email:currentUser.email,lastLogin:new Date().toISOString()},{merge:true});
+    if(savedDocId){
+      const {updateDoc}=await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+      await updateDoc(doc(db,'submissions',savedDocId),{submitterEmail:email,landlordId:currentUser.uid});
+    }
+    document.getElementById('signup-modal').classList.remove('open');
+    showSuccessCard();
+  }catch(e){
+    let msg=e.message;
+    if(e.code==='auth/email-already-in-use')msg='Email already registered. Switch to Login tab.';
+    if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential')msg='Wrong email or password.';
+    if(e.code==='auth/user-not-found')msg='No account found. Use Sign Up tab.';
+    if(e.code==='auth/weak-password')msg='Password too weak. Use 6+ characters.';
+    err.style.display='block';err.textContent='❌ '+msg;
+    btn.disabled=false;
+    document.getElementById('su-btn-text').textContent=suMode==='signup'?'Create Account & Submit Room →':'Login & Submit Room →';
+  }
+};
+
+window.goToMyRooms=function(){ window.location.href='landlord.html'; };
+function showSuccessCard(){
+  document.getElementById('preview-popup').classList.remove('open');
+  document.getElementById('signup-modal').classList.remove('open');
+  const formCard=document.getElementById('submit-form-card');
+  if(formCard)formCard.style.display='none';
+  const sc=document.getElementById('success-card');
+  if(sc){
+    sc.style.display='block';
+    if(savedData){
+      document.getElementById('success-sku-box').innerHTML=`
+        <div style="background:var(--green-pale);border:1px solid var(--green-light);border-radius:10px;padding:16px;margin-top:14px;text-align:center;">
+          <div style="font-size:12px;color:var(--mid);margin-bottom:5px;">${lg==='ar'?'رمز غرفتك — احتفظ به!':'Your Room ID — Save this!'}</div>
+          <div style="font-family:monospace;font-size:22px;font-weight:700;color:var(--green);letter-spacing:2px;">${savedData.sku}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">${lg==='ar'?'ستظهر غرفتك في غرفي بعد الموافقة':'Your room will appear in My Rooms after approval'}</div>
+          <a href="landlord.html" style="display:inline-block;margin-top:12px;padding:10px 20px;background:var(--green);color:#fff;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;">${lg==='ar'?'عرض غرفي →':'View My Rooms →'}</a>
+        </div>`;
+    }
+    sc.scrollIntoView({behavior:'smooth'});
+  }
+}
+
+let lg=localStorage.getItem('sh_lang')||'en';
+let selectedST='daily';
+let uploadedUrls=[];
+let currentWizStep=1;
+
+// ===== WIZARD =====
+window._wizGo=window.wizGo=function(step){
+  if(step<1||step>6)return;
+  if(step>currentWizStep&&!wizValidate(currentWizStep))return;
+  // Clear all errors when moving
+  document.querySelectorAll('.form-control.error,.wiz-radio-error').forEach(el=>{
+    el.classList.remove('error');el.classList.remove('wiz-radio-error');
+  });
+  document.querySelectorAll('.wiz-field-err').forEach(el=>el.remove());
+  for(let i=1;i<=6;i++){
+    const sec=document.getElementById('wiz-sec-'+i);
+    if(sec)sec.classList.toggle('active',i===step);
+    const dot=document.getElementById('wiz-dot-'+i);
+    if(dot){
+      dot.classList.toggle('active',i===step);
+      dot.classList.toggle('done',i<step);
+    }
+    if(i>1){const line=document.getElementById('wiz-line-'+(i-1));if(line)line.classList.toggle('done',i<=step);}
+  }
+  currentWizStep=step;
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+function showFieldError(el,msgEn,msgAr){
+  el.classList.add('error');
+  // Remove existing error msg
+  const existing=el.parentElement.querySelector('.wiz-field-err');
+  if(existing)existing.remove();
+  const err=document.createElement('div');
+  err.className='wiz-field-err';
+  err.style.cssText='color:var(--red);font-size:11px;margin-top:4px;font-weight:500;';
+  err.textContent=lg==='ar'?msgAr:msgEn;
+  el.parentElement.appendChild(err);
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.focus();
+}
+
+function showRadioError(wrap,msgEn,msgAr){
+  wrap.classList.add('wiz-radio-error');
+  const existing=wrap.parentElement.querySelector('.wiz-field-err');
+  if(existing)existing.remove();
+  const err=document.createElement('div');
+  err.className='wiz-field-err';
+  err.style.cssText='color:var(--red);font-size:11px;margin-top:4px;font-weight:500;';
+  err.textContent=lg==='ar'?msgAr:msgEn;
+  wrap.parentElement.appendChild(err);
+  wrap.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function wizValidate(step){
+  let valid=true;
+  if(step===1){
+    const name=document.getElementById('s-name');
+    const type=document.getElementById('s-type');
+    const price=document.getElementById('s-price');
+    const suitable=document.querySelector('input[name="s-suitable"]:checked');
+    if(!name.value.trim()){showFieldError(name,'Room name is required','اسم الغرفة مطلوب');return false;}
+    if(!type.value){showFieldError(type,'Please select room type','يرجى اختيار نوع الغرفة');return false;}
+    if(!price.value||parseFloat(price.value)<=0){showFieldError(price,'Price is required','السعر مطلوب');return false;}
+    if(!suitable){
+      const wrap=document.querySelector('.suit-wrap');
+      if(wrap)showRadioError(wrap,'Please select who this room is suitable for','يرجى تحديد من تناسبه الغرفة');
+      return false;
+    }
+  }
+  if(step===2){
+    const city=document.getElementById('s-city');
+    if(!city.value){showFieldError(city,'City is required','المدينة مطلوبة');return false;}
+  }
+  if(step===3){
+    const name=document.getElementById('s-contact-name');
+    const phone=document.getElementById('s-phone');
+    if(!name.value.trim()){showFieldError(name,'Your name is required','اسمك مطلوب');return false;}
+    if(!phone.value.trim()){showFieldError(phone,'WhatsApp number is required','رقم واتساب مطلوب');return false;}
+  }
+  return valid;
+}
+let savedData=null;
+let savedDocId=null;
+
+
+// ===== LANGUAGE =====
+function sL(l){
+  lg=l; localStorage.setItem('sh_lang',l);
+  document.getElementById('html-root').setAttribute('lang',l);
+  document.getElementById('html-root').setAttribute('dir',l==='ar'?'rtl':'ltr');
+  ['btn-en','btn-ar','mm-btn-en','mm-btn-ar'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.classList.toggle('active',id.includes(l==='ar'?'ar':'en'));
+  });
+  document.querySelectorAll('[data-en]').forEach(el=>{
+    const t=l==='ar'?el.getAttribute('data-ar'):el.getAttribute('data-en');
+    if(t&&!['INPUT','TEXTAREA','SELECT'].includes(el.tagName))el.innerHTML=t;
+  });
+  document.querySelectorAll('[data-placeholder-en]').forEach(el=>{
+    el.placeholder=l==='ar'?(el.getAttribute('data-placeholder-ar')||''):(el.getAttribute('data-placeholder-en')||'');
+  });
+  // Translate select options
+  document.querySelectorAll('select option[data-ar]').forEach(opt=>{
+    opt.textContent=l==='ar'?opt.getAttribute('data-ar'):opt.getAttribute('data-en');
+  });
+  // Update price unit label
+  const unitEl=document.getElementById('price-unit-label');
+  if(unitEl){
+    if(l==='ar') unitEl.textContent=selectedST==='daily'?'/ ليلة':'/ شهر';
+    else unitEl.textContent=selectedST==='daily'?'/ Night':'/ Month';
+  }
+}
+window._sL=window.sL=sL;
+
+// ===== STAY TYPE =====
+window._setST=window.setST=function(type){
+  selectedST=type;
+  document.getElementById('type-btn-daily').classList.toggle('active',type==='daily');
+  document.getElementById('type-btn-long').classList.toggle('active',type==='long');
+  document.getElementById('inclusions-wrap').style.display=type==='long'?'block':'none';
+  const unitEl=document.getElementById('price-unit-label');
+  if(unitEl){
+    if(lg==='ar') unitEl.textContent=type==='daily'?'/ ليلة':'/ شهر';
+    else unitEl.textContent=type==='daily'?'/ Night':'/ Month';
+  }
+  const lbl=document.getElementById('st-selected-label');
+  if(lbl){
+    if(lg==='ar') lbl.textContent=type==='daily'?'✓ يومي / ليلي محدد':'✓ شهري / إقامة طويلة محدد';
+    else lbl.textContent=type==='daily'?'✓ Daily / Nightly selected':'✓ Monthly / Long Stay selected';
+  }
+};
+
+// ===== GPS LOCATION DETECT =====
+const CITY_MAP={
+  'riyadh':'Riyadh','الرياض':'Riyadh','ar riyadh':'Riyadh',
+  'jeddah':'Jeddah','جدة':'Jeddah','jidda':'Jeddah','jedda':'Jeddah',
+  'dammam':'Dammam','الدمام':'Dammam',
+  'mecca':'Makkah','makkah':'Makkah','مكة':'Makkah','makkah al-mukarramah':'Makkah',
+  'medina':'Madinah','madinah':'Madinah','المدينة':'Madinah','al madinah':'Madinah',
+  'khobar':'Khobar','al khobar':'Khobar','الخبر':'Khobar',
+  'tabuk':'Tabuk','تبوك':'Tabuk',
+  'abha':'Abha','أبها':'Abha',
+  'buraydah':'Buraydah','بريدة':'Buraydah',
+  'hail':'Hail','حائل':'Hail',
+  'taif':'Taif','ta\'if':'Taif','الطائف':'Taif',
+  'najran':'Najran','نجران':'Najran',
+  'jizan':'Jizan','جازان':'Jizan',
+  'al-ahsa':'Al Ahsa','al ahsa':'Al Ahsa','الأحساء':'Al Ahsa','hofuf':'Al Ahsa',
+  'yanbu':'Yanbu','ينبع':'Yanbu',
+  'qatif':'Qatif','القطيف':'Qatif',
+  'jubail':'Jubail','الجبيل':'Jubail'
+};
+
+window._detectLocation=window.detectLocation=async function(){
+  const btn=document.getElementById('gps-btn');
+  const status=document.getElementById('gps-status');
+  if(!navigator.geolocation){
+    status.style.display='block';
+    status.style.color='var(--red)';
+    status.textContent=lg==='ar'?'المتصفح لا يدعم تحديد الموقع':'Location not supported by your browser';
+    return;
+  }
+  btn.disabled=true;
+  btn.innerHTML='⏳ <span>'+(lg==='ar'?'جاري تحديد الموقع...':'Detecting location...')+'</span>';
+  status.style.display='block';
+  status.style.color='var(--muted)';
+  status.textContent=lg==='ar'?'يرجى السماح بالوصول إلى الموقع...':'Please allow location access...';
+
+  navigator.geolocation.getCurrentPosition(async(pos)=>{
+    try{
+      const {latitude:lat,longitude:lng}=pos.coords;
+      const res=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=en`,{
+        headers:{'User-Agent':'SukoonHomesApp/1.0 (sukoonhomesksa.com)'}
+      });
+      const data=await res.json();
+      const addr=data.address||{};
+
+      // Detect city
+      const rawCity=(addr.city||addr.town||addr.county||addr.state_district||'').toLowerCase();
+      const mappedCity=CITY_MAP[rawCity]||CITY_MAP[Object.keys(CITY_MAP).find(k=>rawCity.includes(k))||'']||'Other';
+
+      // Set city dropdown
+      const citySelect=document.getElementById('s-city');
+      if(citySelect){
+        citySelect.value=mappedCity;
+        if(mappedCity==='Other'){
+          document.getElementById('s-city-other').style.display='block';
+          document.getElementById('s-city-other').value=addr.city||addr.town||'';
+        }
+      }
+
+      // Set district
+      const district=addr.suburb||addr.neighbourhood||addr.quarter||addr.district||'';
+      const districtEl=document.getElementById('s-district');
+      if(districtEl&&district)districtEl.value=district;
+
+      // Set street
+      const street=addr.road||addr.street||'';
+      const streetEl=document.getElementById('s-street');
+      if(streetEl&&street)streetEl.value=street;
+
+      btn.disabled=false;
+      btn.innerHTML='✅ <span>'+(lg==='ar'?'تم تحديد الموقع!':'Location detected!')+'</span>';
+      btn.style.background='var(--green)';btn.style.color='#fff';btn.style.borderColor='var(--green)';
+      status.style.color='var(--green-mid)';
+      status.textContent=(mappedCity==='Other'?addr.city||addr.town||'':mappedCity)+(district?', '+district:'');
+    }catch(e){
+      btn.disabled=false;
+      btn.innerHTML='📍 <span>'+(lg==='ar'?'تحديد موقعي تلقائياً':'Detect My Location Automatically')+'</span>';
+      btn.style.background='';btn.style.color='';btn.style.borderColor='';
+      status.style.color='var(--red)';
+      status.textContent=lg==='ar'?'فشل تحديد الموقع. أدخل يدوياً.':'Location fetch failed. Please fill manually.';
+    }
+  },(err)=>{
+    btn.disabled=false;
+    btn.innerHTML='📍 <span>'+(lg==='ar'?'تحديد موقعي تلقائياً':'Detect My Location Automatically')+'</span>';
+    btn.style.background='';btn.style.color='';btn.style.borderColor='';
+    status.style.display='block';
+    status.style.color='var(--red)';
+    const msgs={1:lg==='ar'?'تم رفض إذن الموقع':'Location permission denied',2:lg==='ar'?'الموقع غير متاح':'Location unavailable',3:lg==='ar'?'انتهت مهلة الطلب':'Request timeout'};
+    status.textContent=msgs[err.code]||( lg==='ar'?'خطأ في تحديد الموقع':'Location error');
+  },{timeout:15000,maximumAge:300000,enableHighAccuracy:false});
+};
+
+// ===== AMENITIES TOGGLE =====
+window._toggleAmenity=window.toggleAmenity=function(el,val){
+  el.classList.toggle('on');
+  el.querySelector('.tick').textContent=el.classList.contains('on')?'✓':'';
+};
+
+// ===== INCLUSIONS TOGGLE =====
+window._toggleIncl=window.toggleIncl=function(el,val){
+  el.classList.toggle('on');
+  el.querySelector('.tick').textContent=el.classList.contains('on')?'✓':'';
+};
+
+// ===== TOAST =====
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+// ===== VALIDATE =====
+function validate(){
+  let ok=true;
+  const required=[
+    {id:'s-name', msgEn:'Room name is required', msgAr:'اسم الغرفة مطلوب'},
+    {id:'s-type', msgEn:'Please select room type', msgAr:'يرجى اختيار نوع الغرفة'},
+    {id:'s-price', msgEn:'Price is required', msgAr:'السعر مطلوب'},
+    {id:'s-city', msgEn:'Please select a city', msgAr:'يرجى اختيار المدينة'},
+    {id:'s-contact-name', msgEn:'Your name is required', msgAr:'اسمك مطلوب'},
+    {id:'s-phone', msgEn:'WhatsApp number is required', msgAr:'رقم واتساب مطلوب'},
+  ];
+  let firstError=null;
+  required.forEach(f=>{
+    const el=document.getElementById(f.id);
+    if(!el||!el.value.trim()){
+      el.classList.add('error');
+      if(!firstError)firstError=el;
+      ok=false;
+    }else{
+      el.classList.remove('error');
+    }
+  });
+  if(!ok){
+    const msg=lg==='ar'?'يرجى ملء جميع الحقول المطلوبة *':'Please fill all required fields *';
+    // Show popup notification
+    showNotif(msg);
+    if(firstError)firstError.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  return ok;
+}
+
+// ===== ERROR NOTIFICATION POPUP =====
+function showNotif(msg){
+  // Remove existing
+  const old=document.getElementById('notif-popup');
+  if(old)old.remove();
+  const div=document.createElement('div');
+  div.id='notif-popup';
+  div.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#c0392b;color:#fff;padding:12px 22px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3);max-width:90%;text-align:center;';
+  div.textContent='⚠️ '+msg;
+  document.body.appendChild(div);
+  setTimeout(()=>div.remove(),3500);
+}
+
+// ===== PHOTO UPLOAD =====
+window._handlePhotos=window.handlePhotos=async function(e){
+  const files=Array.from(e.target.files).slice(0,8-uploadedUrls.length);
+  if(!files.length)return;
+  const prog=document.getElementById('upload-progress');
+  const bar=document.getElementById('upload-bar');
+  const status=document.getElementById('upload-status');
+  const prev=document.getElementById('img-preview');
+  prog.style.display='block';
+  status.textContent=lg==='ar'?'جاري الرفع...':'Uploading...';
+  for(let i=0;i<files.length;i++){
+    bar.style.width=((i/files.length)*100)+'%';
+    try{
+      const fd=new FormData();
+      fd.append('file',files[i]);
+      fd.append('upload_preset',PRESET);
+      // Compress before upload
+      const compressed=await compressImage(files[i]);
+      fd.set('file',compressed);
+      const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`,{method:'POST',body:fd});
+      const data=await res.json();
+      if(data.secure_url){
+        uploadedUrls.push(data.secure_url);
+        const item=document.createElement('div');item.className='img-prev-item';
+        const idx=uploadedUrls.length-1;
+        item.innerHTML=`<img src="${data.secure_url}" alt=""/><button type="button" class="img-prev-del" onclick="removePhoto(${idx},this.parentElement)">✕</button>`;
+        prev.appendChild(item);
+      }
+    }catch(err){console.error(err);}
+    bar.style.width=((i+1)/files.length*100)+'%';
+  }
+  prog.style.display='none';
+  status.textContent=lg==='ar'?`✅ ${uploadedUrls.length} صورة`:`✅ ${uploadedUrls.length} photo(s)`;
+  e.target.value='';
+};
+
+// Compress image before upload
+async function compressImage(file){
+  return new Promise(resolve=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const MAX=1200;
+      let w=img.width,h=img.height;
+      if(w>MAX){h=h*(MAX/w);w=MAX;}
+      if(h>MAX){w=w*(MAX/h);h=MAX;}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      canvas.toBlob(blob=>resolve(new File([blob],'room.webp',{type:'image/webp'})),'image/webp',0.85);
+      URL.revokeObjectURL(url);
+    };
+    img.src=url;
+  });
+}
+
+window._removePhoto=window.removePhoto=function(idx,el){
+  uploadedUrls.splice(idx,1);el.remove();
+  document.getElementById('upload-status').textContent=uploadedUrls.length?`${uploadedUrls.length} photo(s)`:'';
+};
+
+// ===== GET FORM DATA =====
+function getFormData(){
+  const city=document.getElementById('s-city').value;
+  const cityOther=document.getElementById('s-city-other').value.trim();
+  const finalCity=city==='Other'?cityOther:city;
+  const cityCode=finalCity.substring(0,3).toUpperCase();
+  const sku='SH-'+cityCode+'-'+Date.now().toString().slice(-5);
+
+  const amenities=Array.from(document.querySelectorAll('#amenities-grid .amenity-tag.on'))
+    .map(el=>el.getAttribute('data-val')||el.textContent.replace(/[✓📶❄️🅿️🍳🫧🚿🪠🔒🛗🌅🛋️📺🧊🏋️]/g,'').trim());
+
+  // Fix: get amenity values properly
+  const amenityValues=[];
+  document.querySelectorAll('#amenities-grid .amenity-tag.on').forEach(el=>{
+    const onclick=el.getAttribute('onclick');
+    const match=onclick&&onclick.match(/'([^']+)'\)/);
+    if(match)amenityValues.push(match[1]);
+  });
+
+  const inclusions={};
+  if(selectedST==='long'){
+    document.querySelectorAll('#inclusions-wrap .incl-tag').forEach(el=>{
+      const onclick=el.getAttribute('onclick');
+      const match=onclick&&onclick.match(/'([^']+)'\)/);
+      if(match)inclusions[match[1]]=el.classList.contains('on')?'yes':'no';
+    });
+  }
+
+  return{
+    name:document.getElementById('s-name').value.trim(),
+    nameAr:document.getElementById('s-name-ar').value.trim(),
+    type:document.getElementById('s-type').value,
+    suitableFor:document.querySelector('input[name="s-suitable"]:checked')?.value||'Both',
+    sku,stayType:selectedST,
+    city:finalCity,
+    district:document.getElementById('s-district').value.trim(),
+    street:document.getElementById('s-street').value.trim(),
+    price:parseFloat(document.getElementById('s-price').value)||0,
+    phone:document.getElementById('s-phone').value.trim().replace(/\D/g,''),
+    contactName:document.getElementById('s-contact-name').value.trim(),
+    desc:document.getElementById('s-desc').value.trim(),
+    descAr:document.getElementById('s-desc-ar').value.trim(),
+    amenities:amenityValues,
+    inclusions,
+    img:uploadedUrls[0]||'',
+    images:[...uploadedUrls],
+    status:'Available',published:false,featured:false,verified:false,clicks:0,
+    submittedAt:new Date().toISOString(),
+    date:new Date().toLocaleDateString('en-SA'),
+    source:'submit-form'
+  };
+}
+
+// ===== SUBMIT =====
+window._submitRoom=window.submitRoom=async function(){
+  if(!validate())return;
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;
+  btn.textContent=lg==='ar'?'جاري الحفظ...':'Saving...';
+  try{
+    const data=getFormData();
+    const docRef=await addDoc(collection(db,'submissions'),data);
+    savedData=data;
+    savedDocId=docRef.id;
+    showPreview(data);
+  }catch(e){
+    showNotif(lg==='ar'?'خطأ في الإرسال. حاول مرة أخرى.':'Submission error. Please try again.');
+  }
+  btn.disabled=false;
+  btn.innerHTML=`<span data-en="➕ Submit Room for Free →" data-ar="➕ أرسل الغرفة مجاناً →">${lg==='ar'?'➕ أرسل الغرفة مجاناً →':'➕ Submit Room for Free →'}</span>`;
+};
+
+// ===== SHOW PREVIEW POPUP =====
+function showPreview(data){
+  const unit=selectedST==='long'?'/mo':'/night';
+  document.getElementById('prev-name').textContent=data.name||'—';
+  document.getElementById('prev-loc').textContent='📍 '+(data.city||'')+(data.district?' · '+data.district:'');
+  document.getElementById('prev-price').textContent='SAR '+(data.price||'—')+' '+unit;
+  document.getElementById('prev-desc').textContent=(data.desc||'').substring(0,100)+(data.desc&&data.desc.length>100?'...':'');
+  document.getElementById('prev-sku').textContent=data.sku||'—';
+  // Amenities
+  const icons={WiFi:'📶',AC:'❄️',Parking:'🅿️',Kitchen:'🍳','Private Bathroom':'🚿',Furnished:'🛋️',TV:'📺',Security:'🔒',Elevator:'🛗',Balcony:'🌅','Washing Machine':'🫧','Shared Bathroom':'🪠',Fridge:'🧊',Gym:'🏋️'};
+  document.getElementById('prev-amenities').innerHTML=(data.amenities||[]).map(a=>
+    `<span style="background:var(--green-pale);color:var(--green);padding:3px 8px;border-radius:6px;font-size:11px;">${icons[a]||'✓'} ${a}</span>`
+  ).join('');
+  // Image
+  if(data.img){document.getElementById('prev-img').innerHTML=`<img src="${data.img}" style="width:100%;height:100%;object-fit:cover;" alt=""/>`;}
+  // Apply current language to popup
+  sL(lg);
+  document.getElementById('preview-popup').classList.add('open');
+}
+
+// ===== EDIT =====
+window._doEdit=window.doEdit=function(){
+  document.getElementById('preview-popup').classList.remove('open');
+  document.getElementById('submit-form-card').style.display='block';
+  document.getElementById('submit-form-card').scrollIntoView({behavior:'smooth'});
+};
+
+// ===== APPROVE (Submit for approval) =====
+window._doApprove=window.doApprove=async function(){
+  const btn=document.getElementById('approve-btn');
+  btn.disabled=true;
+  btn.innerHTML=`<span>${lg==='ar'?'جاري...':'Processing...'}</span>`;
+  // Show signup modal — user can sign up or skip
+  document.getElementById('preview-popup').classList.remove('open');
+  if(currentUser){
+    // Already logged in — link submission to user
+    if(savedDocId){
+      try{
+        const {updateDoc}=await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+        await updateDoc(doc(db,'submissions',savedDocId),{
+          submitterEmail:currentUser.email,
+          landlordId:currentUser.uid
+        });
+      }catch(e){}
+    }
+    showSuccessCard();
+  } else {
+    showSignupModal();
+  }
+  btn.disabled=false;
+  btn.innerHTML=`<span data-en="✅ Submit for Approval →" data-ar="✅ إرسال للموافقة →">${lg==='ar'?'✅ إرسال للموافقة →':'✅ Submit for Approval →'}</span>`;
+};
+
+// ===== SETTINGS =====
+async function applySettings(){
+  try{
+    const snap=await getDoc(doc(db,'settings','site'));
+    if(!snap.exists())return;
+    const s=snap.data();
+    if(s.colorGreen)document.documentElement.style.setProperty('--green',s.colorGreen);
+    if(s.phone)document.querySelectorAll('.wa-link').forEach(el=>el.href='https://wa.me/'+s.phone);
+    if(s.siteName)document.querySelectorAll('#site-name').forEach(el=>el.textContent=s.siteName);
+  }catch(e){}
+}
+
+// ===== INIT =====
+window.addEventListener('load',()=>{
+  lg=localStorage.getItem('sh_lang')||'en';
+  sL(lg);
+  applySettings();
+  // Remove error class on input
+  document.querySelectorAll('.form-control').forEach(el=>{
+    el.addEventListener('input',()=>el.classList.remove('error'));
+    el.addEventListener('change',()=>el.classList.remove('error'));
+  });
+});
+window.addEventListener('pageshow',()=>{document.body.style.opacity='1';});
+</script>
+</body>
+</html>
