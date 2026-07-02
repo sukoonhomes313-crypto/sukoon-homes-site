@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+<meta charset="UTF-8"/>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dv5erwivl/image/upload/v1779383751/IMG_3500_rwh6pl.png"/>
+<link rel="apple-touch-icon" href="https://res.cloudinary.com/dv5erwivl/image/upload/v1779383751/IMG_3500_rwh6pl.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Landlord Portal | Sukoon Homes</title>
+<meta name="robots" content="noindex"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --green:#0d4a2f;--green-mid:#1a7a4a;--green-soft:#2eaa6a;--green-pale:#e6f5ee;--green-light:#c2e8d4;
+  --gold:#c9963a;--gold-pale:#fdf3e3;--red:#c0392b;--red-pale:#fdecea;--blue:#2980b9;--blue-pale:#ebf5fb;
+  --bg:#f0f4f1;--card:#fff;--border:#d4e8dc;--text:#0d2e1c;--muted:#7a9e88;--mid:#3a5a46;
+  --shadow:0 2px 12px rgba(13,74,47,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* NAV */
+nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-logo-name{font-family:'Playfair Display',serif;font-size:16px;color:var(--green);font-weight:700;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-user{font-size:12px;color:var(--muted);}
+.btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--mid);}
+.btn-red{background:var(--red);color:#fff;}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-sm{padding:5px 10px;font-size:11px;}
+
+/* LOGIN SCREEN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-box{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:400px;box-shadow:var(--shadow);}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.login-logo svg{width:40px;height:40px;}
+.login-logo-name{font-family:'Playfair Display',serif;font-size:20px;color:var(--green);}
+.login-subtitle{font-size:13px;color:var(--muted);margin-bottom:24px;}
+.login-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;}
+.login-input{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none;margin-bottom:10px;}
+.login-input:focus{border-color:var(--green-soft);}
+.login-btn{width:100%;padding:13px;background:var(--green);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:10px;}
+.login-btn:hover{background:var(--green-mid);}
+.login-step{display:none;}
+.login-step.active{display:block;}
+.login-sent-icon{font-size:48px;text-align:center;margin-bottom:12px;}
+.login-back{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;text-decoration:underline;display:block;text-align:center;margin-top:10px;}
+.login-err{color:var(--red);font-size:12px;margin-top:6px;display:none;}
+
+/* DASHBOARD */
+.dashboard{display:none;}
+.dashboard.show{display:block;}
+.page-wrap{max-width:900px;margin:0 auto;padding:24px 5% 60px;}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:#fff;border-radius:12px;padding:4px;border:1px solid var(--border);margin-bottom:24px;overflow-x:auto;}
+.tab-btn{flex:1;min-width:100px;padding:9px 12px;border:none;background:transparent;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--muted);white-space:nowrap;transition:all .15s;}
+.tab-btn.active{background:var(--green);color:#fff;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+.stat-val{font-size:28px;font-weight:700;color:var(--green);}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* ROOM CARDS */
+.room-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;}
+.room-img{width:80px;height:80px;border-radius:9px;object-fit:cover;flex-shrink:0;background:var(--bg);}
+.room-info{flex:1;min-width:0;}
+.room-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.room-meta{font-size:11px;color:var(--muted);margin-bottom:8px;}
+.room-stats{display:flex;gap:12px;flex-wrap:wrap;}
+.room-stat{font-size:11px;color:var(--mid);background:var(--green-pale);padding:3px 8px;border-radius:20px;}
+.room-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.status-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;}
+.status-available{background:var(--green-pale);color:var(--green-mid);}
+.status-pending{background:var(--gold-pale);color:var(--gold);}
+
+/* CHAT */
+.chat-list{display:flex;flex-direction:column;gap:8px;}
+.chat-item{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .15s;display:flex;gap:12px;align-items:center;}
+.chat-item:hover{border-color:var(--green-soft);background:var(--green-pale);}
+.chat-item.unread{border-left:3px solid var(--green);}
+.chat-avatar{width:40px;height:40px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;}
+.chat-info{flex:1;min-width:0;}
+.chat-name{font-size:13px;font-weight:600;color:var(--text);}
+.chat-preview{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chat-time{font-size:10px;color:var(--muted);flex-shrink:0;}
+.chat-badge{background:var(--green);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* CHAT WINDOW */
+.chat-window{display:none;background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.chat-window.open{display:flex;flex-direction:column;}
+.chat-win-header{background:var(--green);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;}
+.chat-win-back{background:none;border:none;color:#fff;cursor:pointer;font-size:18px;padding:0;}
+.chat-win-title{font-size:14px;font-weight:600;flex:1;}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;max-height:380px;display:flex;flex-direction:column;gap:10px;}
+.msg-bubble{max-width:75%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.5;}
+.msg-in{background:var(--green-pale);color:var(--text);border-bottom-left-radius:4px;align-self:flex-start;}
+.msg-out{background:var(--green);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;}
+.msg-time{font-size:10px;color:var(--muted);margin-top:3px;}
+.msg-out .msg-time{text-align:right;color:rgba(255,255,255,.7);}
+.chat-input-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);}
+.chat-input{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:13px;font-family:inherit;outline:none;}
+.chat-input:focus{border-color:var(--green-soft);}
+.chat-send{width:36px;height:36px;border-radius:50%;background:var(--green);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chat-send svg{width:16px;height:16px;color:#fff;}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-icon{font-size:40px;margin-bottom:12px;}
+.empty-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transition:all .3s;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* CONFIRM MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:16px;padding:24px;width:90%;max-width:360px;}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:8px;}
+.modal-body{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.modal-btns{display:flex;gap:8px;}
+
+@media(max-width:600px){
+  .room-card{flex-direction:column;}
+  .room-img{width:100%;height:160px;}
+  .tabs{flex-wrap:nowrap;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <svg viewBox="0 0 36 36" fill="none" width="28" height="28"><rect width="36" height="36" rx="8" fill="#0d4a2f"/><path d="M18 6L6 16H9V30H16V23H20V30H27V16H30L18 6Z" fill="#fff" opacity=".95"/><circle cx="18" cy="19" r="3" fill="#2eaa6a"/></svg>
+    <span class="nav-logo-name">Sukoon Homes</span>
+  </a>
+  <div class="nav-right">
+    <span class="nav-user" id="nav-user-email"></span>
+    <button class="btn btn-ghost btn-sm" id="logout-btn" onclick="doLogout()" style="display:none">Logout</button>
+  </div>
+</nav>
+
+<!-- LOGIN SCREEN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg viewBox="0 0 36 36" fill="none" width="40" height="40"><rect width="36" height="36" rx="8" fill="#0d4a2f"/><path d="M18 6L6 16H9V30H16V23H20V30H27V16H30L18 6Z" fill="#fff" opacity=".95"/><circle cx="18" cy="19" r="3" fill="#2eaa6a"/></svg>
+      <span class="login-logo-name">Landlord Portal</span>
+    </div>
+    <div class="login-subtitle">Manage your room listings</div>
+
+    <!-- LOGIN/SIGNUP TABS -->
+    <div style="display:flex;gap:0;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:18px;">
+      <button type="button" id="l-tab-login" onclick="lSwitchTab('login')" style="flex:1;padding:10px;background:var(--green);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Login</button>
+      <button type="button" id="l-tab-signup" onclick="lSwitchTab('signup')" style="flex:1;padding:10px;background:#fff;color:var(--mid);border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Sign Up</button>
+    </div>
+
+    <!-- GOOGLE BUTTON -->
+    <button type="button" onclick="doGoogleLogin()" style="width:100%;padding:12px;background:#fff;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <span style="font-size:11px;color:var(--muted);">OR</span>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+
+    <div class="login-title" id="l-form-title">Login to your account</div>
+    <input class="login-input" id="l-email" type="email" placeholder="Email address" onkeydown="if(event.key==='Enter')document.getElementById('l-pass').focus()"/>
+    <div style="position:relative;margin-bottom:10px;">
+      <input class="login-input" id="l-pass" type="password" placeholder="Password" style="margin-bottom:0;padding-right:40px;" onkeydown="if(event.key==='Enter')doLandlordLogin()"/>
+      <button type="button" onclick="toggleLPassVis()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;">👁</button>
+    </div>
+    <div class="login-err" id="l-err" style="display:none;margin-bottom:8px;"></div>
+    <button class="login-btn" onclick="doLandlordLogin()" id="l-login-btn">Login →</button>
+    <div class="login-err" id="l-err-global" style="margin-top:10px;display:none;"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <div class="page-wrap">
+
+    <!-- WELCOME -->
+    <div style="margin-bottom:20px;">
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--green);font-weight:700">My Landlord Portal</div>
+      <div style="font-size:13px;color:var(--muted)" id="welcome-msg">Welcome back!</div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stat-grid" id="stat-grid">
+      <div class="stat-card"><div class="stat-val" id="s-total-rooms">—</div><div class="stat-lbl">My Rooms</div></div>
+      <div class="stat-card"><div class="stat-val" id="s-total-clicks">—</div><div class="stat-lbl">Total Clicks</div></div>
+      <div class="stat-card"><div class="stat-val" id="s-total-msgs">—</div><div class="stat-lbl">Messages</div></div>
+      <div class="stat-card"><div class="stat-val" id="s-unread-msgs">—</div><div class="stat-lbl">Unread</div></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showLTab('rooms',this)">🏠 My Rooms</button>
+      <button class="tab-btn" onclick="showLTab('messages',this)">💬 Messages <span id="msg-badge" style="display:none;background:var(--red);color:#fff;border-radius:50%;padding:1px 5px;font-size:10px;margin-left:4px">0</span></button>
+      <button class="tab-btn" onclick="showLTab('support',this)">🎧 Support</button>
+    </div>
+
+    <!-- ROOMS TAB -->
+    <div class="tab-panel active" id="ltab-rooms">
+      <div id="rooms-list"><div style="color:var(--muted);font-size:13px;text-align:center;padding:40px">Loading your rooms...</div></div>
+    </div>
+
+    <!-- MESSAGES TAB -->
+    <div class="tab-panel" id="ltab-messages">
+      <div id="chat-list-view">
+        <div class="chat-list" id="chat-list"><div style="color:var(--muted);font-size:13px;text-align:center;padding:40px">Loading messages...</div></div>
+      </div>
+      <div class="chat-window" id="chat-window">
+        <div class="chat-win-header">
+          <button class="chat-win-back" onclick="closeChatWindow()">←</button>
+          <div class="chat-win-title" id="chat-win-title">Chat</div>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chat-reply-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendReply()"/>
+          <button class="chat-send" onclick="sendReply()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPPORT TAB -->
+    <div class="tab-panel" id="ltab-support">
+      <div class="chat-window open" style="height:500px;">
+        <div class="chat-win-header" style="background:var(--gold);">
+          <div class="chat-win-title">🎧 Sukoon Homes Support</div>
+          <div style="font-size:11px;opacity:.8">We typically reply within a few hours</div>
+        </div>
+        <div class="chat-messages" id="support-messages"></div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="support-input" placeholder="Ask us anything about your listing..." onkeydown="if(event.key==='Enter')sendSupport()"/>
+          <button class="chat-send" style="background:var(--gold)" onclick="sendSupport()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal-box">
+    <div class="modal-title">🗑️ Delete Room?</div>
+    <div class="modal-body" id="delete-modal-body">Are you sure you want to delete this room? This cannot be undone.</div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" style="flex:1" onclick="document.getElementById('delete-modal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-red" style="flex:1" id="delete-confirm-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, collection, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const FC={apiKey:"AIzaSyDAOPIT2TtKtxyHCi3Sg2WapIDhvfk1jlo",authDomain:"sukoon-homes.firebaseapp.com",projectId:"sukoon-homes",storageBucket:"sukoon-homes.firebasestorage.app",messagingSenderId:"351838802115",appId:"1:351838802115:web:207c60810ebe0930c65276"};
+const app=initializeApp(FC);
+const db=getFirestore(app);
+const auth=getAuth(app);
+const googleProvider=new GoogleAuthProvider();
+// Persistent login
+setPersistence(auth,browserLocalPersistence).catch(()=>{});
+
+const ACTION_CODE_SETTINGS={
+  url:'https://www.sukoonhomesksa.com/landlord.html',
+  handleCodeInApp:true
+};
+
+let currentUser=null;
+let activeChatId=null;
+let chatUnsub=null;
+let myRooms=[];
+
+// ============ TOAST ============
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show'+(type?' '+type:'');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+window.toast=toast;
+
+// ============ MAGIC LINK ============
+window.doGoogleLogin=async function(){
+  const err=document.getElementById('l-err');
+  try{
+    await signInWithPopup(auth,googleProvider);
+  }catch(e){
+    if(e.code!=='auth/popup-closed-by-user'){
+      err.style.display='block';err.textContent='❌ Google login failed. Try again.';
+    }
+  }
+};
+
+window.lSwitchTab=function(mode){
+  const isLogin=mode==='login';
+  document.getElementById('l-tab-login').style.background=isLogin?'var(--green)':'#fff';
+  document.getElementById('l-tab-login').style.color=isLogin?'#fff':'var(--mid)';
+  document.getElementById('l-tab-signup').style.background=isLogin?'#fff':'var(--green)';
+  document.getElementById('l-tab-signup').style.color=isLogin?'var(--mid)':'#fff';
+  document.getElementById('l-form-title').textContent=isLogin?'Login to your account':'Create your account';
+  document.getElementById('l-login-btn').textContent=isLogin?'Login →':'Create Account →';
+  document.getElementById('l-pass').placeholder=isLogin?'Password':'Password (min 6 characters)';
+  window._lMode=mode;
+};
+window._lMode='login';
+
+window.toggleLPassVis=function(){
+  const input=document.getElementById('l-pass');
+  input.type=input.type==='password'?'text':'password';
+};
+
+window.doLandlordLogin=async function(){
+  const email=document.getElementById('l-email').value.trim();
+  const pass=document.getElementById('l-pass').value;
+  const err=document.getElementById('l-err');
+  const btn=document.getElementById('l-login-btn');
+  err.style.display='none';
+  if(!email||!email.includes('@')){err.style.display='block';err.textContent='Please enter a valid email';return;}
+  if(!pass||pass.length<6){err.style.display='block';err.textContent='Password must be at least 6 characters';return;}
+  btn.disabled=true;btn.textContent='...';
+  try{
+    let uc;
+    if(window._lMode==='signup') uc=await createUserWithEmailAndPassword(auth,email,pass);
+    else uc=await signInWithEmailAndPassword(auth,email,pass);
+  }catch(e){
+    let msg=e.message;
+    if(e.code==='auth/email-already-in-use')msg='Email already registered. Switch to Login.';
+    if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential')msg='Wrong email or password.';
+    if(e.code==='auth/user-not-found')msg='No account found. Use Sign Up.';
+    if(e.code==='auth/weak-password')msg='Password too weak.';
+    err.style.display='block';err.textContent='❌ '+msg;
+    btn.disabled=false;btn.textContent=window._lMode==='login'?'Login →':'Create Account →';
+  }
+};
+
+// ============ AUTH STATE ============
+// ============ AUTH STATE ============
+onAuthStateChanged(auth,async(user)=>{
+  if(user){
+    currentUser=user;
+    document.getElementById('login-wrap').style.display='none';
+    document.getElementById('dashboard').classList.add('show');
+    document.getElementById('nav-user-email').textContent=user.email;
+    document.getElementById('logout-btn').style.display='block';
+    document.getElementById('welcome-msg').textContent='Welcome, '+user.email.split('@')[0]+'!';
+    // Ensure landlord profile exists
+    // Block admin email
+    const ADMIN_EMAILS=['sukoonhomes313@gmail.com'];
+    if(ADMIN_EMAILS.includes(user.email)){
+      await signOut(auth);
+      const err=document.getElementById('l-err-global');
+      err.style.display='block';
+      err.textContent='❌ Admin account cannot login here. Use Admin Panel.';
+      document.getElementById('login-wrap').style.display='flex';
+      return;
+    }
+    await setDoc(doc(db,'landlords',user.uid),{
+      email:user.email,
+      lastLogin:new Date().toISOString()
+    },{merge:true});
+    loadMyRooms();
+    loadMyChats();
+    loadSupportChat();
+  } else {
+    document.getElementById('login-wrap').style.display='flex';
+    document.getElementById('dashboard').classList.remove('show');
+    document.getElementById('logout-btn').style.display='none';
+  }
+});
+
+window.doLogout=async function(){
+  await signOut(auth);currentUser=null;
+  location.reload();
+};
+
+// ============ TABS ============
+window.showLTab=function(tab,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ltab-'+tab).classList.add('active');
+  btn.classList.add('active');
+};
+
+// ============ MY ROOMS ============
+async function loadMyRooms(){
+  const list=document.getElementById('rooms-list');
+  try{
+    const [dr,lr,subSnap]=await Promise.all([
+      getDocs(query(collection(db,'dailyRooms'),where('landlordId','==',currentUser.uid))),
+      getDocs(query(collection(db,'longRooms'),where('landlordId','==',currentUser.uid))),
+      getDocs(query(collection(db,'submissions'),where('landlordId','==',currentUser.uid)))
+    ]);
+    let approvedRooms=[...dr.docs.map(d=>({...d.data(),id:d.id,col:'dailyRooms'})),
+                       ...lr.docs.map(d=>({...d.data(),id:d.id,col:'longRooms'}))];
+    if(approvedRooms.length===0){
+      const [dr2,lr2]=await Promise.all([
+        getDocs(query(collection(db,'dailyRooms'),where('submitterEmail','==',currentUser.email))),
+        getDocs(query(collection(db,'longRooms'),where('submitterEmail','==',currentUser.email)))
+      ]);
+      approvedRooms=[...dr2.docs.map(d=>({...d.data(),id:d.id,col:'dailyRooms'})),
+                     ...lr2.docs.map(d=>({...d.data(),id:d.id,col:'longRooms'}))];
+    }
+    let pendingRooms=subSnap.docs.map(d=>({...d.data(),id:d.id,col:'submissions',_pending:true}));
+    if(pendingRooms.length===0){
+      const sub2=await getDocs(query(collection(db,'submissions'),where('submitterEmail','==',currentUser.email)));
+      pendingRooms=sub2.docs.map(d=>({...d.data(),id:d.id,col:'submissions',_pending:true}));
+    }
+    myRooms=[...approvedRooms,...pendingRooms];
+    document.getElementById('s-total-rooms').textContent=myRooms.length;
+    document.getElementById('s-total-clicks').textContent=myRooms.reduce((a,r)=>a+(r.clicks||0),0);
+    if(myRooms.length===0){
+      list.innerHTML=`<div class="empty-state"><div class="empty-icon">🏠</div><div class="empty-title">No rooms yet</div><p style="font-size:12px;color:var(--muted)">Submit your first room listing</p><a href="sukoon-submit.html" class="btn btn-green" style="display:inline-block;margin-top:14px;text-decoration:none">\u2795 List a Room</a></div>`;
+      return;
+    }
+    list.innerHTML=myRooms.map(r=>{
+      const isPending=!!r._pending;
+      const img=(r.images&&r.images[0])||r.img||'';
+      const imgHtml=img?`<img class="room-img" src="${img}" alt="Room"/>`:`<div class="room-img" style="display:flex;align-items:center;justify-content:center;font-size:32px;background:var(--green-pale);">\u{1F3E0}</div>`;
+      return `<div class="room-card" style="${isPending?'border-left:3px solid var(--gold);':''}">
+        ${imgHtml}
+        <div class="room-info">
+          <div class="room-name">${r.name||'Unnamed Room'}</div>
+          <div class="room-meta">${r.city||'\u2014'} ${r.district?'\u00B7 '+r.district:''} \u00B7 SAR ${r.price||'\u2014'}</div>
+          <div class="room-stats">
+            <span class="room-stat">\u{1F446} ${r.clicks||0} clicks</span>
+            <span class="room-stat" style="background:${isPending?'var(--gold-pale)':'var(--green-pale)'};color:${isPending?'var(--gold)':'var(--green-mid)'};">${isPending?'\u23F3 Under Review':'\u2705 Live'}</span>
+            <span class="room-stat">${(r.stayType==='long'||r.col==='longRooms')?'\u{1F5D3} Long Stay':'\u{1F4C5} Daily'}</span>
+          </div>
+          ${isPending?`<div style="font-size:11px;color:var(--gold);margin-top:6px;background:var(--gold-pale);padding:6px 10px;border-radius:8px;">\u23F3 Your room is under review. Our team will verify within 24-48 hours.</div>`:''}
+          <div class="room-actions">
+            ${!isPending?`<a href="room.html?id=${r.id}" target="_blank" class="btn btn-ghost btn-sm">\u{1F441} View</a>`:''}
+            <button class="btn btn-red btn-sm" onclick="confirmDelete('${r.id}','${r.col}','${(r.name||'').replace(/'/g,"\\'")}')">\u{1F5D1} Delete</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<div style="color:var(--red);padding:20px;text-align:center">Error: '+e.message+'</div>';}
+}
+
+// ============ DELETE ROOM ============
+window.confirmDelete=function(id,col,name){
+  document.getElementById('delete-modal-body').textContent='Delete "'+name+'"? This cannot be undone.';
+  document.getElementById('delete-confirm-btn').onclick=async()=>{
+    try{
+      await deleteDoc(doc(db,col,id));
+      document.getElementById('delete-modal').classList.remove('open');
+      toast('✅ Room deleted');
+      loadMyRooms();
+    }catch(e){toast('❌ Error: '+e.message,'error');}
+  };
+  document.getElementById('delete-modal').classList.add('open');
+};
+
+// ============ CHATS ============
+async function loadMyChats(){
+  const chatList=document.getElementById('chat-list');
+  try{
+    let chats=[];
+    // Try by landlordId
+    try{const s=await getDocs(query(collection(db,'chats'),where('landlordId','==',currentUser.uid)));chats=s.docs.map(d=>({...d.data(),id:d.id}));}catch(e){}
+    // Try by landlordEmail
+    if(chats.length===0){try{const s=await getDocs(query(collection(db,'chats'),where('landlordEmail','==',currentUser.email)));chats=s.docs.map(d=>({...d.data(),id:d.id}));}catch(e){}}
+    // Try by roomId matching my rooms
+    if(chats.length===0&&myRooms.length>0){
+      for(const r of myRooms.slice(0,10)){
+        try{const s=await getDocs(query(collection(db,'chats'),where('roomId','==',r.id)));s.docs.forEach(d=>{if(!chats.find(c=>c.id===d.id))chats.push({...d.data(),id:d.id});});}catch(e){}
+      }
+    }
+    // Sort newest first
+    chats.sort((a,b)=>(b.lastMessageAt?.toMillis?.()??0)-(a.lastMessageAt?.toMillis?.()??0));
+
+    const unread=chats.filter(c=>c.unreadLandlord>0).length;
+    document.getElementById('s-total-msgs').textContent=chats.length;
+    document.getElementById('s-unread-msgs').textContent=unread;
+    const badge=document.getElementById('msg-badge');
+    if(unread>0){badge.style.display='inline';badge.textContent=unread;}
+
+    if(chats.length===0){
+      chatList.innerHTML='<div class="empty-state"><div class="empty-icon">💬</div><div class="empty-title">No messages yet</div><p style="font-size:12px;color:var(--muted)">Customer messages will appear here</p></div>';
+      return;
+    }
+    chatList.innerHTML=chats.map(c=>{
+      const name=c.customerName||c.customerEmail?.split('@')[0]||'Customer';
+      const room=c.roomName||'Room';
+      const lastMsg=c.lastMessage||'...';
+      const time=formatTime(c.lastMessageAt);
+      const uc=c.unreadLandlord||0;
+      return `<div class="chat-item ${uc>0?'unread':''}" onclick="openChatWindow('${c.id}','${name.replace(/'/g,"\\'")}','${room.replace(/'/g,"\\'")}')">
+        <div class="chat-avatar">${name[0].toUpperCase()}</div>
+        <div class="chat-info">
+          <div class="chat-name" style="font-weight:${uc>0?700:500}">${name}</div>
+          <div class="chat-preview" style="color:${uc>0?'var(--text)':'var(--muted)'}"><span style="font-size:10px;background:var(--green-pale);color:var(--green);padding:1px 6px;border-radius:10px;margin-right:4px">${room}</span>${lastMsg}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+          <div class="chat-time">${time}</div>
+          ${uc>0?`<div class="chat-badge">${uc}</div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){chatList.innerHTML='<div style="color:var(--muted);font-size:12px;text-align:center;padding:20px">No messages yet</div>';console.error(e);}
+}
+
+window.openChatWindow=function(chatId,customerName,roomName){
+  activeChatId=chatId;
+  document.getElementById('chat-list-view').style.display='none';
+  const win=document.getElementById('chat-window');
+  win.classList.add('open');
+  document.getElementById('chat-win-title').textContent=customerName+' · '+roomName;
+  // Mark as read
+  updateDoc(doc(db,'chats',chatId),{unreadLandlord:0}).catch(()=>{});
+  // Load messages realtime
+  if(chatUnsub)chatUnsub();
+  const msgEl=document.getElementById('chat-messages');
+  msgEl.innerHTML='';
+  chatUnsub=onSnapshot(query(collection(db,'chats',chatId,'messages'),orderBy('createdAt')),snap=>{
+    if(snap.empty){msgEl.innerHTML='<div style="text-align:center;color:var(--muted);font-size:12px;padding:20px;">No messages yet</div>';return;}
+    msgEl.innerHTML=snap.docs.map(d=>{
+      const m=d.data();
+      const isOut=m.senderType==='landlord'||m.senderId===currentUser.uid;
+      const time=formatTime(m.createdAt);
+      // Seen ticks for landlord outgoing
+      const ticks=isOut?(m.seen?'<span style="color:#4fc3f7;font-size:11px;margin-left:3px">✓✓</span>':'<span style="color:rgba(255,255,255,.5);font-size:11px;margin-left:3px">✓</span>'):'';
+      // Image or text
+      const bubble=m.imageUrl
+        ?`<img src="${m.imageUrl}" style="max-width:200px;border-radius:8px;display:block;cursor:pointer;" onclick="window.open('${m.imageUrl}','_blank')"/>`
+        :m.text||'';
+      return `<div style="display:flex;flex-direction:column;">
+        <div class="msg-bubble ${isOut?'msg-out':'msg-in'}">${bubble}</div>
+        <div class="msg-time" style="${isOut?'text-align:right':''}">${time}${ticks}</div>
+      </div>`;
+    }).join('');
+    msgEl.scrollTop=msgEl.scrollHeight;
+    // Mark customer messages as seen
+    snap.docs.forEach(d=>{
+      const m=d.data();
+      if(m.senderType==='customer'&&!m.seen){
+        updateDoc(doc(db,'chats',chatId,'messages',d.id),{seen:true}).catch(()=>{});
+      }
+    });
+  });
+};
+
+window.closeChatWindow=function(){
+  if(chatUnsub){chatUnsub();chatUnsub=null;}
+  activeChatId=null;
+  document.getElementById('chat-window').classList.remove('open');
+  document.getElementById('chat-list-view').style.display='block';
+};
+
+window.sendReply=async function(){
+  const input=document.getElementById('chat-reply-input');
+  const text=input.value.trim();
+  if(!text||!activeChatId)return;
+  input.value='';
+  try{
+    await addDoc(collection(db,'chats',activeChatId,'messages'),{
+      text,senderId:currentUser.uid,senderType:'landlord',
+      seen:false,createdAt:serverTimestamp()
+    });
+    await updateDoc(doc(db,'chats',activeChatId),{
+      lastMessage:text,lastMessageAt:serverTimestamp(),unreadCustomer:1
+    });
+  }catch(e){toast('❌ Error sending','error');}
+};
+
+// ============ SUPPORT CHAT ============
+async function loadSupportChat(){
+  const supportId='support_'+currentUser.uid;
+  const msgEl=document.getElementById('support-messages');
+  onSnapshot(query(collection(db,'supportChats',supportId,'messages'),orderBy('createdAt')),snap=>{
+    if(snap.empty){
+      msgEl.innerHTML=`<div class="msg-bubble msg-in" style="margin:16px auto;max-width:90%;text-align:center;">👋 Hi! How can we help you with your listing? Ask us anything.</div>`;
+      return;
+    }
+    msgEl.innerHTML=snap.docs.map(d=>{
+      const m=d.data();
+      const isOut=m.senderType==='landlord';
+      return `<div>
+        <div class="msg-bubble ${isOut?'msg-out':'msg-in'}">${m.text}</div>
+        <div class="msg-time ${isOut?'msg-out':''}">${formatTime(m.createdAt)}</div>
+      </div>`;
+    }).join('');
+    msgEl.scrollTop=msgEl.scrollHeight;
+  });
+}
+
+window.sendSupport=async function(){
+  const input=document.getElementById('support-input');
+  const text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  const supportId='support_'+currentUser.uid;
+  try{
+    // Ensure support chat doc exists
+    await setDoc(doc(db,'supportChats',supportId),{
+      landlordId:currentUser.uid,
+      landlordEmail:currentUser.email,
+      lastMessage:text,
+      lastMessageAt:serverTimestamp(),
+      unreadAdmin:1
+    },{merge:true});
+    await addDoc(collection(db,'supportChats',supportId,'messages'),{
+      text,senderType:'landlord',senderId:currentUser.uid,
+      createdAt:serverTimestamp()
+    });
+    toast('✅ Message sent!');
+  }catch(e){toast('❌ Error: '+e.message,'error');}
+};
+
+// ============ UTILS ============
+function formatTime(ts){
+  if(!ts)return '';
+  const d=ts.toDate?ts.toDate():new Date(ts);
+  const now=new Date();
+  const diff=now-d;
+  if(diff<86400000)return d.toLocaleTimeString('en-SA',{hour:'2-digit',minute:'2-digit'});
+  return d.toLocaleDateString('en-SA');
+}
+</script>
+</body>
+</html>
