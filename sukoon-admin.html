@@ -552,6 +552,7 @@ textarea.form-control{resize:vertical;min-height:70px;}
           <button type="button" class="inner-tab" onclick="showEditorTab('pages',this)">Pages</button>
           <button type="button" class="inner-tab" onclick="showEditorTab('integrations',this)">Integrations</button>
           <button type="button" class="inner-tab" onclick="showEditorTab('history',this)">History</button>
+          <button type="button" class="inner-tab" onclick="showEditorTab('code',this)" style="background:var(--green);color:#fff;">💻 Code Editor</button>
         </div>
 
         <!-- GENERAL -->
@@ -627,6 +628,57 @@ textarea.form-control{resize:vertical;min-height:70px;}
             </div>
             <div class="editor-history" id="settings-history">
               <div style="font-size:12px;color:var(--muted)">Loading history...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CODE EDITOR -->
+        <div id="editor-code" style="display:none">
+          <div class="form-card" style="padding:0;overflow:hidden;">
+            <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <h3 style="margin:0">💻 Code Editor</h3>
+              <select id="ce-file-select" class="form-control" style="width:200px;margin:0" onchange="ceLoadFile()">
+                <option value="">Select a file...</option>
+                <option value="index.html">index.html</option>
+                <option value="rooms-daily.html">rooms-daily.html</option>
+                <option value="rooms-longstay.html">rooms-longstay.html</option>
+                <option value="room.html">room.html</option>
+                <option value="landlord.html">landlord.html</option>
+                <option value="sukoon-submit.html">sukoon-submit.html</option>
+                <option value="sukoon-admin.html">sukoon-admin.html</option>
+                <option value="blog.html">blog.html</option>
+                <option value="about.html">about.html</option>
+                <option value="contact.html">contact.html</option>
+                <option value="feedback.html">feedback.html</option>
+                <option value="privacy.html">privacy.html</option>
+                <option value="terms.html">terms.html</option>
+                <option value="404.html">404.html</option>
+                <option value="_worker.js">_worker.js</option>
+                <option value="sitemap.xml">sitemap.xml</option>
+                <option value="robots.txt">robots.txt</option>
+              </select>
+              <div style="display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;">
+                <button type="button" class="btn btn-ghost btn-sm" onclick="ceBackup()" id="ce-backup-btn" disabled>📋 Backup</button>
+                <button type="button" class="btn btn-gold btn-sm" onclick="ceRestoreList()" id="ce-restore-btn" disabled>🔄 Restore</button>
+                <button type="button" class="btn btn-green btn-sm" onclick="ceSave()" id="ce-save-btn" disabled>💾 Save & Deploy</button>
+              </div>
+            </div>
+            <div id="ce-status" style="padding:8px 18px;font-size:11px;background:#f0f4f1;border-bottom:1px solid var(--border);display:none;"></div>
+            <textarea id="ce-editor" style="width:100%;min-height:520px;font-family:'Courier New',monospace;font-size:12px;padding:16px;border:none;outline:none;resize:vertical;background:#1e1e1e;color:#d4d4d4;tab-size:2;line-height:1.6;box-sizing:border-box;" placeholder="Select a file above to start editing..." spellcheck="false" onkeydown="ceHandleTab(event)" oninput="ceUpdateChars()"></textarea>
+            <div style="padding:10px 18px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#f8f9fa;">
+              <span id="ce-chars" style="font-size:11px;color:var(--muted)">0 chars</span>
+              <span id="ce-file-label" style="font-size:11px;color:var(--muted)"></span>
+              <div style="margin-left:auto;display:flex;gap:6px;">
+                <button type="button" class="btn btn-ghost btn-sm" onclick="ceSearch()">🔍 Find</button>
+                <button type="button" class="btn btn-ghost btn-sm" onclick="ceCopyAll()">📋 Copy All</button>
+              </div>
+            </div>
+          </div>
+          <div id="ce-restore-panel" style="display:none;margin-top:14px">
+            <div class="form-card">
+              <h3>🔄 Restore Backup</h3>
+              <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Select a backup to restore. Current content will be replaced.</p>
+              <div id="ce-backup-list"><div style="color:var(--muted);font-size:12px">Loading...</div></div>
             </div>
           </div>
         </div>
@@ -2479,6 +2531,193 @@ window.bulkAddDemo=async function(){
     toast(`⚠️ ${ok} added, ${fail} failed`,'error');
   }
 };
+
+
+// Load CE token from Firestore
+async function loadCEToken(){
+  try{
+    const snap = await getDoc(doc(db,'settings','site'));
+    if(snap.exists()) window._CE_TOKEN = snap.data().githubToken||'';
+  }catch(e){}
+}
+
+// ===== CODE EDITOR =====
+const CE_GITHUB_TOKEN = window._CE_TOKEN||'';
+const CE_GITHUB_REPO = 'sukoonhomes313-crypto/sukoon-homes-site';
+// Token loaded from Firestore settings
+const CE_DEPLOY_HOOK = 'https://api.cloudflare.com/client/v4/workers/builds/deploy_hooks/d85610a1-e147-4208-94e8-2561555377bb';
+let ceCurrentFile = '';
+
+window.ceLoadFile = async function(){
+  const file = document.getElementById('ce-file-select').value;
+  if(!file) return;
+  ceCurrentFile = file;
+  ceSetStatus('⏳ Loading '+file+'...','info');
+  document.getElementById('ce-editor').value = '';
+  try{
+    const res = await fetch('https://api.github.com/repos/'+CE_GITHUB_REPO+'/contents/'+file,{
+      headers:{Authorization:'token '+CE_GITHUB_TOKEN,'User-Agent':'SukoonAdmin','Accept':'application/vnd.github.v3+json'}
+    });
+    const data = await res.json();
+    if(data.content){
+      const decoded = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+      document.getElementById('ce-editor').value = decoded;
+      document.getElementById('ce-file-label').textContent = file+' — '+decoded.length.toLocaleString()+' chars';
+      document.getElementById('ce-save-btn').disabled = false;
+      document.getElementById('ce-backup-btn').disabled = false;
+      document.getElementById('ce-restore-btn').disabled = false;
+      ceSetStatus('✅ Loaded: '+file,'success');
+      ceUpdateChars();
+    } else {
+      ceSetStatus('❌ Error: '+JSON.stringify(data).substring(0,100),'error');
+    }
+  }catch(e){ ceSetStatus('❌ '+e.message,'error'); }
+};
+
+window.ceUpdateChars = function(){
+  const n = (document.getElementById('ce-editor')||{}).value?.length||0;
+  const el = document.getElementById('ce-chars');
+  if(el) el.textContent = n.toLocaleString()+' chars';
+};
+
+window.ceSetStatus = function(msg,type){
+  const el = document.getElementById('ce-status');
+  if(!el) return;
+  el.style.display='block';
+  el.style.color = type==='error'?'var(--red)':type==='success'?'var(--green-mid)':'var(--mid)';
+  el.textContent = msg;
+};
+
+window.ceSave = async function(){
+  if(!ceCurrentFile){showToast('No file selected','error');return;}
+  const content = document.getElementById('ce-editor').value;
+  const btn = document.getElementById('ce-save-btn');
+  btn.disabled=true; btn.textContent='⏳ Saving...';
+  ceSetStatus('⏳ Creating backup...','info');
+
+  // Auto backup first
+  try{
+    await addDoc(collection(db,'siteBackups'),{
+      filename:ceCurrentFile, content,
+      savedAt:new Date().toISOString(),
+      savedBy:auth.currentUser?.email||'admin',
+      chars:content.length
+    });
+  }catch(e){}
+
+  ceSetStatus('⏳ Pushing to GitHub...','info');
+  try{
+    // Get SHA
+    const getRes = await fetch('https://api.github.com/repos/'+CE_GITHUB_REPO+'/contents/'+ceCurrentFile,{
+      headers:{Authorization:'token '+CE_GITHUB_TOKEN,'User-Agent':'SukoonAdmin'}
+    });
+    const getData = await getRes.json();
+    const sha = getData.sha||'';
+
+    // Encode content
+    const b64 = btoa(unescape(encodeURIComponent(content)));
+
+    // Push
+    const putRes = await fetch('https://api.github.com/repos/'+CE_GITHUB_REPO+'/contents/'+ceCurrentFile,{
+      method:'PUT',
+      headers:{Authorization:'token '+CE_GITHUB_TOKEN,'Content-Type':'application/json','User-Agent':'SukoonAdmin'},
+      body:JSON.stringify({message:'Admin edit: '+ceCurrentFile,content:b64,sha})
+    });
+    const putData = await putRes.json();
+
+    if(putData.commit){
+      ceSetStatus('⏳ Triggering deploy...','info');
+      try{ await fetch(CE_DEPLOY_HOOK,{method:'POST'}); }catch(e){}
+      ceSetStatus('✅ Saved & deployed! Commit: '+putData.commit.sha.substring(0,7)+' — Live in ~60s','success');
+      showToast('✅ '+ceCurrentFile+' saved & deployed!');
+    } else {
+      ceSetStatus('❌ GitHub error: '+JSON.stringify(putData).substring(0,150),'error');
+    }
+  }catch(e){
+    ceSetStatus('❌ Error: '+e.message,'error');
+  }
+  btn.disabled=false; btn.textContent='💾 Save & Deploy';
+};
+
+window.ceBackup = async function(){
+  if(!ceCurrentFile){showToast('Load a file first','error');return;}
+  const content = document.getElementById('ce-editor').value;
+  try{
+    await addDoc(collection(db,'siteBackups'),{
+      filename:ceCurrentFile,content,
+      savedAt:new Date().toISOString(),
+      savedBy:auth.currentUser?.email||'admin',
+      chars:content.length
+    });
+    showToast('✅ Backup saved!');
+  }catch(e){showToast('❌ Error: '+e.message,'error');}
+};
+
+window.ceRestoreList = async function(){
+  const panel = document.getElementById('ce-restore-panel');
+  const isOpen = panel.style.display==='block';
+  panel.style.display = isOpen?'none':'block';
+  if(isOpen) return;
+
+  const list = document.getElementById('ce-backup-list');
+  list.innerHTML='<div style="color:var(--muted);font-size:12px">Loading backups...</div>';
+  try{
+    const q = query(collection(db,'siteBackups'),
+      where('filename','==',ceCurrentFile),
+      orderBy('savedAt','desc'),
+      limit(10)
+    );
+    const snap = await getDocs(q);
+    if(snap.empty){list.innerHTML='<div style="color:var(--muted);font-size:12px">No backups for this file.</div>';return;}
+    list.innerHTML = snap.docs.map(d=>{
+      const b=d.data();
+      return '<div style="padding:10px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">'
+        +'<div style="flex:1"><div style="font-size:12px;font-weight:600">'+b.filename+'</div>'
+        +'<div style="font-size:11px;color:var(--muted)">'+(b.savedAt||'').substring(0,19)+' · '+(b.chars||0).toLocaleString()+' chars · '+b.savedBy+'</div></div>'
+        +'<button class="btn btn-green btn-sm" onclick="ceRestore(''+d.id+'')">Restore</button></div>';
+    }).join('');
+  }catch(e){list.innerHTML='<div style="color:var(--red);font-size:12px">Error: '+e.message+'</div>';}
+};
+
+window.ceRestore = async function(id){
+  if(!confirm('Restore this backup? Current editor content will be replaced.')) return;
+  try{
+    const snap = await getDoc(doc(db,'siteBackups',id));
+    if(snap.exists()){
+      document.getElementById('ce-editor').value = snap.data().content;
+      ceUpdateChars();
+      document.getElementById('ce-restore-panel').style.display='none';
+      ceSetStatus('✅ Restored! Click Save & Deploy to go live.','success');
+      showToast('✅ Backup restored!');
+    }
+  }catch(e){showToast('❌ '+e.message,'error');}
+};
+
+window.ceHandleTab = function(e){
+  if(e.key==='Tab'){
+    e.preventDefault();
+    const ta=e.target,s=ta.selectionStart,en=ta.selectionEnd;
+    ta.value=ta.value.substring(0,s)+'  '+ta.value.substring(en);
+    ta.selectionStart=ta.selectionEnd=s+2;
+  }
+};
+
+window.ceSearch = function(){
+  const term=prompt('Search in file:');
+  if(!term)return;
+  const ta=document.getElementById('ce-editor');
+  const idx=ta.value.indexOf(term);
+  if(idx>-1){ta.focus();ta.setSelectionRange(idx,idx+term.length);ceSetStatus('Found "'+term+'" at position '+idx,'success');}
+  else ceSetStatus('"'+term+'" not found in file','error');
+};
+
+window.ceCopyAll = function(){
+  const ta=document.getElementById('ce-editor');
+  ta.select();
+  document.execCommand('copy');
+  showToast('✅ Copied to clipboard!');
+};
+
 </script>
 </body>
 </html>
