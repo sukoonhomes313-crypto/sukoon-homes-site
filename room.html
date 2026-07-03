@@ -542,6 +542,7 @@ function renderRoom(r,rtype){
         t.innerHTML=`<img src="${url}" alt="" loading="lazy"/>`;
         t.onclick=()=>{
           document.getElementById('main-img').src=url;
+          if(window.SHSetRoomFavicon)window.SHSetRoomFavicon(url);
           document.querySelectorAll('.gallery-thumb').forEach(x=>x.classList.remove('active'));
           t.classList.add('active');
         };
