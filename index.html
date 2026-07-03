@@ -770,65 +770,7 @@ window.addEventListener('load', function() {
 </script>
 <!-- ===== SUKOON CHAT PANEL ===== -->
 <!-- Add this before 
-<!-- WELCOME POPUP -->
-<style>
-#welcome-popup{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
-#welcome-box{background:#fff;border-radius:24px;padding:32px 28px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:wPopIn .4s cubic-bezier(.34,1.56,.64,1);}
-@keyframes wPopIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
-.w-logo{width:64px;height:64px;margin:0 auto 14px;background:linear-gradient(135deg,#0d4a2f,#2eaa6a);border-radius:16px;display:flex;align-items:center;justify-content:center;}
-.w-title{font-family:'Playfair Display',serif;font-size:22px;color:#0d4a2f;font-weight:700;margin-bottom:6px;}
-.w-sub{font-size:13px;color:#7a9e88;margin-bottom:20px;line-height:1.6;}
-.w-badges{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
-.w-badge{background:#e6f5ee;color:#0d4a2f;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;}
-.w-btn{width:100%;padding:14px;background:linear-gradient(135deg,#0d4a2f,#1a7a4a);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px;transition:transform .15s;}
-.w-btn:hover{transform:scale(1.02);}
-.w-btn-ghost{width:100%;padding:11px;background:transparent;color:#7a9e88;border:1.5px solid #d4e8dc;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;}
-.w-btn-ghost:hover{background:#e6f5ee;}
-.w-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;color:#7a9e88;line-height:1;}
-#welcome-box{position:relative;}
-</style>
 
-<div id="welcome-popup" onclick="if(event.target===this)closeWelcome()">
-  <div id="welcome-box">
-    <button class="w-close" onclick="closeWelcome()">✕</button>
-    <div class="w-logo">
-      <svg viewBox="0 0 36 36" fill="none" width="36" height="36"><rect width="36" height="36" rx="8" fill="rgba(255,255,255,.15)"/><path d="M18 6L6 16H9V30H16V23H20V30H27V16H30L18 6Z" fill="#fff" opacity=".95"/><circle cx="18" cy="19" r="3" fill="#2eaa6a"/></svg>
-    </div>
-    <div class="w-title" data-en="Welcome to Sukoon Homes! 🏠" data-ar="أهلاً بك في سكون هومز! 🏠">Welcome to Sukoon Homes! 🏠</div>
-    <div class="w-sub" data-en="Saudi Arabia's trusted room rental platform. Verified listings, no commission, direct landlord contact." data-ar="منصة تأجير الغرف الموثوقة في المملكة العربية السعودية. إعلانات موثقة، بدون عمولة، تواصل مباشر مع المالك.">Saudi Arabia's trusted room rental platform. Verified listings, no commission, direct landlord contact.</div>
-    <div class="w-badges">
-      <span class="w-badge" data-en="✅ Verified Rooms" data-ar="✅ غرف موثقة">✅ Verified Rooms</span>
-      <span class="w-badge" data-en="🆓 Free Listings" data-ar="🆓 إعلانات مجانية">🆓 Free Listings</span>
-      <span class="w-badge" data-en="🚫 No Commission" data-ar="🚫 بدون عمولة">🚫 No Commission</span>
-    </div>
-    <button class="w-btn" onclick="closeWelcome()" data-en="🔍 Browse Rooms" data-ar="🔍 تصفح الغرف">🔍 Browse Rooms</button>
-    <button class="w-btn-ghost" onclick="window.location.href='sukoon-submit.html'" data-en="➕ List Your Room Free" data-ar="➕ أضف غرفتك مجاناً">➕ List Your Room Free</button>
-  </div>
-</div>
-
-<script>
-(function(){
-  // Show only once per session (not every visit)
-  if(sessionStorage.getItem('sh_welcomed')) {
-    document.getElementById('welcome-popup').style.display='none';
-    return;
-  }
-  // Apply language
-  var lg = localStorage.getItem('sh_lang')||'en';
-  document.querySelectorAll('#welcome-popup [data-en]').forEach(function(el){
-    var t = lg==='ar'?el.getAttribute('data-ar'):el.getAttribute('data-en');
-    if(t) el.textContent=t;
-  });
-})();
-
-function closeWelcome(){
-  sessionStorage.setItem('sh_welcomed','1');
-  var popup = document.getElementById('welcome-popup');
-  popup.style.animation='wPopOut .25s ease forwards';
-  popup.style.opacity='0';
-  setTimeout(function(){popup.style.display='none';},250);
-}
-</script>
 
 </body> in all pages -->
 
@@ -1203,65 +1145,7 @@ window.SHChat={
 </script>
 
 
-<!-- WELCOME POPUP -->
-<style>
-#welcome-popup{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
-#welcome-box{background:#fff;border-radius:24px;padding:32px 28px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:wPopIn .4s cubic-bezier(.34,1.56,.64,1);}
-@keyframes wPopIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
-.w-logo{width:64px;height:64px;margin:0 auto 14px;background:linear-gradient(135deg,#0d4a2f,#2eaa6a);border-radius:16px;display:flex;align-items:center;justify-content:center;}
-.w-title{font-family:'Playfair Display',serif;font-size:22px;color:#0d4a2f;font-weight:700;margin-bottom:6px;}
-.w-sub{font-size:13px;color:#7a9e88;margin-bottom:20px;line-height:1.6;}
-.w-badges{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
-.w-badge{background:#e6f5ee;color:#0d4a2f;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;}
-.w-btn{width:100%;padding:14px;background:linear-gradient(135deg,#0d4a2f,#1a7a4a);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px;transition:transform .15s;}
-.w-btn:hover{transform:scale(1.02);}
-.w-btn-ghost{width:100%;padding:11px;background:transparent;color:#7a9e88;border:1.5px solid #d4e8dc;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;}
-.w-btn-ghost:hover{background:#e6f5ee;}
-.w-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;color:#7a9e88;line-height:1;}
-#welcome-box{position:relative;}
-</style>
 
-<div id="welcome-popup" onclick="if(event.target===this)closeWelcome()">
-  <div id="welcome-box">
-    <button class="w-close" onclick="closeWelcome()">✕</button>
-    <div class="w-logo">
-      <svg viewBox="0 0 36 36" fill="none" width="36" height="36"><rect width="36" height="36" rx="8" fill="rgba(255,255,255,.15)"/><path d="M18 6L6 16H9V30H16V23H20V30H27V16H30L18 6Z" fill="#fff" opacity=".95"/><circle cx="18" cy="19" r="3" fill="#2eaa6a"/></svg>
-    </div>
-    <div class="w-title" data-en="Welcome to Sukoon Homes! 🏠" data-ar="أهلاً بك في سكون هومز! 🏠">Welcome to Sukoon Homes! 🏠</div>
-    <div class="w-sub" data-en="Saudi Arabia's trusted room rental platform. Verified listings, no commission, direct landlord contact." data-ar="منصة تأجير الغرف الموثوقة في المملكة العربية السعودية. إعلانات موثقة، بدون عمولة، تواصل مباشر مع المالك.">Saudi Arabia's trusted room rental platform. Verified listings, no commission, direct landlord contact.</div>
-    <div class="w-badges">
-      <span class="w-badge" data-en="✅ Verified Rooms" data-ar="✅ غرف موثقة">✅ Verified Rooms</span>
-      <span class="w-badge" data-en="🆓 Free Listings" data-ar="🆓 إعلانات مجانية">🆓 Free Listings</span>
-      <span class="w-badge" data-en="🚫 No Commission" data-ar="🚫 بدون عمولة">🚫 No Commission</span>
-    </div>
-    <button class="w-btn" onclick="closeWelcome()" data-en="🔍 Browse Rooms" data-ar="🔍 تصفح الغرف">🔍 Browse Rooms</button>
-    <button class="w-btn-ghost" onclick="window.location.href='sukoon-submit.html'" data-en="➕ List Your Room Free" data-ar="➕ أضف غرفتك مجاناً">➕ List Your Room Free</button>
-  </div>
-</div>
-
-<script>
-(function(){
-  // Show only once per session (not every visit)
-  if(sessionStorage.getItem('sh_welcomed')) {
-    document.getElementById('welcome-popup').style.display='none';
-    return;
-  }
-  // Apply language
-  var lg = localStorage.getItem('sh_lang')||'en';
-  document.querySelectorAll('#welcome-popup [data-en]').forEach(function(el){
-    var t = lg==='ar'?el.getAttribute('data-ar'):el.getAttribute('data-en');
-    if(t) el.textContent=t;
-  });
-})();
-
-function closeWelcome(){
-  sessionStorage.setItem('sh_welcomed','1');
-  var popup = document.getElementById('welcome-popup');
-  popup.style.animation='wPopOut .25s ease forwards';
-  popup.style.opacity='0';
-  setTimeout(function(){popup.style.display='none';},250);
-}
-</script>
 
 </body>
 </html>
