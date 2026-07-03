@@ -525,6 +525,7 @@ function renderRoom(r,rtype){
 
   // Gallery
   const images=r.images&&r.images.length?r.images:r.img?[r.img]:[];
+  if(window.SHSetRoomFavicon)window.SHSetRoomFavicon(images[0]||r.img);
   const mainDiv=document.getElementById('gallery-main');
   const phDiv=document.getElementById('gallery-ph');
   if(images.length){
