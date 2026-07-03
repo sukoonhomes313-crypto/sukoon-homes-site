@@ -719,11 +719,36 @@ async function applySettings() {
     const snap = await getDoc(doc(db,'settings','site'));
     if (!snap.exists()) return;
     const s = snap.data();
+    const lg = SH.lg || localStorage.getItem('sh_lang') || 'en';
+    const ar = lg === 'ar';
+
+    // ===== COLORS =====
     if (s.colorGreen) document.documentElement.style.setProperty('--green', s.colorGreen);
+    if (s.colorGreenMid) document.documentElement.style.setProperty('--green-mid', s.colorGreenMid);
     if (s.colorGold) document.documentElement.style.setProperty('--gold', s.colorGold);
+
+    // ===== PHONE / WHATSAPP =====
     const phone = s.phone || '966541873266';
     document.querySelectorAll('.wa-link').forEach(el => el.href = 'https://wa.me/' + phone);
-    if (s.siteName) document.querySelectorAll('#site-name').forEach(el => el.textContent = s.siteName);
+
+    // ===== SITE NAME =====
+    if (s.siteName) document.querySelectorAll('#site-name,[data-site-name]').forEach(el => el.textContent = s.siteName);
+
+    // ===== ANNOUNCEMENT BAR =====
+    const annText = ar ? (s.announcementAr || s.announcement) : s.announcement;
+    if (annText) {
+      let bar = document.getElementById('fs-announcement-bar');
+      if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'fs-announcement-bar';
+        bar.style.cssText = 'background:var(--green);color:#fff;text-align:center;padding:8px 16px;font-size:12px;font-weight:500;position:relative;z-index:100;';
+        document.body.insertBefore(bar, document.body.firstChild);
+      }
+      bar.innerHTML = annText + ' <button onclick="this.parentElement.remove()" style="background:none;border:none;color:#fff;cursor:pointer;position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:16px;">✕</button>';
+      bar.style.display = 'block';
+    }
+
+    // ===== HERO =====
     if (s.heroImage) {
       const bg = document.getElementById('hero-bg');
       if (bg) {
@@ -732,19 +757,95 @@ async function applySettings() {
         img.src = s.heroImage;
       }
     }
+    const heroTitle = ar ? (s.heroTitleAr || s.heroTitle) : s.heroTitle;
+    if (heroTitle) {
+      const el = document.querySelector('.hero h1');
+      if (el) el.innerHTML = heroTitle;
+    }
+    const heroDesc = ar ? (s.heroDescAr || s.heroDesc) : s.heroDesc;
+    if (heroDesc) {
+      const el = document.querySelector('.hero-desc');
+      if (el) el.innerHTML = heroDesc;
+    }
+    const heroBadge = ar ? (s.heroBadgeAr || s.heroBadge) : s.heroBadge;
+    if (heroBadge) {
+      const el = document.querySelector('.hero-badge span[data-en]');
+      if (el) el.textContent = heroBadge;
+    }
+
+    // ===== NAV EXTRA LINKS =====
+    if (s.navExtraLinks) {
+      try {
+        const links = JSON.parse(s.navExtraLinks);
+        const nav = document.querySelector('.nav-links');
+        if (nav && links.length) {
+          links.forEach(lk => {
+            if (!lk.url || !lk.label) return;
+            const a = document.createElement('a');
+            a.href = lk.url;
+            a.textContent = ar ? (lk.labelAr || lk.label) : lk.label;
+            if (lk.highlight) a.style.cssText = 'color:var(--green);font-weight:600;';
+            nav.appendChild(a);
+          });
+        }
+      } catch(e) {}
+    }
+
+    // ===== CUSTOM SECTIONS (inject before footer) =====
+    if (s.customSections) {
+      try {
+        const sections = JSON.parse(s.customSections);
+        const footer = document.querySelector('footer');
+        if (footer && sections.length) {
+          sections.forEach(sec => {
+            if (!sec.html || sec.disabled) return;
+            const div = document.createElement('div');
+            div.id = 'fs-section-' + (sec.id || Math.random().toString(36).substr(2,6));
+            div.innerHTML = ar ? (sec.htmlAr || sec.html) : sec.html;
+            footer.parentNode.insertBefore(div, footer);
+          });
+        }
+      } catch(e) {}
+    }
+
+    // ===== CUSTOM HTML BLOCKS =====
+    if (s.customHeadHtml) {
+      const div = document.createElement('div');
+      div.innerHTML = s.customHeadHtml;
+      Array.from(div.childNodes).forEach(n => document.head.appendChild(n.cloneNode(true)));
+    }
+    if (s.customBodyHtml) {
+      const div = document.createElement('div');
+      div.innerHTML = s.customBodyHtml;
+      document.body.appendChild(div);
+    }
+
+    // ===== FOOTER =====
+    if (s.footerTagline) {
+      const el = document.querySelector('.footer-brand-tag');
+      if (el) el.textContent = ar ? (s.footerTaglineAr || s.footerTagline) : s.footerTagline;
+    }
+    if (s.footerCopyright) {
+      const el = document.querySelector('.footer-copy');
+      if (el) el.textContent = s.footerCopyright;
+    }
+
+    // ===== CLARITY =====
     if (s.clarityId) {
       const sc = document.createElement('script');
       sc.innerHTML = `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${s.clarityId}");`;
       document.head.appendChild(sc);
     }
-    // Stats
+
+    // ===== STATS =====
     try {
       const [d, l] = await Promise.all([getDocs(collection(db,'dailyRooms')), getDocs(collection(db,'longRooms'))]);
       const total = d.size + l.size;
       const el = document.getElementById('stat-rooms');
       if (el) el.textContent = total + '+';
     } catch(e) {}
-    // Code snippets
+
+    // ===== CODE SNIPPETS =====
     try {
       const snaps = await getDocs(collection(db,'codeSnippets'));
       snaps.docs.forEach(d => {
@@ -758,7 +859,8 @@ async function applySettings() {
         Array.from(el.childNodes).forEach(node => target.appendChild(node.cloneNode(true)));
       });
     } catch(e) {}
-  } catch(e) {}
+
+  } catch(e) { console.error('Settings error:', e); }
 }
 
 // ============ INIT ============

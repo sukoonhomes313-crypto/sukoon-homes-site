@@ -573,6 +573,54 @@ textarea.form-control{resize:vertical;min-height:70px;}
             </div>
             <button type="button" class="btn btn-green" onclick="saveSettings()">💾 Save Settings</button>
           </div>
+
+            <!-- ANNOUNCEMENT BAR -->
+            <div class="form-card">
+              <h3>📢 Announcement Bar</h3>
+              <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Shows at top of site. Leave empty to hide.</p>
+              <div class="form-grid">
+                <div class="form-group"><label>Announcement (EN)</label><input class="form-control" id="set-announcement" type="text" placeholder="🎉 New rooms in Riyadh! Check them out →"/></div>
+                <div class="form-group"><label>Announcement (AR)</label><input class="form-control" id="set-announcementAr" type="text" placeholder="🎉 غرف جديدة في الرياض!"/></div>
+              </div>
+              <button type="button" class="btn btn-green" onclick="saveSettings()">💾 Save</button>
+            </div>
+
+            <!-- NAV EXTRA LINKS -->
+            <div class="form-card">
+              <h3>🔗 Nav Extra Links</h3>
+              <p style="font-size:12px;color:var(--muted);margin-bottom:10px">JSON format: [{"label":"Offers","labelAr":"عروض","url":"/blog.html","highlight":true}]</p>
+              <div class="form-group"><textarea class="form-control" id="set-navExtraLinks" rows="3" placeholder='[{"label":"Offers","url":"/blog.html"}]'></textarea></div>
+              <button type="button" class="btn btn-green" onclick="saveSettings()">💾 Save</button>
+            </div>
+
+            <!-- CUSTOM SECTIONS -->
+            <div class="form-card">
+              <h3>➕ Custom Sections</h3>
+              <p style="font-size:12px;color:var(--muted);margin-bottom:10px">JSON: [{"id":"promo","html":"&lt;div&gt;...&lt;/div&gt;","htmlAr":"...","disabled":false}]</p>
+              <div class="form-group"><textarea class="form-control" id="set-customSections" rows="5" placeholder='[{"id":"promo","html":"<div class=\"section\">...</div>"}]'></textarea></div>
+              <button type="button" class="btn btn-green" onclick="saveSettings()">💾 Save</button>
+            </div>
+
+            <!-- CUSTOM HTML -->
+            <div class="form-card">
+              <h3>💻 Custom HTML</h3>
+              <div class="form-grid">
+                <div class="form-group"><label>Head HTML (scripts, meta tags)</label><textarea class="form-control" id="set-customHeadHtml" rows="4" placeholder="<!-- Custom head HTML -->"></textarea></div>
+                <div class="form-group"><label>Body HTML (widgets, popups)</label><textarea class="form-control" id="set-customBodyHtml" rows="4" placeholder="<!-- Custom body HTML -->"></textarea></div>
+              </div>
+              <button type="button" class="btn btn-green" onclick="saveSettings()">💾 Save</button>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="form-card">
+              <h3>🦶 Footer</h3>
+              <div class="form-grid">
+                <div class="form-group"><label>Tagline (EN)</label><input class="form-control" id="set-footerTagline" type="text" placeholder="Find Your Space, Sleep in Peace"/></div>
+                <div class="form-group"><label>Tagline (AR)</label><input class="form-control" id="set-footerTaglineAr" type="text" placeholder="اعثر على مكانك، نَم بسلام"/></div>
+                <div class="form-group"><label>Copyright text</label><input class="form-control" id="set-footerCopyright" type="text" placeholder="© 2025 Sukoon Homes. All rights reserved."/></div>
+              </div>
+              <button type="button" class="btn btn-green" onclick="saveSettings()">💾 Save</button>
+            </div>
         </div>
 
         <!-- HERO -->
