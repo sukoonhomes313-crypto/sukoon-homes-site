@@ -177,21 +177,27 @@ async function handleRoomResponse(response, requestUrl, faviconPath) {
     const id = requestUrl.searchParams.get('id');
 
     if (slug || id) {
+      let dbg = 'room-debug: not-run';
+      let htmlToUse = null;
       try {
         const room = await fetchRoomData(id, slug);
         if (room) {
+          dbg = `room-debug: found name="${room.name}" img="${room.img}"`;
           const html = await resp.text();
-          const injected = injectRoomMeta(html, room);
-          const headers = new Headers(resp.headers);
-          headers.delete('content-length');
-          resp = new Response(injected, {
-            status: resp.status,
-            statusText: resp.statusText,
-            headers
-          });
+          htmlToUse = injectRoomMeta(html, room);
+        } else {
+          dbg = `room-debug: not-found slug=${slug || ''} id=${id || ''}`;
+          htmlToUse = await resp.text();
         }
       } catch (e) {
-        // If Firestore lookup fails, serve the original response untouched
+        dbg = 'room-debug: error ' + (e && e.message ? e.message : String(e));
+        try { htmlToUse = await resp.text(); } catch (e2) { htmlToUse = null; }
+      }
+      if (htmlToUse !== null) {
+        const withDebug = htmlToUse.includes('</head>') ? htmlToUse.replace('</head>', `<!-- ${dbg} -->\n</head>`) : htmlToUse;
+        const headers = new Headers(resp.headers);
+        headers.delete('content-length');
+        resp = new Response(withDebug, { status: resp.status, statusText: resp.statusText, headers });
       }
     }
   }
