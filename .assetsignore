@@ -1,1 +1,9 @@
 _worker.js
+node_modules
+package.json
+package-lock.json
+wrangler.toml
+.wrangler
+.git
+.gitignore
+README.md
