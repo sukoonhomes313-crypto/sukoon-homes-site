@@ -2,6 +2,8 @@
 <html lang="en" dir="ltr" id="html-root">
 <head>
 <meta charset="UTF-8"/>
+<link rel="icon" type="image/png" id="page-favicon" href="https://res.cloudinary.com/dv5erwivl/image/upload/v1779383751/IMG_3500_rwh6pl.png"/>
+<link rel="apple-touch-icon" id="page-touch-icon" href="https://res.cloudinary.com/dv5erwivl/image/upload/v1779383751/IMG_3500_rwh6pl.png"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link id="sh-favicon" rel="icon" type="image/png" href="https://res.cloudinary.com/dv5erwivl/image/upload/v1779383751/IMG_3500_rwh6pl.png"/>
 <link id="sh-apple-touch-icon" rel="apple-touch-icon" href="https://res.cloudinary.com/dv5erwivl/image/upload/v1779383751/IMG_3500_rwh6pl.png"/>
@@ -499,7 +501,14 @@ function renderRoom(r,rtype){
   document.getElementById('page-desc').content=`${name} in ${r.city||''}. SAR ${r.price}${priceUnit}. ${r.desc||''}`.substring(0,160);
   document.getElementById('og-title').content=`${name} | Sukoon Homes`;
   document.getElementById('og-desc').content=`${name} - SAR ${r.price}${priceUnit} - ${r.city||''}`;
-  if(r.img)document.getElementById('og-image').content=r.img;
+  if(r.img||r.images?.[0]){
+    const roomImg=r.images?.[0]||r.img;
+    document.getElementById('og-image').content=roomImg;
+    const favUrl=roomImg.includes('cloudinary')?roomImg.replace('/upload/','/upload/w_64,h_64,c_fill,g_auto/'):roomImg;
+    const fav=document.getElementById('page-favicon');
+    const touch=document.getElementById('page-touch-icon');
+    if(fav)fav.href=favUrl;if(touch)touch.href=favUrl;
+  }
 
   // Breadcrumb
   document.getElementById('bc-room').textContent=name.substring(0,30);
