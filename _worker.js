@@ -2,242 +2,189 @@ const DEFAULT_FAVICON = 'https://res.cloudinary.com/dv5erwivl/image/upload/v1779
 const DEFAULT_OG_IMAGE = 'https://www.sukoonhomesksa.com/og-image.jpg';
 const FIRESTORE_PROJECT_ID = 'sukoon-homes';
 const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${FIRESTORE_PROJECT_ID}/databases/(default)/documents`;
+// Firestore REST API key — public read key for OG meta lookup only
+// Set FIRESTORE_API_KEY in Worker env vars (Cloudflare dashboard → sukoon-homes → Settings → Variables)
+// This is a restricted browser API key (read-only, referrer-locked to sukoonhomesksa.com)
+
+// ─── favicon injection ───────────────────────────────────────────────────────
 
 function faviconInjection(isRoomPage) {
   const links = `<link id="sh-favicon" rel="icon" type="image/png" href="${DEFAULT_FAVICON}"/>
 <link id="sh-apple-touch-icon" rel="apple-touch-icon" href="${DEFAULT_FAVICON}"/>`;
-
   if (!isRoomPage) return links;
-
   return `${links}
 <script>
 (function(){
-  var fallback = '${DEFAULT_FAVICON}';
-  function ensureLink(id, rel){
-    var el = document.getElementById(id);
-    if(!el){
-      el = document.createElement('link');
-      el.id = id;
-      el.rel = rel;
-      document.head.appendChild(el);
-    }
-    return el;
-  }
-  function setFavicon(url){
-    if(!url || !/^https?:\/\//i.test(url)) url = fallback;
-    var icon = ensureLink('sh-favicon','icon');
-    icon.type = 'image/png';
-    icon.href = url;
-    ensureLink('sh-apple-touch-icon','apple-touch-icon').href = url;
-  }
-  function pickRoomImage(){
-    var main = document.getElementById('main-img') || document.querySelector('.gallery-main img');
-    var og = document.querySelector('meta[property="og:image"]');
-    setFavicon((main && main.src) || (og && og.content) || fallback);
-  }
-  document.addEventListener('DOMContentLoaded', pickRoomImage);
-  window.addEventListener('load', pickRoomImage);
-  if(window.MutationObserver){
-    new MutationObserver(pickRoomImage).observe(document.documentElement, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['src','content']
-    });
-  }
-  var tries = 0;
-  var timer = setInterval(function(){
-    pickRoomImage();
-    if(++tries > 20) clearInterval(timer);
-  }, 500);
+  var fallback='${DEFAULT_FAVICON}';
+  function ensureLink(id,rel){var el=document.getElementById(id);if(!el){el=document.createElement('link');el.id=id;el.rel=rel;document.head.appendChild(el);}return el;}
+  function setFavicon(url){if(!url||!/^https?:\/\//i.test(url))url=fallback;var ic=ensureLink('sh-favicon','icon');ic.type='image/png';ic.href=url;ensureLink('sh-apple-touch-icon','apple-touch-icon').href=url;}
+  function pick(){var m=document.getElementById('main-img')||document.querySelector('.gallery-main img');var og=document.querySelector('meta[property="og:image"]');setFavicon((m&&m.src)||(og&&og.content)||fallback);}
+  document.addEventListener('DOMContentLoaded',pick);window.addEventListener('load',pick);
+  if(window.MutationObserver){new MutationObserver(pick).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['src','content']});}
+  var t=0;var ti=setInterval(function(){pick();if(++t>20)clearInterval(ti);},500);
 })();
 <\/script>`;
 }
 
+// ─── helpers ─────────────────────────────────────────────────────────────────
+
 function escapeAttr(s) {
   return String(s == null ? '' : s)
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function parseFirestoreDoc(doc, stayType) {
+function parseDoc(doc, stayType) {
   const f = (doc && doc.fields) || {};
-  const get = (k) => {
-    const v = f[k];
-    if (!v) return '';
-    return v.stringValue ?? v.integerValue ?? v.doubleValue ?? '';
-  };
-  return {
-    name: get('name'),
-    img: get('img'),
-    price: get('price'),
-    city: get('city'),
-    stayType
-  };
+  const get = k => { const v = f[k]; if (!v) return ''; return v.stringValue ?? String(v.integerValue ?? v.doubleValue ?? ''); };
+  return { name: get('name'), img: get('img'), price: get('price'), city: get('city'), stayType };
 }
 
-async function fetchRoomData(id, slug) {
+// ─── Firestore fetch (unauthenticated — requires Firestore rules: allow read) ─
+
+async function fetchRoomData(id, slug, apiKey) {
+  const key = apiKey ? `?key=${apiKey}` : '';
   try {
+    // Try by document ID first (faster, single request)
     if (id) {
       for (const col of ['dailyRooms', 'longRooms']) {
-        const res = await fetch(`${FIRESTORE_BASE}/${col}/${id}`);
-        if (res.ok) {
-          const doc = await res.json();
-          if (doc && doc.fields) return parseFirestoreDoc(doc, col === 'dailyRooms' ? 'daily' : 'long');
+        const r = await fetch(`${FIRESTORE_BASE}/${col}/${id}${key}`);
+        if (r.ok) {
+          const doc = await r.json();
+          if (doc && doc.fields) return parseDoc(doc, col === 'dailyRooms' ? 'daily' : 'long');
         }
       }
       return null;
     }
-
+    // Try by slug (runQuery)
     if (slug) {
       for (const col of ['dailyRooms', 'longRooms']) {
-        const body = {
-          structuredQuery: {
-            from: [{ collectionId: col }],
-            where: {
-              fieldFilter: {
-                field: { fieldPath: 'slug' },
-                op: 'EQUAL',
-                value: { stringValue: slug }
-              }
-            },
-            limit: 1
-          }
-        };
-        const res = await fetch(`${FIRESTORE_BASE}:runQuery`, {
+        const r = await fetch(`${FIRESTORE_BASE}:runQuery${key}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
+          body: JSON.stringify({
+            structuredQuery: {
+              from: [{ collectionId: col }],
+              where: { fieldFilter: { field: { fieldPath: 'slug' }, op: 'EQUAL', value: { stringValue: slug } } },
+              limit: 1
+            }
+          })
         });
-        if (res.ok) {
-          const results = await res.json();
-          const match = Array.isArray(results) ? results.find((r) => r.document) : null;
-          if (match) return parseFirestoreDoc(match.document, col === 'dailyRooms' ? 'daily' : 'long');
+        if (r.ok) {
+          const res = await r.json();
+          const match = Array.isArray(res) ? res.find(x => x.document) : null;
+          if (match) return parseDoc(match.document, col === 'dailyRooms' ? 'daily' : 'long');
         }
       }
     }
-  } catch (e) {
-    // Firestore lookup failed; fall back to default meta tags
-  }
+  } catch (_) {}
   return null;
 }
 
+// ─── OG meta injection ───────────────────────────────────────────────────────
+
 function injectRoomMeta(html, room) {
   if (!room || !room.name) return html;
-
-  const priceUnit = room.stayType === 'long' ? '/month' : '/night';
-  const priceText = room.price ? ` - SAR ${room.price}${priceUnit}` : '';
+  const unit  = room.stayType === 'long' ? '/month' : '/night';
+  const price = room.price ? ` — SAR ${room.price}${unit}` : '';
   const title = `${room.name} | Sukoon Homes`;
-  const desc = `${room.name}${priceText}${room.city ? ' - ' + room.city : ''}`;
-  const image = room.img || DEFAULT_OG_IMAGE;
-
-  let out = html;
-  out = out.replace(/(<title id="page-title">)[^<]*(<\/title>)/, `$1${escapeAttr(title)}$2`);
-  out = out.replace(/(<meta name="description" id="page-desc" content=")[^"]*(")/, `$1${escapeAttr(desc)}$2`);
-  out = out.replace(/(<meta property="og:title" id="og-title" content=")[^"]*(")/, `$1${escapeAttr(title)}$2`);
-  out = out.replace(/(<meta property="og:description" id="og-desc" content=")[^"]*(")/, `$1${escapeAttr(desc)}$2`);
-  out = out.replace(/(<meta property="og:image" id="og-image" content=")[^"]*(")/, `$1${escapeAttr(image)}$2`);
-  return out;
+  const desc  = `${room.name}${price}${room.city ? ' — ' + room.city : ''}`;
+  const img   = room.img || DEFAULT_OG_IMAGE;
+  let o = html;
+  o = o.replace(/(<title(?:\s[^>]*)?>)[^<]*(<\/title>)/i,           `$1${escapeAttr(title)}$2`);
+  o = o.replace(/(<meta\s[^>]*name=["']description["'][^>]*content=["'])[^"']*(?=["'])/i, `$1${escapeAttr(desc)}`);
+  o = o.replace(/(<meta\s[^>]*content=["'])[^"']*(?=["'][^>]*name=["']description["'])/i, `$1${escapeAttr(desc)}`);
+  o = o.replace(/(<meta\s[^>]*property=["']og:title["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(title)}`);
+  o = o.replace(/(<meta\s[^>]*content=["'])[^"']*(?=["'][^>]*property=["']og:title["'])/i,       `$1${escapeAttr(title)}`);
+  o = o.replace(/(<meta\s[^>]*property=["']og:description["'][^>]*content=["'])[^"']*(?=["'])/i, `$1${escapeAttr(desc)}`);
+  o = o.replace(/(<meta\s[^>]*content=["'])[^"']*(?=["'][^>]*property=["']og:description["'])/i, `$1${escapeAttr(desc)}`);
+  o = o.replace(/(<meta\s[^>]*property=["']og:image["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(img)}`);
+  o = o.replace(/(<meta\s[^>]*content=["'])[^"']*(?=["'][^>]*property=["']og:image["'])/i,       `$1${escapeAttr(img)}`);
+  o = o.replace(/(<meta\s[^>]*name=["']twitter:title["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(title)}`);
+  o = o.replace(/(<meta\s[^>]*name=["']twitter:description["'][^>]*content=["'])/i, `$1${escapeAttr(desc)}`);
+  o = o.replace(/(<meta\s[^>]*name=["']twitter:image["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(img)}`);
+  return o;
 }
 
-async function maybeInjectFavicon(response, pathname) {
-  const type = response.headers.get('content-type') || '';
-  const isHtmlPath = pathname === '/' || pathname.endsWith('.html');
-  if (!type.includes('text/html') && !isHtmlPath) return response;
+// ─── favicon injection helper ─────────────────────────────────────────────────
 
+async function injectFavicon(response, pathname) {
+  const ct = response.headers.get('content-type') || '';
+  if (!ct.includes('text/html') && pathname !== '/' && !pathname.endsWith('.html')) return response;
   const html = await response.text();
-  const isRoomPage = pathname === '/room.html' || pathname === '/room' || pathname === '/room/' || pathname.startsWith('/rooms/');
+  const isRoom = pathname === '/room.html' || pathname === '/room' || pathname === '/room/' || pathname.startsWith('/rooms/');
   const hasIcon = /rel=["'](?:shortcut\s+)?icon["']/i.test(html);
-  const hasDynamicRoomIcon = html.includes('sh-favicon') || html.includes('pickRoomImage');
-
-  if ((hasIcon && !isRoomPage) || (isRoomPage && hasDynamicRoomIcon) || !html.includes('</head>')) {
-    return new Response(html, response);
+  const hasDyn  = html.includes('sh-favicon') || html.includes('pickRoomImage');
+  if ((hasIcon && !isRoom) || (isRoom && hasDyn) || !html.includes('</head>')) {
+    return new Response(html, { status: response.status, statusText: response.statusText, headers: response.headers });
   }
-
-  const injection = faviconInjection(isRoomPage && !hasDynamicRoomIcon);
-  const nextHtml = html.replace('</head>', `${injection}\n</head>`);
-  const headers = new Headers(response.headers);
-  headers.delete('content-length');
-  headers.set('content-type', type || 'text/html; charset=UTF-8');
-
-  return new Response(nextHtml, {
-    status: response.status,
-    statusText: response.statusText,
-    headers
-  });
+  const inj = faviconInjection(isRoom && !hasDyn);
+  const out = html.replace('</head>', `${inj}\n</head>`);
+  const h = new Headers(response.headers);
+  h.delete('content-length');
+  h.set('content-type', ct || 'text/html;charset=UTF-8');
+  return new Response(out, { status: response.status, statusText: response.statusText, headers: h });
 }
 
-async function handleRoomResponse(response, requestUrl, faviconPath) {
-  let resp = response;
+// ─── room response handler ────────────────────────────────────────────────────
 
-  if (requestUrl.pathname === '/room.html') {
-    const slug = requestUrl.searchParams.get('slug');
-    const id = requestUrl.searchParams.get('id');
-
-    if (slug || id) {
-      let dbg = 'room-debug: not-run';
-      let htmlToUse = null;
-      try {
-        const room = await fetchRoomData(id, slug);
-        if (room) {
-          dbg = `room-debug: found name="${room.name}" img="${room.img}"`;
-          const html = await resp.text();
-          htmlToUse = injectRoomMeta(html, room);
-        } else {
-          dbg = `room-debug: not-found slug=${slug || ''} id=${id || ''}`;
-          htmlToUse = await resp.text();
-        }
-      } catch (e) {
-        dbg = 'room-debug: error ' + (e && e.message ? e.message : String(e));
-        try { htmlToUse = await resp.text(); } catch (e2) { htmlToUse = null; }
+async function handleRoom(assetResp, requestUrl, faviconPath, apiKey) {
+  let resp = assetResp;
+  const slug = requestUrl.searchParams.get('slug');
+  const id   = requestUrl.searchParams.get('id');
+  if (slug || id) {
+    try {
+      const room = await fetchRoomData(id, slug, apiKey);
+      if (room && room.name) {
+        const html    = await resp.text();
+        const patched = injectRoomMeta(html, room);
+        const h = new Headers(resp.headers);
+        h.delete('content-length');
+        resp = new Response(patched, { status: resp.status, statusText: resp.statusText, headers: h });
       }
-      if (htmlToUse !== null) {
-        const withDebug = htmlToUse.includes('</head>') ? htmlToUse.replace('</head>', `<!-- ${dbg} -->\n</head>`) : htmlToUse;
-        const headers = new Headers(resp.headers);
-        headers.delete('content-length');
-        resp = new Response(withDebug, { status: resp.status, statusText: resp.statusText, headers });
-      }
-    }
+    } catch (_) {}
   }
-
-  return maybeInjectFavicon(resp, faviconPath);
+  return injectFavicon(resp, faviconPath);
 }
+
+// ─── main fetch handler ───────────────────────────────────────────────────────
 
 export default {
   async fetch(request, env) {
-    const url = new URL(request.url);
-    let path = url.pathname;
+    const url    = new URL(request.url);
+    const path   = url.pathname;
+    const apiKey = env.FIRESTORE_API_KEY || '';
 
-    // /rooms/slug -> room.html?slug=slug
-    if (path.startsWith('/rooms/') && path.length > 7) {
-      const slug = path.replace('/rooms/', '');
-      url.pathname = '/room.html';
-      url.searchParams.set('slug', slug);
-      const response = await env.ASSETS.fetch(new Request(url.toString(), request));
-      return handleRoomResponse(response, url, '/rooms/' + slug);
-    }
-
-    // /room or /room/ -> room.html
-    if (path === '/room' || path === '/room/') {
-      url.pathname = '/room.html';
-      const response = await env.ASSETS.fetch(new Request(url.toString(), request));
-      return handleRoomResponse(response, url, path);
-    }
-
-    // www redirect
+    // non-www → www
     if (url.hostname === 'sukoonhomesksa.com') {
       url.hostname = 'www.sukoonhomesksa.com';
       return Response.redirect(url.toString(), 301);
     }
 
-    const response = await env.ASSETS.fetch(request);
-
-    if (path === '/room.html') {
-      return handleRoomResponse(response, url, path);
+    // /rooms/:slug  →  room.html?slug=:slug
+    if (path.startsWith('/rooms/') && path.length > 7) {
+      const slug = path.slice('/rooms/'.length);
+      url.pathname = '/room.html';
+      url.searchParams.set('slug', slug);
+      const r = await env.ASSETS.fetch(new Request(url.toString(), request));
+      return handleRoom(r, url, path, apiKey);
     }
 
-    return maybeInjectFavicon(response, path);
+    // /room  →  room.html
+    if (path === '/room' || path === '/room/') {
+      url.pathname = '/room.html';
+      const r = await env.ASSETS.fetch(new Request(url.toString(), request));
+      return handleRoom(r, url, path, apiKey);
+    }
+
+    // all other requests
+    const r = await env.ASSETS.fetch(request);
+
+    // room.html with ?slug or ?id
+    if (path === '/room.html') {
+      return handleRoom(r, url, path, apiKey);
+    }
+
+    return injectFavicon(r, path);
   }
 };
