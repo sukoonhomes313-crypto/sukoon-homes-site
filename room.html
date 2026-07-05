@@ -11,7 +11,8 @@
 <meta name="description" id="page-desc" content="Verified room for rent in Saudi Arabia | Sukoon Homes سكون هومز"/>
 <meta property="og:title" id="og-title" content="Room Details | Sukoon Homes"/>
 <meta property="og:description" id="og-desc" content="Verified room for rent in Saudi Arabia"/>
-<meta property="og:image" id="og-image" content="https://www.sukoonhomesksa.com/og-image.jpg"/>
+<meta property="og:image" id="og-image" content="https://res.cloudinary.com/dv5erwivl/image/upload/w_1200,h_630,c_pad,b_rgb:0d4a2f/v1779383751/IMG_3500_rwh6pl.png"/>
+<meta property="og:url" id="og-url" content="https://www.sukoonhomesksa.com/room/"/>
 <meta property="og:type" content="website"/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:locale:alternate" content="ar_SA"/>
@@ -1018,7 +1019,7 @@ window.reportLandlord=async function(){
   if(!reason)return;
   try{
     await addDoc(collection(db,'reports'),{reportedBy:chatUser.uid,reporterEmail:chatUser.email,roomId:currentRoomData.roomId,roomName:currentRoomData.roomName,reason,chatId:activeChatId||'',createdAt:serverTimestamp(),status:'pending'});
-    alert('\u2705 Report submitted. Our team will review within 24 hours.');
+    alert('✅ Report submitted. Our team will review within 24 hours.');
   }catch(e){alert('Error submitting report.');}
 };
 </script>
