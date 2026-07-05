@@ -1,5 +1,5 @@
 const DEFAULT_FAVICON = 'https://res.cloudinary.com/dv5erwivl/image/upload/v1779383751/IMG_3500_rwh6pl.png';
-const DEFAULT_OG_IMAGE = 'https://www.sukoonhomesksa.com/og-image.jpg';
+const DEFAULT_OG_IMAGE = 'https://res.cloudinary.com/dv5erwivl/image/upload/w_1200,h_630,c_pad,b_rgb:0d4a2f/v1779383751/IMG_3500_rwh6pl.png';
 const FIRESTORE_PROJECT_ID = 'sukoon-homes';
 const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${FIRESTORE_PROJECT_ID}/databases/(default)/documents`;
 // Firestore REST API key — public read key for OG meta lookup only
@@ -37,7 +37,7 @@ function escapeAttr(s) {
 function parseDoc(doc, stayType) {
   const f = (doc && doc.fields) || {};
   const get = k => { const v = f[k]; if (!v) return ''; return v.stringValue ?? String(v.integerValue ?? v.doubleValue ?? ''); };
-  return { name: get('name'), img: get('img'), price: get('price'), city: get('city'), stayType };
+  return { name: get('name'), img: get('img'), price: get('price'), city: get('city'), slug: get('slug'), stayType };
 }
 
 // ─── Firestore fetch (unauthenticated — requires Firestore rules: allow read) ─
@@ -83,7 +83,7 @@ async function fetchRoomData(id, slug, apiKey) {
 
 // ─── OG meta injection ───────────────────────────────────────────────────────
 
-function injectRoomMeta(html, room) {
+function injectRoomMeta(html, room, canonicalUrl) {
   if (!room || !room.name) return html;
   const unit  = room.stayType === 'long' ? '/month' : '/night';
   const price = room.price ? ` — SAR ${room.price}${unit}` : '';
@@ -103,7 +103,51 @@ function injectRoomMeta(html, room) {
   o = o.replace(/(<meta\s[^>]*name=["']twitter:title["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(title)}`);
   o = o.replace(/(<meta\s[^>]*name=["']twitter:description["'][^>]*content=["'])/i, `$1${escapeAttr(desc)}`);
   o = o.replace(/(<meta\s[^>]*name=["']twitter:image["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(img)}`);
+  if (canonicalUrl) {
+    o = o.replace(/(<link\s[^>]*rel=["']canonical["'][^>]*href=["'])[^"']*(?=["'])/i,               `$1${escapeAttr(canonicalUrl)}`);
+    o = o.replace(/(<meta\s[^>]*property=["']og:url["'][^>]*content=["'])[^"']*(?=["'])/i,          `$1${escapeAttr(canonicalUrl)}`);
+    o = o.replace(/(<meta\s[^>]*content=["'])[^"']*(?=["'][^>]*property=["']og:url["'])/i,          `$1${escapeAttr(canonicalUrl)}`);
+  }
   return o;
+}
+
+// ─── sitemap augmentation ──────────────────────────────────────────────────────
+
+async function fetchAllRoomUrls(apiKey) {
+  const key = apiKey ? `?key=${apiKey}&pageSize=300` : '?pageSize=300';
+  const urls = [];
+  for (const col of ['dailyRooms', 'longRooms']) {
+    try {
+      const r = await fetch(`${FIRESTORE_BASE}/${col}${key}`);
+      if (!r.ok) continue;
+      const data = await r.json();
+      for (const doc of data.documents || []) {
+        const slug = doc.fields && doc.fields.slug && doc.fields.slug.stringValue;
+        if (slug) urls.push(`https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(slug)}`);
+      }
+    } catch (_) {}
+  }
+  return urls;
+}
+
+async function handleSitemap(request, env, apiKey) {
+  const staticResp = await env.ASSETS.fetch(request);
+  try {
+    const xml = await staticResp.text();
+    const roomUrls = await fetchAllRoomUrls(apiKey);
+    if (!roomUrls.length || !xml.includes('</urlset>')) {
+      return new Response(xml, { status: staticResp.status, statusText: staticResp.statusText, headers: staticResp.headers });
+    }
+    const entries = roomUrls.map(u => `  <url>\n    <loc>${u}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`).join('\n');
+    const out = xml.replace('</urlset>', `${entries}\n</urlset>`);
+    const h = new Headers(staticResp.headers);
+    h.delete('content-length');
+    h.set('content-type', 'application/xml;charset=UTF-8');
+    h.set('cache-control', 'public, max-age=3600');
+    return new Response(out, { status: staticResp.status, statusText: staticResp.statusText, headers: h });
+  } catch (_) {
+    return staticResp;
+  }
 }
 
 // ─── favicon injection helper ─────────────────────────────────────────────────
@@ -136,8 +180,12 @@ async function handleRoom(assetResp, requestUrl, faviconPath, apiKey) {
     try {
       const room = await fetchRoomData(id, slug, apiKey);
       if (room && room.name) {
+        const roomSlug = slug || room.slug;
+        const canonicalUrl = roomSlug
+          ? `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(roomSlug)}`
+          : `https://www.sukoonhomesksa.com/room/?id=${encodeURIComponent(id)}`;
         const html    = await resp.text();
-        const patched = injectRoomMeta(html, room);
+        const patched = injectRoomMeta(html, room, canonicalUrl);
         const h = new Headers(resp.headers);
         h.delete('content-length');
         resp = new Response(patched, { status: resp.status, statusText: resp.statusText, headers: h });
@@ -159,6 +207,11 @@ export default {
     if (url.hostname === 'sukoonhomesksa.com') {
       url.hostname = 'www.sukoonhomesksa.com';
       return Response.redirect(url.toString(), 301);
+    }
+
+    // /sitemap.xml → static sitemap + live room URLs from Firestore
+    if (path === '/sitemap.xml') {
+      return handleSitemap(request, env, apiKey);
     }
 
     // /rooms/:slug  →  room.html?slug=:slug
