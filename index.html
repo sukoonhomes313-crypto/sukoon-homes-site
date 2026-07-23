@@ -1114,6 +1114,7 @@ function _fmtTime(ts){
 // ===== PUBLIC API =====
 window.SHChat={
   open(){
+    _initAuth();
     document.getElementById('chat-panel').classList.add('open');
     document.getElementById('cp-overlay').classList.add('open');
     if(!_user){
