@@ -224,7 +224,7 @@ export default {
 
     // /sitemap.xml → static sitemap + live room URLs from Firestore
     if (path === '/sitemap.xml') {
-      return handleSitemap(request, env, apiKey);
+      return addSecurityHeaders(await handleSitemap(request, env, apiKey));
     }
 
     // /rooms/:slug  →  room.html?slug=:slug
@@ -233,14 +233,14 @@ export default {
       url.pathname = '/room.html';
       url.searchParams.set('slug', slug);
       const r = await env.ASSETS.fetch(new Request(url.toString(), request));
-      return handleRoom(r, url, path, apiKey);
+      return addSecurityHeaders(await handleRoom(r, url, path, apiKey));
     }
 
     // /room  →  room.html
     if (path === '/room' || path === '/room/') {
       url.pathname = '/room.html';
       const r = await env.ASSETS.fetch(new Request(url.toString(), request));
-      return handleRoom(r, url, path, apiKey);
+      return addSecurityHeaders(await handleRoom(r, url, path, apiKey));
     }
 
     // all other requests
@@ -248,9 +248,9 @@ export default {
 
     // room.html with ?slug or ?id
     if (path === '/room.html') {
-      return handleRoom(r, url, path, apiKey);
+      return addSecurityHeaders(await handleRoom(r, url, path, apiKey));
     }
 
-    return injectFavicon(r, path);
+    return addSecurityHeaders(await injectFavicon(r, path));
   }
 };
