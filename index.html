@@ -1021,9 +1021,24 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPas
 const FC={apiKey:"AIzaSyDAOPIT2TtKtxyHCi3Sg2WapIDhvfk1jlo",authDomain:"sukoon-homes.firebaseapp.com",projectId:"sukoon-homes"};
 const app=getApps().length?getApps()[0]:initializeApp(FC,'sh-chat');
 const db=getFirestore(app);
-const auth=getAuth(app);
-const gp=new GoogleAuthProvider();
-setPersistence(auth,browserLocalPersistence).catch(()=>{});
+
+// Auth is lazy — only initialized when user opens chat panel
+let auth=null;
+let gp=null;
+let _authInitialized=false;
+
+function _initAuth(){
+  if(_authInitialized)return;
+  _authInitialized=true;
+  auth=getAuth(app);
+  gp=new GoogleAuthProvider();
+  setPersistence(auth,browserLocalPersistence).catch(()=>{});
+  onAuthStateChanged(auth,user=>{
+    _user=user;
+    if(user){ _startListening(); }
+    else { _stopListening(); _updateBadge(0); }
+  });
+}
 
 let _user=null;
 let _chats=[];
@@ -1031,17 +1046,6 @@ let _activeChatId=null;
 let _chatUnsub=null;
 let _listUnsub=null;
 let _filter='all';
-
-// ===== AUTH STATE =====
-onAuthStateChanged(auth,user=>{
-  _user=user;
-  if(user){
-    _startListening();
-  } else {
-    _stopListening();
-    _updateBadge(0);
-  }
-});
 
 function _startListening(){
   if(_listUnsub)_listUnsub();
