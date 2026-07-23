@@ -195,6 +195,19 @@ async function handleRoom(assetResp, requestUrl, faviconPath, apiKey) {
   return injectFavicon(resp, faviconPath);
 }
 
+// ─── security headers ─────────────────────────────────────────────────────────
+
+function addSecurityHeaders(response) {
+  const h = new Headers(response.headers);
+  h.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  h.set('X-Frame-Options', 'SAMEORIGIN');
+  h.set('X-Content-Type-Options', 'nosniff');
+  h.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  h.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self)');
+  h.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers: h });
+}
+
 // ─── main fetch handler ───────────────────────────────────────────────────────
 
 export default {
