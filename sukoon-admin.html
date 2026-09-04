@@ -2724,7 +2724,7 @@ window.ceRestoreList = async function(){
       return '<div style="padding:10px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">'
         +'<div style="flex:1"><div style="font-size:12px;font-weight:600">'+b.filename+'</div>'
         +'<div style="font-size:11px;color:var(--muted)">'+(b.savedAt||'').substring(0,19)+' · '+(b.chars||0).toLocaleString()+' chars · '+b.savedBy+'</div></div>'
-        +'<button class="btn btn-green btn-sm" onclick="ceRestore(''+d.id+'')">Restore</button></div>';
+        +'<button class="btn btn-green btn-sm" onclick="ceRestore(`'+d.id+'`)">Restore</button></div>';
     }).join('');
   }catch(e){list.innerHTML='<div style="color:var(--red);font-size:12px">Error: '+e.message+'</div>';}
 };
