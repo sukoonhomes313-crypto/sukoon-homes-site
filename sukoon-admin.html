@@ -1175,7 +1175,7 @@ onAuthStateChanged(auth,async(user)=>{
     }
   } else {
     // Not logged in — show login
-    if(!isSignInWithEmailLink(auth,window.location.href)){
+    if(true){
       document.getElementById('login-wrap').style.display='flex';
       document.getElementById('admin-wrap').classList.remove('show');
     }
