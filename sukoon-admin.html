@@ -1089,7 +1089,7 @@ textarea.form-control{resize:vertical;min-height:70px;}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, collection, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const FC={apiKey:"AIzaSyDAOPIT2TtKtxyHCi3Sg2WapIDhvfk1jlo",authDomain:"sukoon-homes.firebaseapp.com",projectId:"sukoon-homes",storageBucket:"sukoon-homes.firebasestorage.app",messagingSenderId:"351838802115",appId:"1:351838802115:web:207c60810ebe0930c65276"};
 const app=initializeApp(FC);const db=getFirestore(app);const auth=getAuth(app);
