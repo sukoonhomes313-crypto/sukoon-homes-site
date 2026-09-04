@@ -2016,12 +2016,11 @@ window.addTeamUser=async function(){
       addedAt:new Date().toLocaleDateString('en-SA'),
       createdAt:new Date().toISOString()
     });
-    await sendSignInLinkToEmail(auth,email,ACTION_CODE_SETTINGS);
     document.getElementById('new-user-email').value='';
     msg.style.color='var(--green-mid)';
-    msg.textContent=`✅ ${email} added and magic link sent!`;
+    msg.textContent=`✅ ${email} added! They can now sign in with Google at the admin page.`;
     loadTeamUsers();
-    toast('✅ User added and link sent!');
+    toast('✅ User added!');
   }catch(e){msg.style.color='var(--red)';msg.textContent='❌ Error: '+e.message;}
 };
 
