@@ -275,26 +275,15 @@ function injectRoomMeta(html, room, canonicalUrl) {
   // Title tag
   o = o.replace(/(<title[^>]*>)[^<]*(<\/title>)/i, `$1${escapeAttr(title)}$2`);
 
-  // Replace meta by id attribute (room.html uses id-based tags)
-  // Pattern: <meta name/property="..." id="X" content="VALUE"/>
-  const setById = (id, val) => {
-    // content after id
-    o = o.replace(new RegExp(`(<[^>]+id=["']${id}["'][^>]*content=["'])[^"']*`, 'i'), `$1${escapeAttr(val)}`);
-    // content before id  
-    o = o.replace(new RegExp(`(<[^>]+content=["'])[^"']*(?=["'][^>]*id=["']${id}["'])`, 'i'), `$1${escapeAttr(val)}`);
-  };
-  const setHrefById = (id, val) => {
-    o = o.replace(new RegExp(`(<[^>]+id=["']${id}["'][^>]*href=["'])[^"']*`, 'i'), `$1${escapeAttr(val)}`);
-    o = o.replace(new RegExp(`(<[^>]+href=["'])[^"']*(?=["'][^>]*id=["']${id}["'])`, 'i'), `$1${escapeAttr(val)}`);
-  };
-
-  setById('page-title', title);
-  setById('page-desc', desc);
-  setById('og-title', title);
-  setById('og-desc', desc);
-  setById('og-image', img);
-  setById('og-url', canon);
-  setHrefById('canonical', canon);
+  // Simple string replace — exact match from room.html template
+  o = o.replace(/(<title[^>]*>)[^<]*(<\/title>)/i, `$1${escapeAttr(title)}$2`);
+  o = o.replace('content="Room Details | Sukoon Homes"', `content="${escapeAttr(title)}"`);
+  o = o.replace('content="Verified room for rent in Saudi Arabia | Sukoon Homes سكون هرمز"', `content="${escapeAttr(desc)}"`);
+  o = o.replace('content="Verified room for rent in Saudi Arabia"', `content="${escapeAttr(desc)}"`);
+  o = o.replace(/content="Room Details \| Sukoon Homes"/g, `content="${escapeAttr(title)}"`);
+  o = o.replace(/content="Verified room for rent[^"]*"/g, `content="${escapeAttr(desc)}"`);
+  o = o.replace('href="https://www.sukoonhomesksa.com/room/"', `href="${escapeAttr(canon)}"`);
+  o = o.replace('content="https://www.sukoonhomesksa.com/room/"', `content="${escapeAttr(canon)}"`);
 
   // Also try standard property-based replacements as fallback
   o = o.replace(/(<meta\s[^>]*property=["']og:title["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(title)}`);
