@@ -1131,7 +1131,9 @@ window.signInWithGoogle = async function(){
 getRedirectResult(auth).then(async(result)=>{
   if(!result) return;
   const email = result.user.email;
+  console.log('REDIRECT EMAIL:', email);
   const snap = await getDocs(query(collection(db,'adminUsers'),where('email','==',email)));
+  console.log('ADMIN CHECK:', snap.empty, snap.docs.map(d=>d.data()));
   if(snap.empty){
     await signOut(auth);
     const err = document.getElementById('login-err');
@@ -1139,6 +1141,7 @@ getRedirectResult(auth).then(async(result)=>{
     err.textContent='❌ This Google account does not have admin access.';
   }
 }).catch(e=>{
+  console.error('REDIRECT ERROR:', e);
   const err = document.getElementById('login-err');
   if(err){ err.style.display='block'; err.textContent='❌ Error: '+e.message; }
 });
