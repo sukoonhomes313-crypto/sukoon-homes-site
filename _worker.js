@@ -275,19 +275,25 @@ function injectRoomMeta(html, room, canonicalUrl) {
   // Title tag
   o = o.replace(/(<title[^>]*>)[^<]*(<\/title>)/i, `$1${escapeAttr(title)}$2`);
 
-  // Simple string replace — exact match from room.html template
-  o = o.replace('<title id="page-title">Room Details | Sukoon Homes</title>',
-                `<title id="page-title">${escapeAttr(title)}</title>`);
-  o = o.replace('content="Verified room for rent in Saudi Arabia | Sukoon Homes سكون هومز"',
-                `content="${escapeAttr(desc)}"`);
-  o = o.replace('content="Room Details | Sukoon Homes"',
-                `content="${escapeAttr(title)}"`);
-  o = o.replace('content="Verified room for rent in Saudi Arabia"',
-                `content="${escapeAttr(desc)}"`);
-  o = o.replace('href="https://www.sukoonhomesksa.com/room/"',
-                `href="${escapeAttr(canon)}"`);
-  o = o.replace('content="https://www.sukoonhomesksa.com/room/"',
-                `content="${escapeAttr(canon)}"`);
+  // Placeholder-based replacement — guaranteed match
+  const title = `${room.name} | Sukoon Homes`;
+  const desc  = `${room.name}${room.price ? ' — SAR ' + room.price + unit : ''}${room.city ? ' in ' + room.city : ''}`;
+
+  html = html
+    .replace(/__SSR_TITLE__/g, escapeAttr(title))
+    .replace(/__SSR_DESC__/g,  escapeAttr(desc))
+    .replace(/__SSR_URL__/g,   escapeAttr(canon))
+    .replace(/__SSR_IMG__/g,   escapeAttr(img));
+
+  // Also replace og:image default with room image
+  if (room.img) {
+    html = html.replace(
+      /(<meta[^>]*id="og-image"[^>]*content=")[^"]*"/,
+      `$1${escapeAttr(img)}"`
+    );
+  }
+
+  console.log('meta injected, title now:', title);
 
   // Also try standard property-based replacements as fallback
   o = o.replace(/(<meta\s[^>]*property=["']og:title["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(title)}`);
