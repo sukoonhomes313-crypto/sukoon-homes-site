@@ -276,14 +276,18 @@ function injectRoomMeta(html, room, canonicalUrl) {
   o = o.replace(/(<title[^>]*>)[^<]*(<\/title>)/i, `$1${escapeAttr(title)}$2`);
 
   // Simple string replace — exact match from room.html template
-  o = o.replace(/(<title[^>]*>)[^<]*(<\/title>)/i, `$1${escapeAttr(title)}$2`);
-  o = o.replace('content="Room Details | Sukoon Homes"', `content="${escapeAttr(title)}"`);
-  o = o.replace('content="Verified room for rent in Saudi Arabia | Sukoon Homes سكون هرمز"', `content="${escapeAttr(desc)}"`);
-  o = o.replace('content="Verified room for rent in Saudi Arabia"', `content="${escapeAttr(desc)}"`);
-  o = o.replace(/content="Room Details \| Sukoon Homes"/g, `content="${escapeAttr(title)}"`);
-  o = o.replace(/content="Verified room for rent[^"]*"/g, `content="${escapeAttr(desc)}"`);
-  o = o.replace('href="https://www.sukoonhomesksa.com/room/"', `href="${escapeAttr(canon)}"`);
-  o = o.replace('content="https://www.sukoonhomesksa.com/room/"', `content="${escapeAttr(canon)}"`);
+  o = o.replace('<title id="page-title">Room Details | Sukoon Homes</title>',
+                `<title id="page-title">${escapeAttr(title)}</title>`);
+  o = o.replace('content="Verified room for rent in Saudi Arabia | Sukoon Homes سكون هومز"',
+                `content="${escapeAttr(desc)}"`);
+  o = o.replace('content="Room Details | Sukoon Homes"',
+                `content="${escapeAttr(title)}"`);
+  o = o.replace('content="Verified room for rent in Saudi Arabia"',
+                `content="${escapeAttr(desc)}"`);
+  o = o.replace('href="https://www.sukoonhomesksa.com/room/"',
+                `href="${escapeAttr(canon)}"`);
+  o = o.replace('content="https://www.sukoonhomesksa.com/room/"',
+                `content="${escapeAttr(canon)}"`);
 
   // Also try standard property-based replacements as fallback
   o = o.replace(/(<meta\s[^>]*property=["']og:title["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(title)}`);
