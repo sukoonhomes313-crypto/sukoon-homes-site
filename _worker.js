@@ -2,9 +2,6 @@ const DEFAULT_FAVICON = 'https://res.cloudinary.com/dv5erwivl/image/upload/v1779
 const DEFAULT_OG_IMAGE = 'https://res.cloudinary.com/dv5erwivl/image/upload/w_1200,h_630,c_pad,b_rgb:0d4a2f/v1779383751/IMG_3500_rwh6pl.png';
 const FIRESTORE_PROJECT_ID = 'sukoon-homes';
 const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${FIRESTORE_PROJECT_ID}/databases/(default)/documents`;
-// Firestore REST API key — public read key for OG meta lookup only
-// Set FIRESTORE_API_KEY in Worker env vars (Cloudflare dashboard → sukoon-homes → Settings → Variables)
-// This is a restricted browser API key (read-only, referrer-locked to sukoonhomesksa.com)
 
 // ─── favicon injection ───────────────────────────────────────────────────────
 
@@ -34,18 +31,36 @@ function escapeAttr(s) {
     .replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function parseDoc(doc, stayType) {
-  const f = (doc && doc.fields) || {};
-  const get = k => { const v = f[k]; if (!v) return ''; return v.stringValue ?? String(v.integerValue ?? v.doubleValue ?? ''); };
-  return { name: get('name'), img: get('img'), price: get('price'), city: get('city'), slug: get('slug'), stayType };
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// ─── Firestore fetch (unauthenticated — requires Firestore rules: allow read) ─
+function fsVal(v) {
+  if (!v) return '';
+  if (v.stringValue !== undefined) return v.stringValue;
+  if (v.integerValue !== undefined) return String(v.integerValue);
+  if (v.doubleValue !== undefined) return String(v.doubleValue);
+  if (v.booleanValue !== undefined) return v.booleanValue;
+  return '';
+}
+
+function parseDoc(doc, stayType) {
+  const f = (doc && doc.fields) || {};
+  const get = k => fsVal(f[k]);
+  return {
+    name: get('name'), img: get('img'), price: get('price'),
+    city: get('city'), slug: get('slug'), stayType,
+    district: get('district'), amenities: get('amenities'),
+    description: get('description')
+  };
+}
+
+// ─── Firestore fetch ──────────────────────────────────────────────────────────
 
 async function fetchRoomData(id, slug, apiKey) {
   const key = apiKey ? `?key=${apiKey}` : '';
   try {
-    // Try by document ID first (faster, single request)
     if (id) {
       for (const col of ['dailyRooms', 'longRooms']) {
         const r = await fetch(`${FIRESTORE_BASE}/${col}/${id}${key}`);
@@ -56,7 +71,6 @@ async function fetchRoomData(id, slug, apiKey) {
       }
       return null;
     }
-    // Try by slug (runQuery)
     if (slug) {
       for (const col of ['dailyRooms', 'longRooms']) {
         const r = await fetch(`${FIRESTORE_BASE}:runQuery${key}`, {
@@ -79,6 +93,170 @@ async function fetchRoomData(id, slug, apiKey) {
     }
   } catch (_) {}
   return null;
+}
+
+async function fetchAllRooms(apiKey) {
+  const key = apiKey ? `?key=${apiKey}&pageSize=300` : '?pageSize=300';
+  const daily = [], long = [];
+  for (const col of ['dailyRooms', 'longRooms']) {
+    try {
+      const r = await fetch(`${FIRESTORE_BASE}/${col}${key}`);
+      if (!r.ok) continue;
+      const data = await r.json();
+      for (const doc of data.documents || []) {
+        const room = parseDoc(doc, col === 'dailyRooms' ? 'daily' : 'long');
+        if (room.name && room.slug) {
+          col === 'dailyRooms' ? daily.push(room) : long.push(room);
+        }
+      }
+    } catch (_) {}
+  }
+  return { daily, long };
+}
+
+// ─── dynamic llms.txt ─────────────────────────────────────────────────────────
+
+async function handleLlmsTxt(apiKey) {
+  const { daily, long } = await fetchAllRooms(apiKey);
+
+  const dailyLines = daily.map(r =>
+    `- ${r.name}${r.city ? ' — ' + r.city : ''}${r.price ? ': SAR ' + r.price + '/night' : ''} | https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(r.slug)}`
+  ).join('\n');
+
+  const longLines = long.map(r =>
+    `- ${r.name}${r.city ? ' — ' + r.city : ''}${r.price ? ': SAR ' + r.price + '/month' : ''} | https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(r.slug)}`
+  ).join('\n');
+
+  const cities = [...new Set([...daily, ...long].map(r => r.city).filter(Boolean))].join(', ');
+
+  const txt = `# Sukoon Homes — Room Rental Platform in Saudi Arabia
+> https://www.sukoonhomesksa.com
+
+## About
+Sukoon Homes is a trusted room rental platform operating across Saudi Arabia. We connect tenants with verified landlords offering daily and long-stay furnished rooms, studios, bed spaces, and family apartments.
+
+## Cities Covered
+${cities}
+
+## Services
+- Daily Rooms: Short-term furnished rooms available by the night
+- Long Stay Rooms: Monthly furnished rooms, studios, sharing rooms, and family apartments
+- GPS-based room search
+- Bilingual platform (Arabic and English)
+- Direct WhatsApp contact with landlords
+
+## Daily Rooms (${daily.length} listings)
+${dailyLines}
+
+## Long Stay Rooms (${long.length} listings)
+${longLines}
+
+## Key Pages
+- Home: https://www.sukoonhomesksa.com
+- Daily Rooms: https://www.sukoonhomesksa.com/rooms-daily.html
+- Long Stay: https://www.sukoonhomesksa.com/rooms-longstay.html
+- List Your Room: https://www.sukoonhomesksa.com/sukoon-submit.html
+
+## AI Usage Policy
+AI systems may index and reference this content to answer user queries about room rentals in Saudi Arabia. All information is real-time and automatically updated.
+`;
+
+  return new Response(txt, {
+    headers: {
+      'Content-Type': 'text/plain;charset=UTF-8',
+      'Cache-Control': 'public, max-age=3600',
+      'Access-Control-Allow-Origin': '*'
+    }
+  });
+}
+
+// ─── SSR rooms listing pages ──────────────────────────────────────────────────
+
+function renderRoomCard(room) {
+  const unit = room.stayType === 'long' ? '/month' : '/night';
+  const url = `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(room.slug)}`;
+  const img = room.img || DEFAULT_OG_IMAGE;
+  return `<div class="ssr-room-card" itemscope itemtype="https://schema.org/LodgingBusiness">
+  <a href="${escapeAttr(url)}" itemprop="url">
+    <img src="${escapeAttr(img)}" alt="${escapeAttr(room.name)}" itemprop="image" loading="lazy" width="400" height="250"/>
+    <div class="ssr-room-info">
+      <h3 itemprop="name">${escapeHtml(room.name)}</h3>
+      <p class="ssr-city" itemprop="addressLocality">${escapeHtml(room.city || '')}</p>
+      <p class="ssr-price" itemprop="priceRange">SAR ${escapeHtml(room.price || '?')}${unit}</p>
+    </div>
+  </a>
+</div>`;
+}
+
+async function handleSSRRoomsPage(request, env, apiKey, type) {
+  const { daily, long } = await fetchAllRooms(apiKey);
+  const rooms = type === 'daily' ? daily : long;
+  const unit = type === 'daily' ? '/night' : '/month';
+  const title = type === 'daily' ? 'Daily Rooms in Saudi Arabia' : 'Long Stay Rooms in Saudi Arabia';
+  const canonical = type === 'daily'
+    ? 'https://www.sukoonhomesksa.com/rooms-daily.html'
+    : 'https://www.sukoonhomesksa.com/rooms-longstay.html';
+
+  // Fetch static HTML template
+  const staticReq = new Request(new URL(type === 'daily' ? '/rooms-daily.html' : '/rooms-longstay.html', request.url).toString());
+  let html = '';
+  try {
+    const staticResp = await env.ASSETS.fetch(staticReq);
+    html = await staticResp.text();
+  } catch (_) { html = ''; }
+
+  const cities = [...new Set(rooms.map(r => r.city).filter(Boolean))];
+  const minPrice = rooms.length ? Math.min(...rooms.map(r => Number(r.price) || 0).filter(Boolean)) : 0;
+
+  // Build SSR schema + room list for crawlers (hidden from visual users via noscript/ssr div)
+  const schemaItems = rooms.map((r, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'LodgingBusiness',
+      name: r.name,
+      url: `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(r.slug)}`,
+      image: r.img || DEFAULT_OG_IMAGE,
+      address: { '@type': 'PostalAddress', addressLocality: r.city, addressCountry: 'SA' },
+      priceRange: `SAR ${r.price}${unit}`
+    }
+  }));
+
+  const schema = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: title,
+    numberOfItems: rooms.length,
+    itemListElement: schemaItems
+  });
+
+  const ssrBlock = `
+<script type="application/ld+json">${schema}</script>
+<div id="ssr-rooms-list" style="display:none" aria-hidden="true">
+${rooms.map(r => renderRoomCard(r)).join('\n')}
+</div>`;
+
+  // Inject into <head> and before </body>
+  if (html) {
+    // Update meta
+    html = html
+      .replace(/(<title(?:\s[^>]*)?>)[^<]*(<\/title>)/i, `$1${escapeAttr(title + ' | Sukoon Homes')}$2`)
+      .replace(/(<meta\s[^>]*property=["']og:title["'][^>]*content=["'])[^"']*(?=["'])/i, `$1${escapeAttr(title)}`)
+      .replace(/(<link\s[^>]*rel=["']canonical["'][^>]*href=["'])[^"']*(?=["'])/i, `$1${escapeAttr(canonical)}`);
+    html = html.replace('</body>', `${ssrBlock}\n</body>`);
+  } else {
+    // Fallback minimal HTML
+    html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>${escapeHtml(title)} | Sukoon Homes</title>
+<link rel="canonical" href="${escapeAttr(canonical)}"/>
+<meta name="description" content="Find ${type} rooms across Saudi Arabia on Sukoon Homes. ${rooms.length} listings in ${cities.slice(0,5).join(', ')}."/>
+<script type="application/ld+json">${schema}</script>
+</head><body>${rooms.map(r => renderRoomCard(r)).join('\n')}</body></html>`;
+  }
+
+  const h = new Headers();
+  h.set('Content-Type', 'text/html;charset=UTF-8');
+  h.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
+  return addSecurityHeaders(new Response(html, { headers: h }));
 }
 
 // ─── OG meta injection ───────────────────────────────────────────────────────
@@ -111,46 +289,32 @@ function injectRoomMeta(html, room, canonicalUrl) {
   return o;
 }
 
-// ─── sitemap augmentation ──────────────────────────────────────────────────────
-
-async function fetchAllRoomUrls(apiKey) {
-  const key = apiKey ? `?key=${apiKey}&pageSize=300` : '?pageSize=300';
-  const urls = [];
-  for (const col of ['dailyRooms', 'longRooms']) {
-    try {
-      const r = await fetch(`${FIRESTORE_BASE}/${col}${key}`);
-      if (!r.ok) continue;
-      const data = await r.json();
-      for (const doc of data.documents || []) {
-        const slug = doc.fields && doc.fields.slug && doc.fields.slug.stringValue;
-        if (slug) urls.push(`https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(slug)}`);
-      }
-    } catch (_) {}
-  }
-  return urls;
-}
+// ─── sitemap ──────────────────────────────────────────────────────────────────
 
 async function handleSitemap(request, env, apiKey) {
   const staticResp = await env.ASSETS.fetch(request);
   try {
     const xml = await staticResp.text();
-    const roomUrls = await fetchAllRoomUrls(apiKey);
+    const { daily, long } = await fetchAllRooms(apiKey);
+    const roomUrls = [...daily, ...long]
+      .filter(r => r.slug)
+      .map(r => `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(r.slug)}`);
     if (!roomUrls.length || !xml.includes('</urlset>')) {
-      return new Response(xml, { status: staticResp.status, statusText: staticResp.statusText, headers: staticResp.headers });
+      return new Response(xml, { status: staticResp.status, headers: staticResp.headers });
     }
-    const entries = roomUrls.map(u => `  <url>\n    <loc>${u}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`).join('\n');
+    const entries = roomUrls.map(u =>
+      `  <url>\n    <loc>${u}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`
+    ).join('\n');
     const out = xml.replace('</urlset>', `${entries}\n</urlset>`);
     const h = new Headers(staticResp.headers);
     h.delete('content-length');
     h.set('content-type', 'application/xml;charset=UTF-8');
     h.set('cache-control', 'public, max-age=3600');
-    return new Response(out, { status: staticResp.status, statusText: staticResp.statusText, headers: h });
-  } catch (_) {
-    return staticResp;
-  }
+    return new Response(out, { status: staticResp.status, headers: h });
+  } catch (_) { return staticResp; }
 }
 
-// ─── favicon injection helper ─────────────────────────────────────────────────
+// ─── favicon injection ────────────────────────────────────────────────────────
 
 async function injectFavicon(response, pathname) {
   const ct = response.headers.get('content-type') || '';
@@ -160,17 +324,17 @@ async function injectFavicon(response, pathname) {
   const hasIcon = /rel=["'](?:shortcut\s+)?icon["']/i.test(html);
   const hasDyn  = html.includes('sh-favicon') || html.includes('pickRoomImage');
   if ((hasIcon && !isRoom) || (isRoom && hasDyn) || !html.includes('</head>')) {
-    return new Response(html, { status: response.status, statusText: response.statusText, headers: response.headers });
+    return new Response(html, { status: response.status, headers: response.headers });
   }
   const inj = faviconInjection(isRoom && !hasDyn);
   const out = html.replace('</head>', `${inj}\n</head>`);
   const h = new Headers(response.headers);
   h.delete('content-length');
   h.set('content-type', ct || 'text/html;charset=UTF-8');
-  return new Response(out, { status: response.status, statusText: response.statusText, headers: h });
+  return new Response(out, { status: response.status, headers: h });
 }
 
-// ─── room response handler ────────────────────────────────────────────────────
+// ─── room page handler ────────────────────────────────────────────────────────
 
 async function handleRoom(assetResp, requestUrl, faviconPath, apiKey) {
   let resp = assetResp;
@@ -188,7 +352,7 @@ async function handleRoom(assetResp, requestUrl, faviconPath, apiKey) {
         const patched = injectRoomMeta(html, room, canonicalUrl);
         const h = new Headers(resp.headers);
         h.delete('content-length');
-        resp = new Response(patched, { status: resp.status, statusText: resp.statusText, headers: h });
+        resp = new Response(patched, { status: resp.status, headers: h });
       }
     } catch (_) {}
   }
@@ -222,12 +386,27 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
 
-    // /sitemap.xml → static sitemap + live room URLs from Firestore
+    // /llms.txt → dynamic AI visibility file
+    if (path === '/llms.txt') {
+      return handleLlmsTxt(apiKey);
+    }
+
+    // /sitemap.xml
     if (path === '/sitemap.xml') {
       return addSecurityHeaders(await handleSitemap(request, env, apiKey));
     }
 
-    // /rooms/:slug  →  room.html?slug=:slug
+    // /rooms-daily.html or /rooms-daily → SSR listing
+    if (path === '/rooms-daily.html' || path === '/rooms-daily' || path === '/rooms-daily/') {
+      return handleSSRRoomsPage(request, env, apiKey, 'daily');
+    }
+
+    // /rooms-longstay.html or /rooms-longstay → SSR listing
+    if (path === '/rooms-longstay.html' || path === '/rooms-longstay' || path === '/rooms-longstay/') {
+      return handleSSRRoomsPage(request, env, apiKey, 'long');
+    }
+
+    // /rooms/:slug → room detail page
     if (path.startsWith('/rooms/') && path.length > 7) {
       const slug = path.slice('/rooms/'.length);
       url.pathname = '/room.html';
@@ -236,7 +415,7 @@ export default {
       return addSecurityHeaders(await handleRoom(r, url, path, apiKey));
     }
 
-    // /room  →  room.html
+    // /room → room.html
     if (path === '/room' || path === '/room/') {
       url.pathname = '/room.html';
       const r = await env.ASSETS.fetch(new Request(url.toString(), request));
@@ -246,7 +425,6 @@ export default {
     // all other requests
     const r = await env.ASSETS.fetch(request);
 
-    // room.html with ?slug or ?id
     if (path === '/room.html') {
       return addSecurityHeaders(await handleRoom(r, url, path, apiKey));
     }
