@@ -264,44 +264,23 @@ ${rooms.map(r => renderRoomCard(r)).join('\n')}
 function injectRoomMeta(html, room, canonicalUrl) {
   if (!room || !room.name) return html;
   const unit  = room.stayType === 'long' ? '/month' : '/night';
-  const price = room.price ? ` — SAR ${room.price}${unit}` : '';
   const title = `${room.name} | Sukoon Homes`;
-  const desc  = `${room.name}${price}${room.city ? ' in ' + room.city : ''} | Sukoon Homes`;
+  const desc  = `${room.name}${room.price ? ' — SAR ' + room.price + unit : ''}${room.city ? ' in ' + room.city : ''}`;
   const img   = room.img || DEFAULT_OG_IMAGE;
   const canon = canonicalUrl || `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(room.slug||'')}`;
 
-  let o = html;
-
-  // Title tag
-  o = o.replace(/(<title[^>]*>)[^<]*(<\/title>)/i, `$1${escapeAttr(title)}$2`);
-
   // Placeholder-based replacement — guaranteed match
-  const title = `${room.name} | Sukoon Homes`;
-  const desc  = `${room.name}${room.price ? ' — SAR ' + room.price + unit : ''}${room.city ? ' in ' + room.city : ''}`;
-
-  html = html
+  let o = html
     .replace(/__SSR_TITLE__/g, escapeAttr(title))
     .replace(/__SSR_DESC__/g,  escapeAttr(desc))
-    .replace(/__SSR_URL__/g,   escapeAttr(canon))
-    .replace(/__SSR_IMG__/g,   escapeAttr(img));
+    .replace(/__SSR_URL__/g,   escapeAttr(canon));
 
-  // Also replace og:image default with room image
+  // og:image replace
   if (room.img) {
-    html = html.replace(
-      /(<meta[^>]*id="og-image"[^>]*content=")[^"]*"/,
-      `$1${escapeAttr(img)}"`
-    );
+    o = o.replace(/(<meta[^>]*id="og-image"[^>]*content=")[^"]*"/, `$1${escapeAttr(img)}"`);
   }
 
-  console.log('meta injected, title now:', title);
-
-  // Also try standard property-based replacements as fallback
-  o = o.replace(/(<meta\s[^>]*property=["']og:title["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(title)}`);
-  o = o.replace(/(<meta\s[^>]*property=["']og:description["'][^>]*content=["'])[^"']*(?=["'])/i, `$1${escapeAttr(desc)}`);
-  o = o.replace(/(<meta\s[^>]*property=["']og:image["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(img)}`);
-  o = o.replace(/(<meta\s[^>]*property=["']og:url["'][^>]*content=["'])[^"']*(?=["'])/i,         `$1${escapeAttr(canon)}`);
-
-  // Inject JSON-LD schema for room
+  // JSON-LD schema
   const schema = JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'LodgingBusiness',
@@ -311,8 +290,11 @@ function injectRoomMeta(html, room, canonicalUrl) {
     priceRange: `SAR ${room.price}${unit}`,
     address: { '@type': 'PostalAddress', addressLocality: room.city, addressCountry: 'SA' }
   });
-  o = o.replace('</head>', `<script type="application/ld+json">${schema}</script>\n</head>`);
+  if (!o.includes('application/ld+json')) {
+    o = o.replace('</head>', `<script type="application/ld+json">${schema}</script>\n</head>`);
+  }
 
+  console.log('SSR injected:', title);
   return o;
 }
 
