@@ -276,13 +276,25 @@ function injectRoomMeta(html, room, canonicalUrl) {
   o = o.replace(/(<title[^>]*>)[^<]*(<\/title>)/i, `$1${escapeAttr(title)}$2`);
 
   // Replace meta by id attribute (room.html uses id-based tags)
-  o = o.replace(/(<meta[^>]*id=["']page-title["'][^>]*content=["'])[^"']*["']/i, `$1${escapeAttr(title)}"`);
-  o = o.replace(/(<meta[^>]*id=["']page-desc["'][^>]*content=["'])[^"']*["']/i,  `$1${escapeAttr(desc)}"`);
-  o = o.replace(/(<meta[^>]*id=["']og-title["'][^>]*content=["'])[^"']*["']/i,   `$1${escapeAttr(title)}"`);
-  o = o.replace(/(<meta[^>]*id=["']og-desc["'][^>]*content=["'])[^"']*["']/i,    `$1${escapeAttr(desc)}"`);
-  o = o.replace(/(<meta[^>]*id=["']og-image["'][^>]*content=["'])[^"']*["']/i,   `$1${escapeAttr(img)}"`);
-  o = o.replace(/(<meta[^>]*id=["']og-url["'][^>]*content=["'])[^"']*["']/i,     `$1${escapeAttr(canon)}"`);
-  o = o.replace(/(<link[^>]*id=["']canonical["'][^>]*href=["'])[^"']*["']/i,     `$1${escapeAttr(canon)}"`);
+  // Pattern: <meta name/property="..." id="X" content="VALUE"/>
+  const setById = (id, val) => {
+    // content after id
+    o = o.replace(new RegExp(`(<[^>]+id=["']${id}["'][^>]*content=["'])[^"']*`, 'i'), `$1${escapeAttr(val)}`);
+    // content before id  
+    o = o.replace(new RegExp(`(<[^>]+content=["'])[^"']*(?=["'][^>]*id=["']${id}["'])`, 'i'), `$1${escapeAttr(val)}`);
+  };
+  const setHrefById = (id, val) => {
+    o = o.replace(new RegExp(`(<[^>]+id=["']${id}["'][^>]*href=["'])[^"']*`, 'i'), `$1${escapeAttr(val)}`);
+    o = o.replace(new RegExp(`(<[^>]+href=["'])[^"']*(?=["'][^>]*id=["']${id}["'])`, 'i'), `$1${escapeAttr(val)}`);
+  };
+
+  setById('page-title', title);
+  setById('page-desc', desc);
+  setById('og-title', title);
+  setById('og-desc', desc);
+  setById('og-image', img);
+  setById('og-url', canon);
+  setHrefById('canonical', canon);
 
   // Also try standard property-based replacements as fallback
   o = o.replace(/(<meta\s[^>]*property=["']og:title["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(title)}`);
