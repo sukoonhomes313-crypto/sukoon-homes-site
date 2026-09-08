@@ -7,3 +7,5 @@ wrangler.toml
 .git
 .gitignore
 README.md
+llms.txt
+_routes.json
