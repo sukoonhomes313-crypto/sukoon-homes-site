@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "include": [
+    "/llms.txt",
+    "/sitemap.xml",
+    "/rooms/*",
+    "/room",
+    "/room/",
+    "/room.html",
+    "/rooms-daily.html",
+    "/rooms-daily",
+    "/rooms-longstay.html",
+    "/rooms-longstay"
+  ],
+  "exclude": []
+}
