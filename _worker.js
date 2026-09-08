@@ -354,10 +354,21 @@ async function injectFavicon(response, pathname) {
 // ─── room page handler ────────────────────────────────────────────────────────
 
 async function handleRoom(assetResp, requestUrl, faviconPath, apiKey) {
-  let resp = assetResp;
   const slug = requestUrl.searchParams.get('slug');
   const id   = requestUrl.searchParams.get('id');
   console.log('handleRoom called:', { slug, id, apiKey: apiKey ? 'SET' : 'MISSING' });
+
+  // Read HTML once
+  const ct = assetResp.headers.get('content-type') || 'text/html;charset=UTF-8';
+  let html = await assetResp.text();
+
+  // Inject favicon
+  const isRoom = true;
+  if (!html.includes('sh-favicon') && html.includes('</head>')) {
+    html = html.replace('</head>', `${faviconInjection(true)}\n</head>`);
+  }
+
+  // Inject room meta
   if (slug || id) {
     try {
       const room = await fetchRoomData(id, slug, apiKey);
@@ -367,17 +378,18 @@ async function handleRoom(assetResp, requestUrl, faviconPath, apiKey) {
         const canonicalUrl = roomSlug
           ? `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(roomSlug)}`
           : `https://www.sukoonhomesksa.com/room/?id=${encodeURIComponent(id)}`;
-        const html    = await resp.text();
-        const patched = injectRoomMeta(html, room, canonicalUrl);
-        const h = new Headers(resp.headers);
-        h.delete('content-length');
-        resp = new Response(patched, { status: resp.status, headers: h });
+        html = injectRoomMeta(html, room, canonicalUrl);
+        console.log('meta injected, title now:', html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1]);
       }
     } catch (e) {
       console.error('handleRoom error:', e.message);
     }
   }
-  return injectFavicon(resp, faviconPath);
+
+  const h = new Headers(assetResp.headers);
+  h.delete('content-length');
+  h.set('content-type', ct);
+  return new Response(html, { status: assetResp.status, headers: h });
 }
 
 // ─── security headers ─────────────────────────────────────────────────────────
