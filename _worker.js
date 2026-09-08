@@ -266,26 +266,42 @@ function injectRoomMeta(html, room, canonicalUrl) {
   const unit  = room.stayType === 'long' ? '/month' : '/night';
   const price = room.price ? ` — SAR ${room.price}${unit}` : '';
   const title = `${room.name} | Sukoon Homes`;
-  const desc  = `${room.name}${price}${room.city ? ' — ' + room.city : ''}`;
+  const desc  = `${room.name}${price}${room.city ? ' in ' + room.city : ''} | Sukoon Homes`;
   const img   = room.img || DEFAULT_OG_IMAGE;
+  const canon = canonicalUrl || `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(room.slug||'')}`;
+
   let o = html;
-  o = o.replace(/(<title(?:\s[^>]*)?>)[^<]*(<\/title>)/i,           `$1${escapeAttr(title)}$2`);
-  o = o.replace(/(<meta\s[^>]*name=["']description["'][^>]*content=["'])[^"']*(?=["'])/i, `$1${escapeAttr(desc)}`);
-  o = o.replace(/(<meta\s[^>]*content=["'])[^"']*(?=["'][^>]*name=["']description["'])/i, `$1${escapeAttr(desc)}`);
+
+  // Title tag
+  o = o.replace(/(<title[^>]*>)[^<]*(<\/title>)/i, `$1${escapeAttr(title)}$2`);
+
+  // Replace meta by id attribute (room.html uses id-based tags)
+  o = o.replace(/(<meta[^>]*id=["']page-title["'][^>]*content=["'])[^"']*["']/i, `$1${escapeAttr(title)}"`);
+  o = o.replace(/(<meta[^>]*id=["']page-desc["'][^>]*content=["'])[^"']*["']/i,  `$1${escapeAttr(desc)}"`);
+  o = o.replace(/(<meta[^>]*id=["']og-title["'][^>]*content=["'])[^"']*["']/i,   `$1${escapeAttr(title)}"`);
+  o = o.replace(/(<meta[^>]*id=["']og-desc["'][^>]*content=["'])[^"']*["']/i,    `$1${escapeAttr(desc)}"`);
+  o = o.replace(/(<meta[^>]*id=["']og-image["'][^>]*content=["'])[^"']*["']/i,   `$1${escapeAttr(img)}"`);
+  o = o.replace(/(<meta[^>]*id=["']og-url["'][^>]*content=["'])[^"']*["']/i,     `$1${escapeAttr(canon)}"`);
+  o = o.replace(/(<link[^>]*id=["']canonical["'][^>]*href=["'])[^"']*["']/i,     `$1${escapeAttr(canon)}"`);
+
+  // Also try standard property-based replacements as fallback
   o = o.replace(/(<meta\s[^>]*property=["']og:title["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(title)}`);
-  o = o.replace(/(<meta\s[^>]*content=["'])[^"']*(?=["'][^>]*property=["']og:title["'])/i,       `$1${escapeAttr(title)}`);
   o = o.replace(/(<meta\s[^>]*property=["']og:description["'][^>]*content=["'])[^"']*(?=["'])/i, `$1${escapeAttr(desc)}`);
-  o = o.replace(/(<meta\s[^>]*content=["'])[^"']*(?=["'][^>]*property=["']og:description["'])/i, `$1${escapeAttr(desc)}`);
   o = o.replace(/(<meta\s[^>]*property=["']og:image["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(img)}`);
-  o = o.replace(/(<meta\s[^>]*content=["'])[^"']*(?=["'][^>]*property=["']og:image["'])/i,       `$1${escapeAttr(img)}`);
-  o = o.replace(/(<meta\s[^>]*name=["']twitter:title["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(title)}`);
-  o = o.replace(/(<meta\s[^>]*name=["']twitter:description["'][^>]*content=["'])/i, `$1${escapeAttr(desc)}`);
-  o = o.replace(/(<meta\s[^>]*name=["']twitter:image["'][^>]*content=["'])[^"']*(?=["'])/i,       `$1${escapeAttr(img)}`);
-  if (canonicalUrl) {
-    o = o.replace(/(<link\s[^>]*rel=["']canonical["'][^>]*href=["'])[^"']*(?=["'])/i,               `$1${escapeAttr(canonicalUrl)}`);
-    o = o.replace(/(<meta\s[^>]*property=["']og:url["'][^>]*content=["'])[^"']*(?=["'])/i,          `$1${escapeAttr(canonicalUrl)}`);
-    o = o.replace(/(<meta\s[^>]*content=["'])[^"']*(?=["'][^>]*property=["']og:url["'])/i,          `$1${escapeAttr(canonicalUrl)}`);
-  }
+  o = o.replace(/(<meta\s[^>]*property=["']og:url["'][^>]*content=["'])[^"']*(?=["'])/i,         `$1${escapeAttr(canon)}`);
+
+  // Inject JSON-LD schema for room
+  const schema = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'LodgingBusiness',
+    name: room.name,
+    url: canon,
+    image: img,
+    priceRange: `SAR ${room.price}${unit}`,
+    address: { '@type': 'PostalAddress', addressLocality: room.city, addressCountry: 'SA' }
+  });
+  o = o.replace('</head>', `<script type="application/ld+json">${schema}</script>\n</head>`);
+
   return o;
 }
 
