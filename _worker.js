@@ -356,9 +356,11 @@ async function handleRoom(assetResp, requestUrl, faviconPath, apiKey) {
   let resp = assetResp;
   const slug = requestUrl.searchParams.get('slug');
   const id   = requestUrl.searchParams.get('id');
+  console.log('handleRoom called:', { slug, id, apiKey: apiKey ? 'SET' : 'MISSING' });
   if (slug || id) {
     try {
       const room = await fetchRoomData(id, slug, apiKey);
+      console.log('fetchRoomData result:', JSON.stringify(room));
       if (room && room.name) {
         const roomSlug = slug || room.slug;
         const canonicalUrl = roomSlug
@@ -370,7 +372,9 @@ async function handleRoom(assetResp, requestUrl, faviconPath, apiKey) {
         h.delete('content-length');
         resp = new Response(patched, { status: resp.status, headers: h });
       }
-    } catch (_) {}
+    } catch (e) {
+      console.error('handleRoom error:', e.message);
+    }
   }
   return injectFavicon(resp, faviconPath);
 }
