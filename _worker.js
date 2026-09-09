@@ -311,12 +311,12 @@ async function handleSSRRoomsPage(request, env, apiKey, type, cityFilter = '') {
     itemListElement: schemaItems
   });
 
-  const ssrBlock = `
-<script type="application/ld+json">${schema}</script>
-<section id="ssr-rooms-list" aria-label="${escapeAttr(title)}" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;" aria-hidden="false">
-  <h2>${escapeHtml(title)}</h2>
-${rooms.map(r => renderRoomCard(r)).join('\n')}
-</section>`;
+  const ssrRoomsHtml = rooms.map(r => renderRoomCard(r)).join('\n');
+  const ssrBlock = `<script type="application/ld+json">${schema}</script>`;
+
+  // Put the same live room cards into the real rooms grid so crawlers and users receive the same server-rendered inventory.
+  // Client-side JavaScript may hydrate/refresh this grid afterward.
+  const ssrGridContent = `<div class="ssr-live-heading"><h2>${escapeHtml(title)}</h2><p>${rooms.length} currently published listing${rooms.length === 1 ? '' : 's'}${normalizedCity ? ` in ${escapeHtml(cityFilter)}` : ''}.</p></div>${ssrRoomsHtml}`;
 
   // Inject into <head> and before </body>
   if (html) {
