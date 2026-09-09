@@ -148,7 +148,10 @@ async function fetchRoomData(id, slug, apiKey) {
         if (r.ok) {
           const res = await r.json();
           const match = Array.isArray(res) ? res.find(x => x.document) : null;
-          if (match) return parseDoc(match.document, col === 'dailyRooms' ? 'daily' : 'long');
+          if (match) {
+            const room = parseDoc(match.document, col === 'dailyRooms' ? 'daily' : 'long');
+            if (room.name && room.slug && room.published !== false && room.status !== 'Deleted') return room;
+          }
         }
       }
     }
