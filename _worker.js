@@ -369,7 +369,7 @@ async function handleRoom(assetResp, requestUrl, slug, apiKey) {
   const canon = slug
     ? `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(slug)}`
     : `https://www.sukoonhomesksa.com/room/`;
-  html = injectRoomMeta(html, room || { name: 'Room | Sukoon Homes', slug }, canon);
+  html = injectRoomMeta(html, room, canon);
 
   const h = new Headers(assetResp.headers);
   h.delete('content-length');
