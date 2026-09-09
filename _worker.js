@@ -262,39 +262,45 @@ ${rooms.map(r => renderRoomCard(r)).join('\n')}
 // ─── OG meta injection ───────────────────────────────────────────────────────
 
 function injectRoomMeta(html, room, canonicalUrl) {
-  if (!room || !room.name) return html;
-  const unit  = room.stayType === 'long' ? '/month' : '/night';
-  const title = `${room.name} | Sukoon Homes`;
-  const desc  = `${room.name}${room.price ? ' — SAR ' + room.price + unit : ''}${room.city ? ' in ' + room.city : ''}`;
-  const img   = room.img || DEFAULT_OG_IMAGE;
-  const canon = canonicalUrl || `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(room.slug||'')}`;
+  const hasRoom = room && room.name;
+  const unit  = (hasRoom && room.stayType === 'long') ? '/month' : '/night';
+  const title = hasRoom ? `${room.name} | Sukoon Homes` : 'Room Details | Sukoon Homes';
+  const desc  = hasRoom
+    ? `${room.name}${room.price ? ' — SAR ' + room.price + unit : ''}${room.city ? ' in ' + room.city : ''}`
+    : 'Verified room for rent in Saudi Arabia | Sukoon Homes';
+  const img   = (hasRoom && room.img) ? room.img : DEFAULT_OG_IMAGE;
+  const canon = canonicalUrl || (hasRoom && room.slug
+    ? `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(room.slug)}`
+    : 'https://www.sukoonhomesksa.com/room/');
 
-  // Placeholder-based replacement — guaranteed match
+  // Always replace — bots never see raw __SSR_*__ placeholders
   let o = html
     .replace(/__SSR_TITLE__/g, escapeAttr(title))
     .replace(/__SSR_DESC__/g,  escapeAttr(desc))
     .replace(/__SSR_URL__/g,   escapeAttr(canon));
 
-  // og:image replace
-  if (room.img) {
+  // og:image — only swap if we have a real room image
+  if (hasRoom && room.img) {
     o = o.replace(/(<meta[^>]*id="og-image"[^>]*content=")[^"]*"/, `$1${escapeAttr(img)}"`);
   }
 
-  // JSON-LD schema
-  const schema = JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'LodgingBusiness',
-    name: room.name,
-    url: canon,
-    image: img,
-    priceRange: `SAR ${room.price}${unit}`,
-    address: { '@type': 'PostalAddress', addressLocality: room.city, addressCountry: 'SA' }
-  });
-  if (!o.includes('application/ld+json')) {
-    o = o.replace('</head>', `<script type="application/ld+json">${schema}</script>\n</head>`);
+  // JSON-LD schema — only when Firestore returned real data
+  if (hasRoom) {
+    const schema = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'LodgingBusiness',
+      name: room.name,
+      url: canon,
+      image: img,
+      priceRange: `SAR ${room.price}${unit}`,
+      address: { '@type': 'PostalAddress', addressLocality: room.city, addressCountry: 'SA' }
+    });
+    if (!o.includes('application/ld+json')) {
+      o = o.replace('</head>', `<script type="application/ld+json">${schema}</script>\n</head>`);
+    }
   }
 
-  console.log('SSR injected:', title);
+  console.log('[sukoon] SSR injected:', title, '| room hit:', !!hasRoom);
   return o;
 }
 
