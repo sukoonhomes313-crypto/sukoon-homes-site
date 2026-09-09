@@ -327,7 +327,7 @@ ${rooms.map(r => renderRoomCard(r)).join('\n')}
 
 // ─── OG meta injection ───────────────────────────────────────────────────────
 
-function injectRoomMeta(html, room, canonicalUrl) {
+async function injectRoomMeta(html, room, canonicalUrl, apiKey) {
   const hasRoom = room && room.name;
   const unit  = (hasRoom && room.stayType === 'long') ? '/month' : '/night';
   const title = hasRoom ? `${room.name} | Sukoon Homes` : 'Room Details | Sukoon Homes';
