@@ -259,8 +259,11 @@ async function handleSSRRoomsPage(request, env, apiKey, type, cityFilter = '') {
   const { daily, long } = await fetchAllRooms(apiKey);
   const allRooms = type === 'daily' ? daily : long;
   const normalizedCity = String(cityFilter || '').trim().toLowerCase();
-  const rooms = normalizedCity
+  const cityRooms = normalizedCity
     ? allRooms.filter(r => String(r.city || '').trim().toLowerCase() === normalizedCity)
+    : allRooms;
+  const rooms = normalizedCity
+    ? cityRooms.filter(r => String(r.status || '').trim().toLowerCase() === 'available')
     : allRooms;
   const unit = type === 'daily' ? '/night' : '/month';
   const title = type === 'daily'
