@@ -437,7 +437,7 @@ export default {
     if (path === '/room' || path === '/room/') {
       url.pathname = '/room.html';
       const r = await env.ASSETS.fetch(new Request(url.toString(), request));
-      return addSecurityHeaders(await handleRoom(r, url, slug, apiKey));
+      return addSecurityHeaders(await handleRoom(r, url, url.searchParams.get('slug') || '', apiKey));
     }
 
     // all other requests
