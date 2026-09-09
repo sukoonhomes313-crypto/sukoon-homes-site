@@ -436,7 +436,7 @@ async function handleSitemap(request, env, apiKey) {
     const h = new Headers(staticResp.headers);
     h.delete('content-length');
     h.set('content-type', 'application/xml;charset=UTF-8');
-    h.set('cache-control', 'public, max-age=3600');
+    h.set('cache-control', 'no-store, max-age=0');
     return new Response(out, { status: staticResp.status, headers: h });
   } catch (_) { return staticResp; }
 }
