@@ -42,6 +42,13 @@ function fsVal(v) {
   if (v.integerValue !== undefined) return String(v.integerValue);
   if (v.doubleValue !== undefined) return String(v.doubleValue);
   if (v.booleanValue !== undefined) return v.booleanValue;
+  if (v.timestampValue !== undefined) return v.timestampValue;
+  if (v.arrayValue !== undefined) return (v.arrayValue.values || []).map(fsVal).filter(x => x !== '');
+  if (v.mapValue !== undefined) {
+    const out = {};
+    for (const [k, val] of Object.entries(v.mapValue.fields || {})) out[k] = fsVal(val);
+    return out;
+  }
   return '';
 }
 
