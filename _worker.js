@@ -56,10 +56,31 @@ function parseDoc(doc, stayType) {
   const f = (doc && doc.fields) || {};
   const get = k => fsVal(f[k]);
   return {
-    name: get('name'), img: get('img'), price: get('price'),
-    city: get('city'), slug: get('slug'), stayType,
-    district: get('district'), amenities: get('amenities'),
-    description: get('description')
+    name: get('name'),
+    nameAr: get('nameAr'),
+    img: get('img'),
+    images: get('images'),
+    price: get('price'),
+    city: get('city'),
+    cityAr: get('cityAr'),
+    slug: get('slug'),
+    stayType,
+    type: get('type'),
+    status: get('status'),
+    published: get('published'),
+    verified: get('verified'),
+    featured: get('featured'),
+    district: get('district'),
+    districtAr: get('districtAr'),
+    street: get('street'),
+    amenities: get('amenities'),
+    description: get('description'),
+    descriptionAr: get('descriptionAr'),
+    rating: get('rating'),
+    reviewCount: get('reviewCount'),
+    phone: get('phone'),
+    updatedAt: get('updatedAt'),
+    createdAt: get('createdAt')
   };
 }
 
