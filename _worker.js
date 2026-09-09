@@ -152,7 +152,7 @@ async function handleLlmsTxt(apiKey) {
   ).join('\n');
 
   const longLines = long.map(r =>
-    `- ${r.name}${r.city ? ' — ' + r.city : ''}${r.price ? ': SAR ' + r.price + '/month' : ''} | https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(r.slug)}`
+    `- ${r.name}${r.city ? ' — ' + r.city : ''}${r.district ? ' · ' + r.district : ''}${r.price ? ': SAR ' + r.price + '/month' : ''}${r.status ? ' · Status: ' + r.status : ''}${r.verified ? ' · Verified' : ''}${r.updatedAt ? ' · Updated: ' + r.updatedAt : ''} | https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(r.slug)}`
   ).join('\n');
 
   const cities = [...new Set([...daily, ...long].map(r => r.city).filter(Boolean))].join(', ');
