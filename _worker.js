@@ -427,8 +427,10 @@ async function handleSitemap(request, env, apiKey) {
     if (!roomUrls.length || !xml.includes('</urlset>')) {
       return new Response(xml, { status: staticResp.status, headers: staticResp.headers });
     }
-    const entries = roomUrls.map(u =>
-      `  <url>\n    <loc>${u}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`
+    const cityUrls = [...new Set(daily.map(r => r.city).filter(Boolean))]
+      .map(c => `https://www.sukoonhomesksa.com/rooms-daily/${encodeURIComponent(c)}`);
+    const entries = [...roomUrls, ...cityUrls].map(u =>
+      `  <url>\n    <loc>${u}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>`
     ).join('\n');
     const out = xml.replace('</urlset>', `${entries}\n</urlset>`);
     const h = new Headers(staticResp.headers);
