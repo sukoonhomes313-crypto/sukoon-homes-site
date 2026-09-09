@@ -536,8 +536,14 @@ export default {
     }
 
     // /rooms-daily.html or /rooms-daily → SSR listing
-    if (path === '/rooms-daily.html' || path === '/rooms-daily' || path === '/rooms-daily/') {
+      if (path === '/rooms-daily.html' || path === '/rooms-daily' || path === '/rooms-daily/') {
       return handleSSRRoomsPage(request, env, apiKey, 'daily');
+    }
+
+    // City-specific daily room discovery page for AI/search queries
+    if (path.startsWith('/rooms-daily/') && path.length > '/rooms-daily/'.length) {
+      const city = decodeURIComponent(path.slice('/rooms-daily/'.length)).replace(/\/$/, '');
+      return handleSSRRoomsPage(request, env, apiKey, 'daily', city);
     }
 
     // /rooms-longstay.html or /rooms-longstay → SSR listing
