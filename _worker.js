@@ -268,9 +268,10 @@ async function handleSSRRoomsPage(request, env, apiKey, type) {
 
   const ssrBlock = `
 <script type="application/ld+json">${schema}</script>
-<div id="ssr-rooms-list" style="display:none" aria-hidden="true">
+<section id="ssr-rooms-list" aria-label="${escapeAttr(title)}" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;" aria-hidden="false">
+  <h2>${escapeHtml(title)}</h2>
 ${rooms.map(r => renderRoomCard(r)).join('\n')}
-</div>`;
+</section>`;
 
   // Inject into <head> and before </body>
   if (html) {
