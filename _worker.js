@@ -260,10 +260,12 @@ async function handleSSRRoomsPage(request, env, apiKey, type, cityFilter = '') {
     ? allRooms.filter(r => String(r.city || '').trim().toLowerCase() === normalizedCity)
     : allRooms;
   const unit = type === 'daily' ? '/night' : '/month';
-  const title = type === 'daily' ? 'Daily Rooms in Saudi Arabia' : 'Long Stay Rooms in Saudi Arabia';
+  const title = type === 'daily'
+    ? (normalizedCity ? `Daily Rooms in ${cityFilter}` : 'Daily Rooms in Saudi Arabia')
+    : (normalizedCity ? `Long Stay Rooms in ${cityFilter}` : 'Long Stay Rooms in Saudi Arabia');
   const canonical = type === 'daily'
-    ? 'https://www.sukoonhomesksa.com/rooms-daily.html'
-    : 'https://www.sukoonhomesksa.com/rooms-longstay.html';
+    ? (normalizedCity ? `https://www.sukoonhomesksa.com/rooms-daily/${encodeURIComponent(normalizedCity)}` : 'https://www.sukoonhomesksa.com/rooms-daily.html')
+    : (normalizedCity ? `https://www.sukoonhomesksa.com/rooms-longstay/${encodeURIComponent(normalizedCity)}` : 'https://www.sukoonhomesksa.com/rooms-longstay.html');
 
   // Fetch static HTML template
   const staticReq = new Request(new URL(type === 'daily' ? '/rooms-daily.html' : '/rooms-longstay.html', request.url).toString());
