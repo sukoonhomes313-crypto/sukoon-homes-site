@@ -433,11 +433,11 @@ export default {
 
     // /rooms/:slug → room detail page
     if (path.startsWith('/rooms/') && path.length > 7) {
-      const slug = path.slice('/rooms/'.length);
+      const slug = decodeURIComponent(path.slice('/rooms/'.length));
       url.pathname = '/room.html';
       url.searchParams.set('slug', slug);
       const r = await env.ASSETS.fetch(new Request(url.toString(), request));
-      return addSecurityHeaders(await handleRoom(r, url, path, apiKey));
+      return addSecurityHeaders(await handleRoom(r, url, slug, apiKey));
     }
 
     // /room → room.html
