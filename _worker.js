@@ -252,9 +252,13 @@ function renderRoomCard(room) {
 </div>`;
 }
 
-async function handleSSRRoomsPage(request, env, apiKey, type) {
+async function handleSSRRoomsPage(request, env, apiKey, type, cityFilter = '') {
   const { daily, long } = await fetchAllRooms(apiKey);
-  const rooms = type === 'daily' ? daily : long;
+  const allRooms = type === 'daily' ? daily : long;
+  const normalizedCity = String(cityFilter || '').trim().toLowerCase();
+  const rooms = normalizedCity
+    ? allRooms.filter(r => String(r.city || '').trim().toLowerCase() === normalizedCity)
+    : allRooms;
   const unit = type === 'daily' ? '/night' : '/month';
   const title = type === 'daily' ? 'Daily Rooms in Saudi Arabia' : 'Long Stay Rooms in Saudi Arabia';
   const canonical = type === 'daily'
