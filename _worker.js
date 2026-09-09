@@ -466,6 +466,20 @@ async function handleRoom(assetResp, requestUrl, slug, apiKey) {
     console.error('[sukoon] fetchRoomData error:', e.message);
   }
 
+  // A room URL must not remain indexable after the room is removed/unpublished.
+  if (slug && !room) {
+    const notFoundHtml = html
+      .replace(/__SSR_TITLE__/g, 'Room Not Found | Sukoon Homes')
+      .replace(/__SSR_DESC__/g, 'This room is no longer available on Sukoon Homes.')
+      .replace(/__SSR_URL__/g, `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(slug)}`)
+      .replace('</head>', '<meta name="robots" content="noindex, nofollow">\n</head>');
+    const h404 = new Headers(assetResp.headers);
+    h404.delete('content-length');
+    h404.set('content-type', 'text/html;charset=UTF-8');
+    h404.set('Cache-Control', 'no-store, max-age=0');
+    return new Response(notFoundHtml, { status: 404, headers: h404 });
+  }
+
   // Always inject — use defaults if Firestore failed
   const canon = slug
     ? `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(slug)}`
