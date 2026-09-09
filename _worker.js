@@ -345,42 +345,29 @@ async function injectFavicon(response, pathname) {
 
 // ─── room page handler ────────────────────────────────────────────────────────
 
-async function handleRoom(assetResp, requestUrl, faviconPath, apiKey) {
-  const slug = requestUrl.searchParams.get('slug');
-  const id   = requestUrl.searchParams.get('id');
-  console.log('handleRoom called:', { slug, id, apiKey: apiKey ? 'SET' : 'MISSING' });
+async function handleRoom(assetResp, requestUrl, slug, apiKey) {
+  const id = typeof requestUrl.searchParams?.get === 'function' ? requestUrl.searchParams.get('id') : null;
+  console.log('[sukoon] handleRoom slug:', slug, 'id:', id);
 
-  // Read HTML once
-  const ct = assetResp.headers.get('content-type') || 'text/html;charset=UTF-8';
   let html = await assetResp.text();
 
-  // Inject favicon
-  const isRoom = true;
-  if (!html.includes('sh-favicon') && html.includes('</head>')) {
-    html = html.replace('</head>', `${faviconInjection(true)}\n</head>`);
+  let room = null;
+  try {
+    room = await fetchRoomData(id, slug, apiKey);
+    console.log('[sukoon] fetchRoomData:', JSON.stringify(room));
+  } catch (e) {
+    console.error('[sukoon] fetchRoomData error:', e.message);
   }
 
-  // Inject room meta
-  if (slug || id) {
-    try {
-      const room = await fetchRoomData(id, slug, apiKey);
-      console.log('fetchRoomData result:', JSON.stringify(room));
-      if (room && room.name) {
-        const roomSlug = slug || room.slug;
-        const canonicalUrl = roomSlug
-          ? `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(roomSlug)}`
-          : `https://www.sukoonhomesksa.com/room/?id=${encodeURIComponent(id)}`;
-        html = injectRoomMeta(html, room, canonicalUrl);
-        console.log('meta injected, title now:', html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1]);
-      }
-    } catch (e) {
-      console.error('handleRoom error:', e.message);
-    }
-  }
+  // Always inject — use defaults if Firestore failed
+  const canon = slug
+    ? `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(slug)}`
+    : `https://www.sukoonhomesksa.com/room/`;
+  html = injectRoomMeta(html, room || { name: 'Room | Sukoon Homes', slug }, canon);
 
   const h = new Headers(assetResp.headers);
   h.delete('content-length');
-  h.set('content-type', ct);
+  h.set('content-type', 'text/html;charset=UTF-8');
   return new Response(html, { status: assetResp.status, headers: h });
 }
 
