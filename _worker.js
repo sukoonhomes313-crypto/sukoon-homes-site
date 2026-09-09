@@ -350,19 +350,47 @@ function injectRoomMeta(html, room, canonicalUrl) {
     o = o.replace(/(<meta[^>]*id="og-image"[^>]*content=")[^"]*"/, `$1${escapeAttr(img)}"`);
   }
 
-  // JSON-LD schema — only when Firestore returned real data
+  // JSON-LD schema — only when Firestore returned real data.
+  // Reviews are fetched live so newly approved reviews are reflected on the next crawl.
   if (hasRoom) {
-    const schema = JSON.stringify({
+    const reviews = await fetchApprovedRoomReviews(room.id, currentApiKeyForMeta || '');
+    const schema = {
       '@context': 'https://schema.org',
       '@type': 'LodgingBusiness',
       name: room.name,
       url: canon,
       image: img,
+      description: room.description || `${room.name}${room.city ? ' in ' + room.city : ''}`,
       priceRange: `SAR ${room.price}${unit}`,
-      address: { '@type': 'PostalAddress', addressLocality: room.city, addressCountry: 'SA' }
-    });
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: room.city || '',
+        addressRegion: room.district || '',
+        addressCountry: 'SA'
+      },
+      ...(room.status ? {availability: room.status === 'Available' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'} : {}),
+      ...(room.verified ? {additionalProperty: [{ '@type': 'PropertyValue', name: 'Verified listing', value: true }]} : {}),
+      ...(reviews.length ? {
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: (reviews.reduce((sum, r) => sum + Math.max(1, Math.min(5, r.stars)), 0) / reviews.length).toFixed(1),
+          reviewCount: reviews.length
+        },
+        review: reviews.slice(0, 10).map(r => ({
+          '@type': 'Review',
+          author: { '@type': 'Person', name: r.name || 'Guest' },
+          reviewRating: { '@type': 'Rating', ratingValue: Math.max(1, Math.min(5, r.stars)) },
+          reviewBody: r.text || '',
+          ...(r.date ? {datePublished: r.date} : {})
+        }))
+      } : {})
+    };
     if (!o.includes('application/ld+json')) {
-      o = o.replace('</head>', `<script type="application/ld+json">${schema}</script>\n</head>`);
+      o = o.replace('</head>', `<script type="application/ld+json">${JSON.stringify(schema)}</script>\n</head>`);
+    }
+    if (reviews.length) {
+      const reviewHtml = `<section class="ai-room-reviews" aria-label="Guest reviews"><h2>Guest reviews (${reviews.length})</h2>${reviews.slice(0,10).map(r => `<article><strong>${escapeHtml(r.name || 'Guest')}</strong><span> ${'★'.repeat(Math.max(1,Math.min(5,r.stars)))}</span><p>${escapeHtml(r.text || '')}</p>${r.date ? `<time>${escapeHtml(r.date)}</time>` : ''}</article>`).join('')}</section>`;
+      o = o.replace('</body>', `${reviewHtml}\n</body>`);
     }
   }
 
