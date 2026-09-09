@@ -133,7 +133,7 @@ async function fetchAllRooms(apiKey) {
       const data = await r.json();
       for (const doc of data.documents || []) {
         const room = parseDoc(doc, col === 'dailyRooms' ? 'daily' : 'long');
-        if (room.name && room.slug) {
+        if (room.name && room.slug && room.published !== false && room.status !== 'Deleted') {
           col === 'dailyRooms' ? daily.push(room) : long.push(room);
         }
       }
