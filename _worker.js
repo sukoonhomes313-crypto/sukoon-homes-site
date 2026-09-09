@@ -244,9 +244,17 @@ async function handleSSRRoomsPage(request, env, apiKey, type) {
       '@type': 'LodgingBusiness',
       name: r.name,
       url: `https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(r.slug)}`,
-      image: r.img || DEFAULT_OG_IMAGE,
-      address: { '@type': 'PostalAddress', addressLocality: r.city, addressCountry: 'SA' },
-      priceRange: `SAR ${r.price}${unit}`
+      image: Array.isArray(r.images) && r.images.length ? r.images : (r.img ? [r.img] : [DEFAULT_OG_IMAGE]),
+      description: r.description || `${r.name}${r.city ? ' in ' + r.city : ''}`,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: r.city || '',
+        addressRegion: r.district || '',
+        addressCountry: 'SA'
+      },
+      priceRange: `SAR ${r.price}${unit}`,
+      ...(r.status ? {availability: r.status === 'Available' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'} : {}),
+      ...(r.verified ? {additionalProperty: [{ '@type': 'PropertyValue', name: 'Verified listing', value: true }]} : {})
     }
   }));
 
