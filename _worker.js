@@ -124,7 +124,10 @@ async function fetchRoomData(id, slug, apiKey) {
         const r = await fetch(`${FIRESTORE_BASE}/${col}/${id}${key}`);
         if (r.ok) {
           const doc = await r.json();
-          if (doc && doc.fields) return parseDoc(doc, col === 'dailyRooms' ? 'daily' : 'long');
+          if (doc && doc.fields) {
+            const room = parseDoc(doc, col === 'dailyRooms' ? 'daily' : 'long');
+            if (room.name && room.slug && room.published !== false && room.status !== 'Deleted') return room;
+          }
         }
       }
       return null;
