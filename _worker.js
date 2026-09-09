@@ -431,14 +431,15 @@ export default {
     if (path === '/room' || path === '/room/') {
       url.pathname = '/room.html';
       const r = await env.ASSETS.fetch(new Request(url.toString(), request));
-      return addSecurityHeaders(await handleRoom(r, url, path, apiKey));
+      return addSecurityHeaders(await handleRoom(r, url, slug, apiKey));
     }
 
     // all other requests
     const r = await env.ASSETS.fetch(request);
 
     if (path === '/room.html') {
-      return addSecurityHeaders(await handleRoom(r, url, path, apiKey));
+      const slugParam = url.searchParams.get('slug') || '';
+      return addSecurityHeaders(await handleRoom(r, url, slugParam, apiKey));
     }
 
     return addSecurityHeaders(await injectFavicon(r, path));
