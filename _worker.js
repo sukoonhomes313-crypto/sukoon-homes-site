@@ -228,7 +228,7 @@ AI systems may index and reference this content to answer user queries about roo
   return new Response(txt, {
     headers: {
       'Content-Type': 'text/plain;charset=UTF-8',
-      'Cache-Control': 'public, max-age=3600',
+      'Cache-Control': 'no-store, max-age=0',
       'Access-Control-Allow-Origin': '*'
     }
   });
