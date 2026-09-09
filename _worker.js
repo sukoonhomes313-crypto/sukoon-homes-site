@@ -86,6 +86,35 @@ function parseDoc(doc, stayType) {
 
 // ─── Firestore fetch ──────────────────────────────────────────────────────────
 
+async function fetchApprovedRoomReviews(roomId, apiKey) {
+  if (!roomId) return [];
+  const key = apiKey ? `?key=${apiKey}` : '';
+  try {
+    const r = await fetch(`${FIRESTORE_BASE}:runQuery${key}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        structuredQuery: {
+          from: [{ collectionId: 'feedback' }],
+          where: { compositeFilter: { op: 'AND', filters: [
+            { fieldFilter: { field: { fieldPath: 'roomId' }, op: 'EQUAL', value: { stringValue: String(roomId) } } },
+            { fieldFilter: { field: { fieldPath: 'status' }, op: 'EQUAL', value: { stringValue: 'approved' } } }
+          ]}},
+          limit: 50
+        }
+      })
+    });
+    if (!r.ok) return [];
+    const rows = await r.json();
+    return (Array.isArray(rows) ? rows : []).filter(x => x.document).map(x => {
+      const f = x.document.fields || {};
+      return {
+        name: fsVal(f.name), text: fsVal(f.text), stars: Number(fsVal(f.stars) || 5), date: fsVal(f.date)
+      };
+    });
+  } catch (_) { return []; }
+}
+
 async function fetchRoomData(id, slug, apiKey) {
   const key = apiKey ? `?key=${apiKey}` : '';
   try {
