@@ -353,7 +353,7 @@ async function injectRoomMeta(html, room, canonicalUrl, apiKey) {
   // JSON-LD schema — only when Firestore returned real data.
   // Reviews are fetched live so newly approved reviews are reflected on the next crawl.
   if (hasRoom) {
-    const reviews = await fetchApprovedRoomReviews(room.id, currentApiKeyForMeta || '');
+    const reviews = await fetchApprovedRoomReviews(room.id, apiKey || '');
     const schema = {
       '@context': 'https://schema.org',
       '@type': 'LodgingBusiness',
