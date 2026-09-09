@@ -325,7 +325,8 @@ async function handleSSRRoomsPage(request, env, apiKey, type, cityFilter = '') {
       .replace(/(<title(?:\s[^>]*)?>)[^<]*(<\/title>)/i, `$1${escapeAttr(title + ' | Sukoon Homes')}$2`)
       .replace(/(<meta\s[^>]*property=["']og:title["'][^>]*content=["'])[^"']*(?=["'])/i, `$1${escapeAttr(title)}`)
       .replace(/(<link\s[^>]*rel=["']canonical["'][^>]*href=["'])[^"']*(?=["'])/i, `$1${escapeAttr(canonical)}`);
-    html = html.replace('</body>', `${ssrBlock}\n</body>`);
+    html = html.replace(/(<div[^>]*id=["']rooms-grid["'][^>]*>)/i, `$1${ssrGridContent}`);
+    html = html.replace('</head>', `${ssrBlock}\n</head>`);
   } else {
     // Fallback minimal HTML
     html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>${escapeHtml(title)} | Sukoon Homes</title>
