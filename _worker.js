@@ -148,7 +148,7 @@ async function handleLlmsTxt(apiKey) {
   const { daily, long } = await fetchAllRooms(apiKey);
 
   const dailyLines = daily.map(r =>
-    `- ${r.name}${r.city ? ' — ' + r.city : ''}${r.price ? ': SAR ' + r.price + '/night' : ''} | https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(r.slug)}`
+    `- ${r.name}${r.city ? ' — ' + r.city : ''}${r.district ? ' · ' + r.district : ''}${r.price ? ': SAR ' + r.price + '/night' : ''}${r.status ? ' · Status: ' + r.status : ''}${r.verified ? ' · Verified' : ''}${r.updatedAt ? ' · Updated: ' + r.updatedAt : ''} | https://www.sukoonhomesksa.com/rooms/${encodeURIComponent(r.slug)}`
   ).join('\n');
 
   const longLines = long.map(r =>
