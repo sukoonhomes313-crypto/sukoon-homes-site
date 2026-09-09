@@ -215,6 +215,9 @@ ${dailyLines}
 ## Long Stay Rooms (${long.length} listings)
 ${longLines}
 
+## City Daily Room Pages
+${[...new Set(daily.map(r => r.city).filter(Boolean))].map(c => `- ${c} Daily Rooms: https://www.sukoonhomesksa.com/rooms-daily/${encodeURIComponent(c)}`).join('\n')}
+
 ## Key Pages
 - Home: https://www.sukoonhomesksa.com
 - Daily Rooms: https://www.sukoonhomesksa.com/rooms-daily.html
