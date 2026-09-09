@@ -56,6 +56,7 @@ function parseDoc(doc, stayType) {
   const f = (doc && doc.fields) || {};
   const get = k => fsVal(f[k]);
   return {
+    id: (doc && doc.name) ? String(doc.name).split('/').pop() : '',
     name: get('name'),
     nameAr: get('nameAr'),
     img: get('img'),
