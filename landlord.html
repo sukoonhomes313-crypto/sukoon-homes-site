@@ -647,5 +647,78 @@ function formatTime(ts){
   return d.toLocaleDateString('en-SA');
 }
 </script>
+
+<!-- SUKOON PRE-LAUNCH NOTICE START -->
+<style id="sh-prelaunch-notice-style">
+body.sh-notice-open{overflow:hidden}
+#sh-prelaunch-notice{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(4,24,14,.68);backdrop-filter:blur(5px)}
+#sh-prelaunch-notice.sh-show{display:flex}
+#sh-prelaunch-notice .sh-notice-card{position:relative;width:min(100%,480px);overflow:hidden;background:#fff;border:1px solid #d4e8dc;border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.28);padding:30px 26px 24px;text-align:center;animation:shNoticeIn .28s ease-out}
+#sh-prelaunch-notice .sh-notice-icon{width:54px;height:54px;margin:0 auto 14px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:#e6f5ee;color:#0d4a2f;font-size:26px}
+#sh-prelaunch-notice .sh-notice-label{display:inline-block;margin-bottom:9px;padding:5px 10px;border-radius:999px;background:#fdf3e3;color:#8a5b0b;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+#sh-prelaunch-notice .sh-notice-title{margin:0 30px 10px;color:#0d2e1c;font-size:22px;line-height:1.3;font-weight:700}
+#sh-prelaunch-notice .sh-notice-text{margin:0 auto;color:#3a5a46;font-size:14px;line-height:1.75;max-width:390px}
+#sh-prelaunch-notice .sh-notice-mail{display:inline-flex;align-items:center;justify-content:center;margin-top:17px;padding:11px 16px;border-radius:10px;background:#0d4a2f;color:#fff;font-size:13px;font-weight:600;text-decoration:none}
+#sh-prelaunch-notice .sh-notice-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border:1px solid #d4e8dc;border-radius:50%;background:#fff;color:#3a5a46;font-size:20px;line-height:1;cursor:pointer}
+[dir="rtl"] #sh-prelaunch-notice .sh-notice-close{right:auto;left:12px}
+#sh-prelaunch-notice .sh-notice-timer{position:absolute;left:0;right:0;bottom:0;height:4px;background:#e6f5ee}
+#sh-prelaunch-notice .sh-notice-timer span{display:block;width:100%;height:100%;background:#2eaa6a;transform-origin:left;animation:shNoticeTimer 18s linear forwards}
+[dir="rtl"] #sh-prelaunch-notice .sh-notice-timer span{transform-origin:right}
+@keyframes shNoticeIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes shNoticeTimer{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media(max-width:520px){#sh-prelaunch-notice{padding:14px}#sh-prelaunch-notice .sh-notice-card{padding:27px 18px 22px;border-radius:17px}#sh-prelaunch-notice .sh-notice-title{font-size:20px}}
+@media(prefers-reduced-motion:reduce){#sh-prelaunch-notice .sh-notice-card,#sh-prelaunch-notice .sh-notice-timer span{animation:none}}
+</style>
+<div id="sh-prelaunch-notice" role="dialog" aria-modal="true" aria-labelledby="sh-notice-title" aria-describedby="sh-notice-text">
+  <div class="sh-notice-card">
+    <button class="sh-notice-close" id="sh-notice-close" type="button" aria-label="Close notice">&times;</button>
+    <div class="sh-notice-icon" aria-hidden="true">🌙</div>
+    <div class="sh-notice-label" id="sh-notice-label">Preview Notice</div>
+    <h2 class="sh-notice-title" id="sh-notice-title">Sukoon Homes is not officially launched yet</h2>
+    <p class="sh-notice-text" id="sh-notice-text">All listings currently shown are for demonstration purposes only and are not available for booking. For listing enquiries or any questions, please contact us by email.</p>
+    <a class="sh-notice-mail" id="sh-notice-mail" href="mailto:sukoonhomes313@gmail.com">✉ sukoonhomes313@gmail.com</a>
+    <div class="sh-notice-timer" aria-hidden="true"><span></span></div>
+  </div>
+</div>
+<script>
+(function(){
+  var key='sh_prelaunch_notice_seen_v1';
+  var overlay=document.getElementById('sh-prelaunch-notice');
+  var timer;
+  if(!overlay)return;
+  function setCopy(){
+    var stored='';
+    try{stored=localStorage.getItem('sh_lang')||'';}catch(e){}
+    var detected=stored||(navigator.language||'en');
+    var ar=String(detected).toLowerCase().indexOf('ar')===0;
+    document.getElementById('sh-notice-label').textContent=ar?'تنبيه: نسخة تجريبية':'Preview Notice';
+    document.getElementById('sh-notice-title').textContent=ar?'لم يتم إطلاق سكون هومز رسمياً بعد':'Sukoon Homes is not officially launched yet';
+    document.getElementById('sh-notice-text').textContent=ar?'جميع الإعلانات المعروضة حالياً تجريبية فقط وغير متاحة للحجز. للاستفسار عن إضافة إعلان أو لأي أسئلة أخرى، يرجى التواصل معنا عبر البريد الإلكتروني.':'All listings currently shown are for demonstration purposes only and are not available for booking. For listing enquiries or any questions, please contact us by email.';
+    document.getElementById('sh-notice-close').setAttribute('aria-label',ar?'إغلاق التنبيه':'Close notice');
+    overlay.setAttribute('dir',ar?'rtl':'ltr');
+  }
+  function closeNotice(){
+    clearTimeout(timer);
+    overlay.classList.remove('sh-show');
+    document.body.classList.remove('sh-notice-open');
+  }
+  function showNotice(){
+    try{if(sessionStorage.getItem(key)==='1')return;sessionStorage.setItem(key,'1');}catch(e){}
+    setCopy();
+    overlay.classList.add('sh-show');
+    document.body.classList.add('sh-notice-open');
+    timer=setTimeout(closeNotice,18000);
+    setTimeout(function(){document.getElementById('sh-notice-close').focus();},50);
+  }
+  window.SHClosePrelaunchNotice=closeNotice;
+  document.getElementById('sh-notice-close').addEventListener('click',closeNotice);
+  overlay.addEventListener('click',function(e){if(e.target===overlay)closeNotice();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&overlay.classList.contains('sh-show'))closeNotice();});
+  if(document.readyState==='complete')setTimeout(showNotice,500);
+  else window.addEventListener('load',function(){setTimeout(showNotice,500);},{once:true});
+})();
+</script>
+<!-- SUKOON PRE-LAUNCH NOTICE END -->
+
 </body>
 </html>
